@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airbnb Market Prediction,Peyton Ramsey</title>
+  <meta name="description" content="Supervised ML models predicting high-booking Airbnb listings in San Francisco,Random Forest at 95% ROC-AUC with actionable pricing insights." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    .tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background-color: #161b22; border: 1px solid #30363d; border-radius: 9999px; color: #8b949e; }
+    .section-label { font-family: monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #2dd4bf; margin-bottom: 0.5rem; display: block; }
+    .prose-content p { color: rgba(230,237,243,0.80); line-height: 1.75; margin-bottom: 1rem; }
+    .prose-content li { color: rgba(230,237,243,0.80); margin-bottom: 0.4rem; }
+    .metric-card { background: #1c2333; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ─── NAV ─── -->
+  <nav class="sticky top-0 z-50 border-b" style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-color: #30363d;">
+    <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-2 text-sm transition-colors" style="color: #8b949e;"
+         onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Peyton Ramsey
+      </a>
+      <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
+         style="border: 1px solid #30363d; color: #8b949e;"
+         onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
+         onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
+        GitHub ↗
+      </a>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <header class="px-6 pt-16 pb-12" style="border-bottom: 1px solid #30363d;">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class="tag">R</span>
+        <span class="tag">Random Forest</span>
+        <span class="tag">LightGBM</span>
+        <span class="tag">tidyverse</span>
+        <span class="tag">ggplot2</span>
+        <span class="tag">caret</span>
+        <span class="tag">EDA</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 leading-tight" style="color: #e6edf3;">
+        Airbnb Market Prediction,San Francisco
+      </h1>
+      <p class="text-lg mb-6" style="color: #8b949e;">
+        Predicting high-booking listings and surfacing actionable pricing strategies
+      </p>
+      <div class="flex flex-wrap gap-4 text-sm" style="color: #8b949e;">
+        <span>Role: Sole Analyst</span>
+        <span style="color: #30363d;">·</span>
+        <span>2025</span>
+        <span style="color: #30363d;">·</span>
+        <span>12,947 listings · 32 features</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── CONTENT ─── -->
+  <main class="px-6 py-16">
+    <div class="max-w-4xl mx-auto space-y-16">
+
+      <!-- TL;DR -->
+      <section>
+        <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
+          <span class="section-label">TL;DR</span>
+          <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
+            Built supervised ML models to predict which San Francisco Airbnb listings achieve high booking rates, using a dataset of 12,947 listings with 32 features. A Random Forest model achieved <strong style="color: #e6edf3;">95% ROC-AUC</strong>, outperforming Logistic Regression (59%), Bagged Trees (94%), and LightGBM (93%). Beyond model performance, the analysis surfaced actionable business insights,high-booking hosts offer ~14.3% weekly discounts versus 5% industry average, and each additional bedroom increases booking odds by roughly 65%.
+          </p>
+        </div>
+      </section>
+
+      <!-- Problem & Context -->
+      <section class="prose-content">
+        <span class="section-label">Problem &amp; Context</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Understanding Airbnb Success Drivers</h2>
+        <p>
+          The San Francisco short-term rental market is highly competitive. Hosts with similar properties can see wildly different booking rates depending on pricing strategy, amenity offerings, review quality, and host behavior. Understanding what drives high booking rates matters for:
+        </p>
+        <ul class="list-none space-y-1 mb-4 pl-0">
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Hosts</strong>,optimize pricing and listing details to compete more effectively</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Platform teams</strong>,identify which listing attributes to highlight or incentivize</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Investors</strong>,evaluate short-term rental properties before purchase</li>
+        </ul>
+        <p>
+          The core modeling problem is binary classification: given a listing's features, will it achieve a high booking rate? This framing turns qualitative host intuitions into a data-driven, explainable framework.
+        </p>
+      </section>
+
+      <!-- Data & Preprocessing -->
+      <section class="prose-content">
+        <span class="section-label">Data &amp; Preprocessing</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Dataset Overview</h2>
+        <p>
+          The dataset comes from <strong style="color: #e6edf3;">Inside Airbnb</strong>, containing 12,947 San Francisco listings with 32 features across four categories:
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 my-6">
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Property Attributes</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>Room type (entire home, private room, shared)</li>
+              <li>Bedroom &amp; bathroom count</li>
+              <li>Neighborhood and location</li>
+              <li>Amenities count</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Pricing &amp; Availability</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>Nightly price (normalized)</li>
+              <li>Weekly &amp; monthly discount %</li>
+              <li>Minimum/maximum nights</li>
+              <li>Availability over 30/60/90/365 days</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Host Metrics</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>Superhost status (binary)</li>
+              <li>Response rate &amp; acceptance rate</li>
+              <li>Listings count</li>
+              <li>Host tenure (years on platform)</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Review Scores</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>Overall rating</li>
+              <li>Cleanliness, communication, value</li>
+              <li>Number of reviews</li>
+              <li>Reviews per month</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>
+          <strong style="color: #e6edf3;">Preprocessing steps:</strong> Price normalization (log transform to handle long tail), binary encoding of categorical variables (superhost, room type), median imputation for missing review scores (new listings have no reviews), and feature selection to remove near-zero variance predictors. The target variable was defined as a binary high-booking indicator based on review count as a proxy for occupancy.
+        </p>
+      </section>
+
+      <!-- Modeling -->
+      <section>
+        <span class="section-label">Models &amp; Evaluation</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Model Comparison</h2>
+
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-sm">
+            <thead>
+              <tr style="border-bottom: 1px solid #30363d;">
+                <th class="text-left pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Model</th>
+                <th class="text-right pb-2 pr-6" style="color: #8b949e; font-weight: 500;">ROC-AUC</th>
+                <th class="text-left pb-2" style="color: #8b949e; font-weight: 500;">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #1c2333; background: rgba(45,212,191,0.05);">
+                <td class="py-2.5 pr-6 font-medium" style="color: #2dd4bf;">Random Forest ✓ Best</td>
+                <td class="text-right py-2.5 pr-6 font-bold" style="color: #2dd4bf;">95%</td>
+                <td class="py-2.5 text-xs" style="color: #8b949e;">Strong feature interactions, natural feature importance, robust to correlated features</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">Bagged Trees</td>
+                <td class="text-right py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">94%</td>
+                <td class="py-2.5 text-xs" style="color: #8b949e;">Close second; Random Forest's feature sampling gives the edge</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">LightGBM</td>
+                <td class="text-right py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">93%</td>
+                <td class="py-2.5 text-xs" style="color: #8b949e;">Gradient boosting; fast but similar performance to RF at this scale</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">Logistic Regression</td>
+                <td class="text-right py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">59%</td>
+                <td class="py-2.5 text-xs" style="color: #8b949e;">Baseline; fails to capture non-linear interactions (pricing × bedrooms × location)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="text-sm" style="color: #8b949e;">Primary metric: ROC-AUC (appropriate for imbalanced binary classification where both precision and recall matter). Model evaluated via stratified 5-fold cross-validation to ensure robust estimates.</p>
+      </section>
+
+      <!-- Business Insights -->
+      <section>
+        <span class="section-label">Business Insights</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">What the Model Tells Hosts</h2>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-8">
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">14.3%</p>
+            <p class="text-xs" style="color: #8b949e;">Avg. weekly discount<br/>of high-booking hosts</p>
+            <p class="text-xs mt-1" style="color: #30363d;">vs. 5% industry avg</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">+65%</p>
+            <p class="text-xs" style="color: #8b949e;">Increase in booking odds<br/>per additional bedroom</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">5–10%</p>
+            <p class="text-xs" style="color: #8b949e;">Below market median<br/>optimal pricing zone</p>
+          </div>
+        </div>
+
+        <div class="rounded-xl p-5 space-y-3" style="background: #161b22; border: 1px solid #30363d;">
+          <h4 class="font-semibold" style="color: #e6edf3;">Key Feature Importance Findings</h4>
+          <div class="text-sm space-y-2" style="color: #8b949e;">
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Weekly discount generosity</strong> is the strongest differentiator. High-booking hosts offer 2–3× the industry average discount for weekly stays, indicating that price sensitivity is the primary booking driver for multi-night guests.</div>
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Bedroom count</strong> has strong positive effect,larger accommodations serve groups and families who book longer, higher-value stays. The ~65% per-bedroom odds increase suggests meaningful returns on properties sized for groups.</div>
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Superhost status and review scores</strong> matter, but less than pricing. Having a 4.9 vs 4.7 rating matters less than whether your weekly rate is competitive.</div>
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Entire home vs. private room</strong> is significant but largely captured by the bedroom count feature,whole-home listings simply have more space.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visualizations -->
+      <section>
+        <span class="section-label">Visualizations</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Key Charts</h2>
+
+        <!-- Slide chart images -->
+        <div>
+          <p class="text-sm mb-4" style="color: #8b949e;">Key charts from the project analysis:</p>
+          <div class="grid md:grid-cols-2 gap-4">
+
+            <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
+              <img src="../assets/airbnb-price-distribution.png"
+                   alt="Price Distribution of SF Airbnb Listings"
+                   class="w-full"
+                   onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>Drop airbnb-price-distribution.png into assets/</div>'" />
+              <p class="text-xs px-3 py-2" style="color: #8b949e;">Price distribution (log scale),$150 median vs $257 mean, right-skewed by luxury outliers</p>
+            </div>
+
+            <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
+              <img src="../assets/airbnb-weekly-discount.png"
+                   alt="Weekly Discount Impact on Booking Rate"
+                   class="w-full"
+                   onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>Drop airbnb-weekly-discount.png into assets/</div>'" />
+              <p class="text-xs px-3 py-2" style="color: #8b949e;">High-booking listings use 14.3% weekly discounts vs 5% industry average</p>
+            </div>
+
+            <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
+              <img src="../assets/airbnb-roc-curve.png"
+                   alt="ROC Curve Comparison"
+                   class="w-full"
+                   onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>Drop airbnb-roc-curve.png into assets/</div>'" />
+              <p class="text-xs px-3 py-2" style="color: #8b949e;">ROC curves: Random Forest 95% AUC vs Logistic Regression 59% after preprocessing</p>
+            </div>
+
+            <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
+              <img src="../assets/airbnb-room-type.png"
+                   alt="Room Type Price Distribution"
+                   class="w-full"
+                   onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>Drop airbnb-room-type.png into assets/</div>'" />
+              <p class="text-xs px-3 py-2" style="color: #8b949e;">4× price gap from shared rooms ($50) to entire homes ($200)</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Lessons -->
+      <section class="prose-content">
+        <span class="section-label">What Was Learned</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Lessons &amp; Takeaways</h2>
+        <ul class="list-none space-y-3">
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
+            <div><strong style="color: #e6edf3;">Ensemble methods dominate tabular data.</strong> The 36-point ROC-AUC gap between Random Forest (95%) and Logistic Regression (59%) on a dataset with just 32 features illustrates how linear models fail on problems with strong feature interactions,pricing × property size × neighborhood are deeply non-linear.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">02.</span>
+            <div><strong style="color: #e6edf3;">Model outputs need to be translated into action.</strong> A 95% AUC is only useful if the findings tell stakeholders what to do differently. The business insight framing (discount strategy, bedroom count, pricing zone) was the analysis that actually mattered to a host audience.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">03.</span>
+            <div><strong style="color: #e6edf3;">Review count as a booking proxy is imperfect.</strong> Not all guests leave reviews. The booking rate target is an approximation,the ideal dataset would include actual booking data, not a review-count proxy. Modeling limitations should be disclosed, not buried.</div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Links -->
+      <section>
+        <span class="section-label">Links &amp; Resources</span>
+        <div class="flex flex-wrap gap-4">
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+             style="border: 1px solid #30363d; color: #8b949e;"
+             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
+             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
+            GitHub Repository ↗
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
+    <a href="../index.html#projects" class="text-sm transition-colors" style="color: #8b949e;"
+       onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#8b949e'">
+      ← Back to all projects
+    </a>
+  </footer>
+
+</body>
+</html>

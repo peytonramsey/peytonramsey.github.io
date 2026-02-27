@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MLOps Loan Default Prediction,Peyton Ramsey</title>
+  <meta name="description" content="Production ML system predicting loan defaults on 148K applications with 0.92 ROC-AUC, PSI drift monitoring, and MLflow experiment tracking." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    .tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background-color: #161b22; border: 1px solid #30363d; border-radius: 9999px; color: #8b949e; }
+    .section-label { font-family: monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #2dd4bf; margin-bottom: 0.5rem; display: block; }
+    .prose-content p { color: rgba(230,237,243,0.80); line-height: 1.75; margin-bottom: 1rem; }
+    .prose-content ul { color: rgba(230,237,243,0.80); margin-bottom: 1rem; }
+    .prose-content li { margin-bottom: 0.4rem; }
+    .metric-card { background: #1c2333; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
+    .arch-flow { font-family: monospace; font-size: 0.8rem; color: #8b949e; background: #161b22; border: 1px solid #30363d; border-radius: 0.5rem; padding: 1.25rem 1.5rem; line-height: 2; }
+    .arch-flow span { color: #2dd4bf; }
+    .arch-flow .arrow { color: #30363d; }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ─── NAV ─── -->
+  <nav class="sticky top-0 z-50 border-b" style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-color: #30363d;">
+    <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-2 text-sm transition-colors" style="color: #8b949e;"
+         onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Peyton Ramsey
+      </a>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+           class="transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'" aria-label="GitHub">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>
+        </a>
+        <a href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
+           style="background: #2dd4bf; color: #0d1117;">
+          Live Demo ↗
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <header class="px-6 pt-16 pb-12" style="border-bottom: 1px solid #30363d;">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class="tag">Python</span>
+        <span class="tag">Random Forest</span>
+        <span class="tag">PyTorch</span>
+        <span class="tag">scikit-learn</span>
+        <span class="tag">MLflow</span>
+        <span class="tag">Docker</span>
+        <span class="tag">Hugging Face</span>
+        <span class="tag">Gradio</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 leading-tight" style="color: #e6edf3;">
+        MLOps Loan Default Prediction System with Drift Monitoring
+      </h1>
+      <p class="text-lg mb-6" style="color: #8b949e;">
+        End-to-end production ML system with data drift alerting and experiment tracking
+      </p>
+      <div class="flex flex-wrap gap-4 text-sm" style="color: #8b949e;">
+        <span>Role: Sole Developer</span>
+        <span style="color: #30363d;">·</span>
+        <span>December 2025</span>
+        <span style="color: #30363d;">·</span>
+        <span style="color: #2dd4bf;">Production · Deployed</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── CONTENT ─── -->
+  <main class="px-6 py-16">
+    <div class="max-w-4xl mx-auto space-y-16">
+
+      <!-- TL;DR -->
+      <section>
+        <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
+          <span class="section-label">TL;DR</span>
+          <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
+            Built a production ML system predicting loan defaults on 148K applications achieving <strong style="color: #e6edf3;">89% accuracy, 0.92 ROC-AUC, and 0.86 F1-score</strong> using Random Forest. Engineered a PyTorch Dataset/DataLoader pipeline that reduced memory usage by 4,600× and improved loading speed by 23×. Implemented Population Stability Index (PSI) drift monitoring across 51 features with MLflow experiment tracking. Deployed as a web interface on Hugging Face Spaces via Docker with &lt;100ms inference latency.
+          </p>
+        </div>
+      </section>
+
+      <!-- Problem & Context -->
+      <section class="prose-content">
+        <span class="section-label">Problem &amp; Context</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Predicting Risk at Scale</h2>
+        <p>
+          Loan default prediction is a core problem in credit risk management. Financial institutions need to assess the probability of default before issuing credit,miscalibrated models mean either leaving money on the table (too restrictive) or taking on unacceptable risk (too permissive). At 148,000+ applications, even a small improvement in precision translates to significant risk-adjusted returns.
+        </p>
+        <p>
+          Beyond prediction accuracy, production ML systems for credit have two additional requirements that pure model benchmarks ignore: <strong style="color: #e6edf3;">scalable data handling</strong> (the pipeline needs to work on full datasets, not just samples) and <strong style="color: #e6edf3;">drift monitoring</strong> (model assumptions break down as the applicant population shifts over time).
+        </p>
+        <p>
+          This project was built to demonstrate a realistic production ML workflow: efficient data loading, rigorous model evaluation, drift detection infrastructure, and a deployed web interface,not just a Jupyter notebook with a model fit.
+        </p>
+      </section>
+
+      <!-- Data & Features -->
+      <section class="prose-content">
+        <span class="section-label">Data &amp; Features</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Dataset &amp; Engineering</h2>
+        <p>
+          The dataset contains <strong style="color: #e6edf3;">148,000+ loan applications</strong> with 51 features spanning applicant demographics, financial history, loan characteristics, and derived risk signals. Target variable is binary: defaulted (1) or repaid (0).
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-4 my-6">
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Applicant Features</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>Credit score &amp; history length</li>
+              <li>Annual income</li>
+              <li>Employment status &amp; length</li>
+              <li>Debt-to-income ratio</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Loan Features</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>Loan amount &amp; term</li>
+              <li>Interest rate &amp; grade</li>
+              <li>Purpose &amp; home ownership</li>
+              <li>Monthly installment</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Risk Signals</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>Delinquency history</li>
+              <li>Public records count</li>
+              <li>Revolving utilization</li>
+              <li>Recent inquiry count</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>
+          <strong style="color: #e6edf3;">PyTorch data pipeline:</strong> Instead of loading all 148K rows into memory at once (which caused OOM errors in early iterations), a custom <code style="color: #2dd4bf; font-size: 0.85em;">Dataset</code> and <code style="color: #2dd4bf; font-size: 0.85em;">DataLoader</code> class was implemented. This yielded a <strong style="color: #e6edf3;">4,600× memory reduction</strong> (from ~2.8GB to ~0.6MB resident) and <strong style="color: #e6edf3;">23× faster loading</strong> via lazy evaluation and batching,turning an OOM failure into a sub-second operation.
+        </p>
+      </section>
+
+      <!-- Architecture -->
+      <section>
+        <span class="section-label">Architecture &amp; Stack</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">System Design</h2>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3" style="color: #e6edf3;">Training Pipeline</h4>
+            <div class="arch-flow">
+              <span>Raw Data (148K rows)</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>PyTorch DataLoader</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Preprocessing + FE</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Random Forest (CV)</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>MLflow Tracking</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Model Serialization</span>
+            </div>
+          </div>
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3" style="color: #e6edf3;">Monitoring &amp; Deployment</h4>
+            <div class="arch-flow">
+              <span>Production Data</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>PSI Drift Monitor</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>(51 features tracked)</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Gradio Web Interface</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Docker Container</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Hugging Face Spaces</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Modeling -->
+      <section class="prose-content">
+        <span class="section-label">Modeling &amp; MLOps</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Model &amp; Drift Monitoring</h2>
+        <p>
+          <strong style="color: #e6edf3;">Model selection:</strong> Random Forest was chosen over Logistic Regression (too simple for 51 correlated features), XGBoost (similar performance, harder to explain), and neural networks (overkill for tabular credit data at this scale). Random Forest provides strong performance, natural feature importance interpretability, and robustness to missing values,important for real credit risk workflows.
+        </p>
+        <p>
+          <strong style="color: #e6edf3;">Experiment tracking with MLflow:</strong> All training runs logged hyperparameters, metrics, artifacts, and model versions. This enabled systematic comparison of feature subsets, imputation strategies, and class imbalance handling techniques, with full reproducibility.
+        </p>
+        <p>
+          <strong style="color: #e6edf3;">PSI drift monitoring:</strong> Population Stability Index measures how much the distribution of a feature has shifted between training and serving. PSI is computed for all 51 features:
+        </p>
+        <ul class="list-none space-y-1 pl-0">
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">PSI &lt; 0.1:</strong> No significant shift,model stable</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">PSI 0.1–0.2:</strong> Moderate shift,monitor closely</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">PSI &gt; 0.2:</strong> Significant shift,retrain recommended</li>
+        </ul>
+        <p>
+          This infrastructure means a deployed model can raise alerts before degradation becomes visible in downstream business metrics,catching drift proactively rather than reactively.
+        </p>
+      </section>
+
+      <!-- Results -->
+      <section>
+        <span class="section-label">Results &amp; Impact</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Performance Metrics</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">89%</p>
+            <p class="text-xs" style="color: #8b949e;">Accuracy<br/>148K applications</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">0.92</p>
+            <p class="text-xs" style="color: #8b949e;">ROC-AUC<br/>Discriminative power</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">0.86</p>
+            <p class="text-xs" style="color: #8b949e;">F1-Score<br/>Precision/recall balance</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">&lt;100ms</p>
+            <p class="text-xs" style="color: #8b949e;">Inference latency<br/>Web interface</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <p class="text-xs font-medium mb-1" style="color: #8b949e;">Data pipeline improvement</p>
+            <p class="text-2xl font-bold" style="color: #2dd4bf;">4,600×</p>
+            <p class="text-xs mt-1" style="color: #8b949e;">Memory reduction via PyTorch DataLoader</p>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <p class="text-xs font-medium mb-1" style="color: #8b949e;">Loading speed improvement</p>
+            <p class="text-2xl font-bold" style="color: #2dd4bf;">23×</p>
+            <p class="text-xs mt-1" style="color: #8b949e;">Faster loading with batched lazy evaluation</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- What Was Learned -->
+      <section class="prose-content">
+        <span class="section-label">What Was Learned</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Lessons &amp; Challenges</h2>
+        <ul class="list-none space-y-3">
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
+            <div><strong style="color: #e6edf3;">Data pipelines are the real bottleneck.</strong> The biggest early pain point wasn't model accuracy,it was OOM errors loading 148K rows. Building a proper PyTorch DataLoader pipeline unlocked both memory efficiency and faster experimentation cycles.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">02.</span>
+            <div><strong style="color: #e6edf3;">Drift monitoring needs to be built in, not bolted on.</strong> PSI monitoring infrastructure built during initial development (not added later) made it easy to generate drift reports as a first-class artifact alongside model metrics.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">03.</span>
+            <div><strong style="color: #e6edf3;">MLflow prevents "which run was best?" regret.</strong> Without experiment tracking, hyperparameter searches become chaotic. MLflow logging of every run's parameters, metrics, and artifacts made the final model selection defensible and reproducible.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">04.</span>
+            <div><strong style="color: #e6edf3;">Docker + Gradio is a powerful deployment combo.</strong> Containerizing the Gradio app meant identical behavior locally and in production on Hugging Face Spaces,no "works on my machine" surprises.</div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Links -->
+      <section>
+        <span class="section-label">Links &amp; Resources</span>
+        <div class="flex flex-wrap gap-4">
+          <a href="#" class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+             style="background: #2dd4bf; color: #0d1117;"
+             onmouseover="this.style.background='#14b8a6'" onmouseout="this.style.background='#2dd4bf'">
+            Live Demo on Hugging Face ↗
+          </a>
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+             style="border: 1px solid #30363d; color: #8b949e;"
+             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
+             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
+            GitHub Repository ↗
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
+    <a href="../index.html#projects" class="text-sm transition-colors" style="color: #8b949e;"
+       onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#8b949e'">
+      ← Back to all projects
+    </a>
+  </footer>
+
+</body>
+</html>

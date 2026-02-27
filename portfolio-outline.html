@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>portflio outline</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="portfolio-outline_files/libs/clipboard/clipboard.min.js"></script>
+<script src="portfolio-outline_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="portfolio-outline_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="portfolio-outline_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="portfolio-outline_files/libs/quarto-html/popper.min.js"></script>
+<script src="portfolio-outline_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="portfolio-outline_files/libs/quarto-html/anchor.min.js"></script>
+<link href="portfolio-outline_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="portfolio-outline_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="portfolio-outline_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="portfolio-outline_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="portfolio-outline_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">portflio outline</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="data-science-ai-portfolio-outline-for-peyton-ramsey" class="level1">
+<h1>Data Science &amp; AI Portfolio Outline for Peyton Ramsey</h1>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>This report outlines a concrete structure and content plan for a personal portfolio website showcasing data science, AI engineering, and full‑stack projects for Peyton Ramsey. The goal is to highlight production‑grade ML systems, strong MLOps practices, and domain knowledge across finance, insurance, and fitness in a way that complements, not duplicates, the resume.[^1][^2]</p>
+</section>
+<section id="target-roles-and-positioning" class="level2">
+<h2 class="anchored" data-anchor-id="target-roles-and-positioning">Target Roles and Positioning</h2>
+<p>Peyton is pursuing roles at the intersection of data science, ML/AI engineering, and analytics engineering, with experience deploying ML systems to production and teaching others how to use AI tools. The portfolio should position Peyton as someone who can own the full lifecycle: framing business problems, building models, deploying them, and making them reliable in production.[^2][^1]</p>
+<section id="suggested-oneline-tagline" class="level3">
+<h3 class="anchored" data-anchor-id="suggested-oneline-tagline">Suggested One‑Line Tagline</h3>
+<ul>
+<li>“Data science and AI engineer focused on production‑ready ML systems, MLOps, and decision‑driven analytics.”</li>
+</ul>
+</section>
+</section>
+<section id="highlevel-site-structure" class="level2">
+<h2 class="anchored" data-anchor-id="highlevel-site-structure">High‑Level Site Structure</h2>
+<p>Recommended top‑level navigation:</p>
+<ul>
+<li>Home</li>
+<li>Projects</li>
+<li>Experience</li>
+<li>About</li>
+<li>Writing (optional but recommended)</li>
+<li>Contact / Resume</li>
+</ul>
+<p>This can be implemented as a simple static site (no need for a heavy framework) and later extended as projects and writing grow.</p>
+</section>
+<section id="hosting-and-tech-stack-lightweight-options" class="level2">
+<h2 class="anchored" data-anchor-id="hosting-and-tech-stack-lightweight-options">Hosting and Tech Stack (Lightweight Options)</h2>
+<p>The portfolio does not need a complex stack; reliability and ease of iteration matter more than technology flashiness.</p>
+<ul>
+<li><strong>Option A – Static site with GitHub Pages (recommended to start)</strong><br>
+Use a simple static site (plain HTML/CSS or a light generator like Jekyll/Hugo) hosted on GitHub Pages for fast, free deployment and easy version control.</li>
+<li><strong>Option B – Next.js on Vercel or React SPA</strong><br>
+Consider this if there is a desire to treat the portfolio itself as a React project; good for experimenting with front‑end skills but more setup.</li>
+</ul>
+<p>Starting with Option A lets Peyton ship quickly and focus on content; the stack can be upgraded later without changing the content model.</p>
+</section>
+<section id="home-page-layout" class="level2">
+<h2 class="anchored" data-anchor-id="home-page-layout">Home Page Layout</h2>
+<p>The home page should act as a concise landing page that “sells” Peyton in under 10 seconds and then routes viewers to deeper content.[^1]</p>
+<p>Recommended sections (top to bottom):</p>
+<ol type="1">
+<li><strong>Hero Section</strong>
+<ul>
+<li>Name and title (e.g., “Peyton Ramsey – Data Science &amp; AI Engineer”).</li>
+<li>One‑line tagline from above.</li>
+<li>Call‑to‑action buttons: “View Projects”, “Download Resume”, “GitHub”, “LinkedIn”.[^1]</li>
+</ul></li>
+<li><strong>Highlight Metrics / Credibility</strong><br>
+3–4 quick credibility bullets, for example:[^2][^1]
+<ul>
+<li>“Built production RAG system over 500+ financial articles with 92% retrieval precision and &lt;15 ms latency.”[^1]</li>
+<li>“Deployed loan default ML system with 0.92 ROC‑AUC and data drift monitoring over 148K applications.”[^1]</li>
+<li>“Shipped full‑stack fitness tracking app with 11,500+ lines of code, ML‑powered recommendations, and dual nutrition APIs.”[^2]</li>
+<li>“Co‑developed graduate‑level course on AI tools and production ML deployment.”[^1]</li>
+</ul></li>
+<li><strong>Featured Projects (Top 3–4 Cards)</strong><br>
+Each card links to a detailed project page and includes:
+<ul>
+<li>Project name.</li>
+<li>1–2 sentence impact‑focused summary.</li>
+<li>3 short bullets: Problem, Approach, Results.</li>
+<li>Tech tags (Python, Flask, R, scikit‑learn, LangChain, Docker, etc.).[^3][^2][^1]</li>
+</ul></li>
+<li><strong>Experience Snapshot</strong><br>
+2–3 bullets summarizing the most relevant roles:
+<ul>
+<li>Lead Developer / Data Engineer Intern – Nassau Financial Group (TPA Oversight Dashboard, R Shiny, AWS, ETL).[^1]</li>
+<li>Business Intelligence Intern – Sprague Operating Resources (SQL, Python, Power BI for commodity forecasting).[^1]</li>
+<li>Graduate Research Assistant – Data Science &amp; AI (course development on ML, NLP, RAG, LLMs).[^1]</li>
+</ul></li>
+<li><strong>Footer</strong><br>
+Simple footer with contact email, location, and social links.[^1]</li>
+</ol>
+</section>
+<section id="projects-section-overall-strategy" class="level2">
+<h2 class="anchored" data-anchor-id="projects-section-overall-strategy">Projects Section – Overall Strategy</h2>
+<p>The Projects section is the core of the portfolio and should be carefully structured.[^2][^1]</p>
+<section id="how-many-projects-and-depth-per-project" class="level3">
+<h3 class="anchored" data-anchor-id="how-many-projects-and-depth-per-project">How Many Projects and Depth Per Project</h3>
+<ul>
+<li><strong>4–6 flagship projects</strong> with full detail pages (deep dives).<br>
+Each deep dive can be roughly 700–1200 words plus visuals.</li>
+<li><strong>Additional 4–10 smaller projects</strong> listed in a “More Projects” gallery with short summaries (2–3 sentences each) and tags.</li>
+</ul>
+<p>Deep dives should focus on projects that show:</p>
+<ul>
+<li>End‑to‑end ownership (data to deployment).</li>
+<li>Clear business impact and evaluation metrics.</li>
+<li>MLOps / production readiness.</li>
+<li>Real‑world domain problems (finance, energy, insurance, fitness).[^2][^1]</li>
+</ul>
+</section>
+<section id="suggested-flagship-projects-for-deep-dives" class="level3">
+<h3 class="anchored" data-anchor-id="suggested-flagship-projects-for-deep-dives">Suggested Flagship Projects for Deep Dives</h3>
+<p>Based on existing materials, recommended flagship deep‑dive pages:</p>
+<ol type="1">
+<li>Financial News RAG Analyst.<br>
+</li>
+<li>MLOps Loan Default Prediction System with Drift Monitoring.<br>
+</li>
+<li>GymLog – Full‑Stack Fitness Tracking Application.<br>
+</li>
+<li>Airbnb Market Prediction – San Francisco.<br>
+</li>
+<li>Energy Market Data Analyst AI Agent (as a “Work in Progress” page for now).</li>
+</ol>
+</section>
+<section id="standard-project-page-template" class="level3">
+<h3 class="anchored" data-anchor-id="standard-project-page-template">Standard Project Page Template</h3>
+<p>Use a consistent structure for all deep‑dive project pages:</p>
+<ol type="1">
+<li><strong>Title &amp; Meta</strong>
+<ul>
+<li>Project title.<br>
+</li>
+<li>One‑line subtitle (problem in plain language).<br>
+</li>
+<li>Role (e.g., “Sole developer” or “Lead developer”).<br>
+</li>
+<li>Timeframe (e.g., “December 2025”).[^1]</li>
+</ul></li>
+<li><strong>TL;DR (3–4 sentences)</strong>
+<ul>
+<li>What problem was solved.<br>
+</li>
+<li>What was built.<br>
+</li>
+<li>Key results (numbers where possible).<br>
+</li>
+<li>Where it runs (e.g., “Deployed on Hugging Face Spaces with Docker”).[^1]</li>
+</ul></li>
+<li><strong>Problem &amp; Context (1–2 short paragraphs)</strong>
+<ul>
+<li>Business or user problem.<br>
+</li>
+<li>Why it mattered (e.g., research time reduction, compliance visibility, training efficiency).[^2][^1]</li>
+</ul></li>
+<li><strong>Data &amp; Features (bullets)</strong>
+<ul>
+<li>Data sources, size, and key features.<br>
+</li>
+<li>Any data challenges (missing data, imbalance, noisy labels).<br>
+</li>
+<li>Notable feature engineering steps.</li>
+</ul></li>
+<li><strong>Approach &amp; Architecture</strong>
+<ul>
+<li>High‑level design: pipelines, models, services, and deployment.<br>
+</li>
+<li>Simple architecture diagram (image) where helpful.</li>
+</ul></li>
+<li><strong>Modeling / Algorithms</strong>
+<ul>
+<li>Models used and why chosen (Random Forest vs.&nbsp;Logistic Regression, Gradient Boosting, embeddings models, etc.).[^3][^2][^1]</li>
+<li>Training and validation strategy (cross‑validation, A/B tests, drift monitoring).<br>
+</li>
+<li>Key hyperparameters or architecture decisions only if they add insight.</li>
+</ul></li>
+<li><strong>Results &amp; Impact</strong>
+<ul>
+<li>Metrics (accuracy, ROC‑AUC, latency, uptake).<br>
+</li>
+<li>Before/after comparison (e.g., “30+ minutes of manual research reduced to &lt;5 seconds”).[^1]</li>
+</ul></li>
+<li><strong>What Was Learned / Challenges</strong>
+<ul>
+<li>3–5 bullet points on lessons and trade‑offs.<br>
+</li>
+<li>Mention any missteps and how they were corrected.</li>
+</ul></li>
+<li><strong>Links &amp; Artifacts</strong>
+<ul>
+<li>GitHub repository.<br>
+</li>
+<li>Live demo link.<br>
+</li>
+<li>Slide deck or PDF if available (e.g., airbnb‑project‑resume.pdf).[^3]</li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="example-project-layouts-personalized" class="level2">
+<h2 class="anchored" data-anchor-id="example-project-layouts-personalized">Example Project Layouts (Personalized)</h2>
+<section id="financial-news-rag-analyst-deepdive-page" class="level3">
+<h3 class="anchored" data-anchor-id="financial-news-rag-analyst-deepdive-page">Financial News RAG Analyst – Deep‑Dive Page</h3>
+<p>This project is a strong anchor for AI engineering and production RAG systems.[^1]</p>
+<p>Suggested content:</p>
+<ul>
+<li><p><strong>TL;DR</strong><br>
+Built a production RAG tool that lets users query 500+ financial news articles in natural language, cutting research time from 30+ minutes to under 5 seconds and achieving 92% retrieval precision.[^1]</p></li>
+<li><p><strong>Problem &amp; Context</strong><br>
+Explain the difficulty of quickly extracting sector insights from large volumes of financial news and the need for fast, explainable answers rather than black‑box predictions.[^1]</p></li>
+<li><p><strong>Data &amp; Indexing</strong></p>
+<ul>
+<li>500+ financial articles as corpus.<br>
+</li>
+<li>Preprocessing steps (cleaning, chunking, metadata tagging).<br>
+</li>
+<li>Indexing into a vector database (ChromaDB) with semantic search.[^1]</li>
+</ul></li>
+<li><p><strong>Architecture &amp; Stack</strong></p>
+<ul>
+<li>Sentence‑transformers for embeddings.<br>
+</li>
+<li>ChromaDB for vector search and retrieval.<br>
+</li>
+<li>LangChain orchestration with FinBERT sentiment analysis to enrich responses.<br>
+</li>
+<li>Hugging Face Spaces deployment containerized with Docker.[^1]</li>
+</ul></li>
+<li><p><strong>Evaluation &amp; A/B Tests</strong></p>
+<ul>
+<li>Describe A/B tests on article count to find the optimal 100‑article window for quality vs.&nbsp;latency.<br>
+</li>
+<li>Summarize how retrieval precision reached 92% and latency stayed under 15 ms.[^1]</li>
+</ul></li>
+<li><p><strong>Results &amp; Impact</strong></p>
+<ul>
+<li>Emphasize the time savings for research workflows.<br>
+</li>
+<li>Mention that the system is live and usable by others (if demo is public).</li>
+</ul></li>
+<li><p><strong>What Was Learned</strong></p>
+<ul>
+<li>Trade‑offs between context window size and latency.<br>
+</li>
+<li>Importance of evaluation frameworks for RAG rather than only “it feels good.”<br>
+</li>
+<li>Practical lessons on containerization and fast APIs.[^1]</li>
+</ul></li>
+</ul>
+</section>
+<section id="mlops-loan-default-prediction-with-drift-monitoring-deepdive-page" class="level3">
+<h3 class="anchored" data-anchor-id="mlops-loan-default-prediction-with-drift-monitoring-deepdive-page">MLOps Loan Default Prediction with Drift Monitoring – Deep‑Dive Page</h3>
+<p>This project shows MLOps maturity and end‑to‑end ML system design.[^1]</p>
+<p>Suggested content:</p>
+<ul>
+<li><p><strong>TL;DR</strong><br>
+Built a production ML system that predicts loan defaults on 148K applications with 89% accuracy, 0.92 ROC‑AUC, and 0.86 F1‑score using Random Forest, deployed with a web interface on Hugging Face Spaces via Docker with &lt;100 ms latency.[^1]</p></li>
+<li><p><strong>Problem &amp; Context</strong></p>
+<ul>
+<li>Why predicting loan defaults matters (risk management, capital allocation).<br>
+</li>
+<li>Constraints such as speed and interpretability.</li>
+</ul></li>
+<li><p><strong>Data &amp; Features</strong></p>
+<ul>
+<li>148K applications, feature count, and types (demographics, financial variables, etc.).<br>
+</li>
+<li>Handling of imbalance, missing values, and leakage (if applicable).[^1]</li>
+</ul></li>
+<li><p><strong>Architecture &amp; Stack</strong></p>
+<ul>
+<li>PyTorch data pipeline with Dataset and DataLoader achieving 4,600x memory reduction and 23x faster loading.[^1]</li>
+<li>Random Forest model for primary predictions.<br>
+</li>
+<li>MLflow for experiment tracking and model versioning.<br>
+</li>
+<li>Drift monitoring using Population Stability Index across 51 features.<br>
+</li>
+<li>Deployment via Dockerized app on Hugging Face Spaces.[^1]</li>
+</ul></li>
+<li><p><strong>Monitoring &amp; MLOps Practices</strong></p>
+<ul>
+<li>How PSI thresholds are set and interpreted.<br>
+</li>
+<li>How model retraining or alerts would be triggered.</li>
+</ul></li>
+<li><p><strong>Results &amp; Impact</strong></p>
+<ul>
+<li>Stress metrics: accuracy, ROC‑AUC, F1‑score.<br>
+</li>
+<li>Latency (&lt;100 ms) and scalability considerations.[^1]</li>
+</ul></li>
+<li><p><strong>What Was Learned</strong></p>
+<ul>
+<li>Importance of data pipelines for scalability.<br>
+</li>
+<li>Lessons from integrating experiment tracking and drift into a cohesive workflow.</li>
+</ul></li>
+</ul>
+</section>
+<section id="gymlog-fullstack-fitness-tracking-web-app-deepdive-page" class="level3">
+<h3 class="anchored" data-anchor-id="gymlog-fullstack-fitness-tracking-web-app-deepdive-page">GymLog – Full‑Stack Fitness Tracking Web App – Deep‑Dive Page</h3>
+<p>GymLog is ideal for demonstrating full‑stack engineering plus ML integration.[^2]</p>
+<p>Suggested content:</p>
+<ul>
+<li><p><strong>TL;DR</strong><br>
+GymLog is a production‑ready, full‑stack fitness tracking web app built with Python Flask and PostgreSQL, featuring workout logging, nutrition tracking, body metrics, and a machine learning‑powered progressive overload prediction model.[^2]</p></li>
+<li><p><strong>Stack &amp; Architecture</strong></p>
+<ul>
+<li>Backend: Flask 3.0, SQLAlchemy ORM, Flask‑Login, Flask‑Migrate, PostgreSQL/SQLite support.[^2]</li>
+<li>Frontend: Bootstrap 5, vanilla JavaScript with Fetch API, Chart.js for visualizations, glassmorphism UI with dark mode.[^2]</li>
+<li>Deployment: Gunicorn with cloud hosting (Render/Fly.io) and environment‑based configuration.[^2]</li>
+</ul></li>
+<li><p><strong>Core Features</strong></p>
+<ul>
+<li>Workout tracking with sets, reps, weight, rest timers, templates, and calendar visualization.</li>
+<li>Advanced training features: supersets, drop sets, exercise normalization, rest timer.[^2]</li>
+<li>Nutrition tracking with dual‑API integration (OpenFoodFacts and USDA FoodData Central), barcode scanning, relevance scoring, and multi‑unit support.[^2]</li>
+<li>Body metrics and analytics, consistency tracking, dashboards with quick stats.[^2]</li>
+</ul></li>
+<li><p><strong>Notable Implementations</strong></p>
+<ul>
+<li>Exercise name normalization via regex patterns, abbreviation expansions, and reordering to manage 100+ exercise variations.[^2]</li>
+<li>Dual‑API food search with a custom relevance scoring algorithm (phrase matching, word presence, length penalties) and intelligent fallback between OpenFoodFacts and USDA.[^2]</li>
+<li>Gradient Boosting Regressor for progressive overload predictions with engineered temporal and volume features, confidence intervals, and smart rounding to 2.5 lb increments.[^2]</li>
+</ul></li>
+<li><p><strong>Results &amp; Scale</strong></p>
+<ul>
+<li>~11,500+ lines of code including app, models, templates, ML, and utilities.[^2]</li>
+<li>40+ REST endpoints, 12 data models, 6 migration versions, and multi‑user architecture.[^2]</li>
+</ul></li>
+<li><p><strong>What Was Learned</strong></p>
+<ul>
+<li>Lessons on designing normalized schemas, integrating multiple external APIs, and deploying a complex app to production.</li>
+</ul></li>
+</ul>
+</section>
+<section id="airbnb-market-prediction-san-francisco-deepdive-page" class="level3">
+<h3 class="anchored" data-anchor-id="airbnb-market-prediction-san-francisco-deepdive-page">Airbnb Market Prediction – San Francisco – Deep‑Dive Page</h3>
+<p>This project highlights classical supervised learning, EDA, and business insights using R.[^3]</p>
+<p>Suggested content:</p>
+<ul>
+<li><p><strong>TL;DR</strong><br>
+Built supervised ML models to predict which San Francisco Airbnb listings will achieve high booking rates using a 12,947‑listing dataset, with a Random Forest model achieving 95% ROC‑AUC.[^3]</p></li>
+<li><p><strong>Problem &amp; Context</strong></p>
+<ul>
+<li>Help hosts and platform teams understand drivers of high booking rates (pricing, property features, host behavior, reviews).[^3]</li>
+</ul></li>
+<li><p><strong>Data &amp; Preprocessing</strong></p>
+<ul>
+<li>Source: Inside Airbnb dataset.<br>
+</li>
+<li>12,947 total properties, 6,000‑listing sample in the repo.[^3]</li>
+<li>32 numerical and categorical features including property attributes, pricing, host metrics, and review scores.[^3]</li>
+<li>Steps: price normalization, binary encoding, missing value imputation, feature selection.[^3]</li>
+</ul></li>
+<li><p><strong>Models &amp; Evaluation</strong></p>
+<ul>
+<li>Models: Logistic Regression (baseline), Random Forest (best), LightGBM, Bagged Trees.[^3]</li>
+<li>Primary metric ROC‑AUC; Random Forest at 95%, Bagged Trees 94%, LightGBM 93%, Logistic Regression 59%.[^3]</li>
+</ul></li>
+<li><p><strong>Business Insights</strong></p>
+<ul>
+<li>High‑booking properties offer ~14.3% weekly discounts vs.&nbsp;5% industry average.[^3]</li>
+<li>Each additional bedroom increases odds of high booking by roughly 65%.[^3]</li>
+<li>Optimal pricing around 5–10% below market median with generous weekly discounts.[^3]</li>
+</ul></li>
+<li><p><strong>What Was Learned</strong></p>
+<ul>
+<li>Trade‑offs between interpretable models and ensemble performance.<br>
+</li>
+<li>How to translate model outputs into actionable pricing and discount strategies.[^3]</li>
+</ul></li>
+</ul>
+</section>
+<section id="energy-market-data-analyst-ai-agent-workinprogress-page" class="level3">
+<h3 class="anchored" data-anchor-id="energy-market-data-analyst-ai-agent-workinprogress-page">Energy Market Data Analyst AI Agent – Work‑in‑Progress Page</h3>
+<p>This project can be presented as an “In Progress” AI agent with a clear vision statement.[^1]</p>
+<p>Suggested content:</p>
+<ul>
+<li><strong>Overview</strong>
+<ul>
+<li>Goal: AI‑powered analyst ingesting and analyzing FERC natural gas transaction data, enabling natural‑language exploration of multi‑year volume trends and counterparty activity.[^1]</li>
+</ul></li>
+<li><strong>Planned Stack</strong>
+<ul>
+<li>Pydantic AI for agent definition and orchestration.<br>
+</li>
+<li>Data ingestion pipeline for FERC data (schema design, storage choices).<br>
+</li>
+<li>Retrieval or time‑series modeling depending on scope.</li>
+</ul></li>
+<li><strong>Roadmap</strong>
+<ul>
+<li>Phase 1: Clean ingestion and basic querying.</li>
+<li>Phase 2: Semantic search and aggregation over counterparties and regions.</li>
+<li>Phase 3: Scenario analysis and anomaly detection.</li>
+</ul></li>
+<li><strong>Why It Matters</strong>
+<ul>
+<li>Connects directly to energy and commodities experience and shows domain‑aware AI tooling.[^1]</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="more-projects-gallery" class="level2">
+<h2 class="anchored" data-anchor-id="more-projects-gallery">“More Projects” Gallery</h2>
+<p>For additional smaller or in‑progress projects, create a gallery page with uniform cards instead of full writeups.</p>
+<p>Each card:</p>
+<ul>
+<li>Title.<br>
+</li>
+<li>1–2 sentence description.<br>
+</li>
+<li>2–3 bullets (Tech stack, Problem, Result).<br>
+</li>
+<li>Tags (e.g., NLP, Time Series, ETL, Visualization).<br>
+</li>
+<li>Link to GitHub or a very short detail page if needed.</li>
+</ul>
+<p>This allows future projects (time series, NLP, unstructured data modeling from coursework) to be added without bloating the main nav.[^1]</p>
+</section>
+<section id="experience-page" class="level2">
+<h2 class="anchored" data-anchor-id="experience-page">Experience Page</h2>
+<p>The Experience page should be more narrative than the resume while still concise.[^1]</p>
+<p>Structure:</p>
+<ul>
+<li><strong>Section: Professional Experience</strong><br>
+For each role (Nassau Financial Group, Sprague, etc.):
+<ul>
+<li>One‑line role summary focused on impact.<br>
+</li>
+<li>3–5 bullets on key responsibilities and outcomes.<br>
+</li>
+<li>Explicit technologies/tools used (R Shiny, AWS, SQL, Power BI, etc.).[^1]</li>
+</ul></li>
+<li><strong>Section: Academic &amp; Teaching Experience</strong>
+<ul>
+<li>Graduate Research Assistant: emphasize co‑developing “AI Tools and Apps for Business” course, modernizing 12+ modules across predictive analytics, NLP, and big data, and building hands‑on labs in Python/R.[^1]</li>
+</ul></li>
+<li><strong>Section: Athletics (Optional but Valuable)</strong>
+<ul>
+<li>NCAA Division I Cross Country &amp; Track with brief note on discipline, time management, and long‑term goal setting.[^1]</li>
+</ul></li>
+</ul>
+</section>
+<section id="about-page" class="level2">
+<h2 class="anchored" data-anchor-id="about-page">About Page</h2>
+<p>The About page should be personal but still professional.</p>
+<p>Suggested sections:</p>
+<ul>
+<li><strong>Short Bio (2–3 paragraphs)</strong>
+<ul>
+<li>Current status: MS in Business Analytics at UNH, focusing on ML, time series, and unstructured data modeling.[^1]</li>
+<li>Interest areas: production ML, RAG systems, AI agents, and applied analytics in finance/energy/fitness.[^2][^1]</li>
+</ul></li>
+<li><strong>What Peyton Enjoys Working On</strong>
+<ul>
+<li>Bullet list: end‑to‑end ML systems, data pipelines, teaching and documentation, MLOps tooling, full‑stack apps like GymLog.[^2][^1]</li>
+</ul></li>
+<li><strong>Outside of Work</strong>
+<ul>
+<li>Athletics (running, NCAA background) and any personal interests that fit the brand.[^1]</li>
+</ul></li>
+</ul>
+</section>
+<section id="writing-page-optional-but-recommended" class="level2">
+<h2 class="anchored" data-anchor-id="writing-page-optional-but-recommended">Writing Page (Optional but Recommended)</h2>
+<p>A Writing or Notes section is valuable for:</p>
+<ul>
+<li>Short technical writeups (e.g., “How to monitor feature drift with PSI”, “Lessons from building a dual‑API nutrition search engine”).[^2][^1]</li>
+<li>Project retrospectives and deep dives that link back to the main project pages.</li>
+</ul>
+<p>Each post can be 800–1200 words with diagrams and code snippets where appropriate, giving space to demonstrate depth of understanding.</p>
+</section>
+<section id="contact-resume-section" class="level2">
+<h2 class="anchored" data-anchor-id="contact-resume-section">Contact / Resume Section</h2>
+<p>Keep this simple and easy to find.</p>
+<ul>
+<li>Email, LinkedIn, GitHub prominently listed.[^1]</li>
+<li>Button to view/download a PDF version of the resume.[^1]</li>
+<li>Optional short contact form that sends to email.</li>
+</ul>
+</section>
+<section id="content-prioritization-and-next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="content-prioritization-and-next-steps">Content Prioritization and Next Steps</h2>
+<p>To move from plan to reality:</p>
+<ol type="1">
+<li><strong>Choose Hosting and Theme</strong>
+<ul>
+<li>Start with a minimal static site (e.g., GitHub Pages) and a clean theme or custom CSS.</li>
+</ul></li>
+<li><strong>Implement Site Skeleton</strong>
+<ul>
+<li>Create pages for Home, Projects, Experience, About, and Contact with placeholder sections following this outline.</li>
+</ul></li>
+<li><strong>Write 3–4 Deep‑Dive Project Pages First</strong>
+<ul>
+<li>Start with Financial News RAG, Loan Default MLOps, and GymLog, since these best showcase AI, MLOps, and full‑stack strength.[^2][^1]</li>
+</ul></li>
+<li><strong>Add the Airbnb and Energy AI Agent Pages</strong>
+<ul>
+<li>Airbnb as a polished classical ML/business analytics case; Energy Agent as a clearly described WIP.[^3][^1]</li>
+</ul></li>
+<li><strong>Layer in a Writing Section</strong>
+<ul>
+<li>Begin with one post per flagship project summarizing the most interesting technical or business lesson.</li>
+</ul></li>
+<li><strong>Iterate and Refine</strong>
+<ul>
+<li>As new projects complete, promote the strongest new work into the flagship list and demote older work into the gallery.</li>
+</ul></li>
+</ol>
+<p>This structure ensures the portfolio grows with Peyton’s experience while consistently emphasizing production‑ready ML, clear business impact, and strong engineering practices.[^3][^2][^1]</p>
+<hr>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li><a href="https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/23142623/0ac478ad-0add-4156-b37e-ae92f28b99d1/Peyton-Ramsey_Resume.pdf?AWSAccessKeyId=ASIA2F3EMEYE3WSSWEDN&amp;Signature=Hagxi%2BRg%2FkG5bWpkhEuF7F%2BkWYI%3D&amp;x-amz-security-token=IQoJb3JpZ2luX2VjEGcaCXVzLWVhc3QtMSJHMEUCIHgKHHUq5Ax%2B%2BT6%2FwhcR62AkLBIZ9jguog5AP7Q4gsm7AiEA9utKfP9o9bXr92PWE97smBU3bUNqenZemviwgtATcKIq8wQIMBABGgw2OTk3NTMzMDk3MDUiDKeX1lP7Pku8BMTgvirQBH%2BewRGdayOL5D61JzSJrbuxktxw%2BYc6gg%2FpR4mEeTUgScA5Uw3nvT5Pivd%2FXgMLfCl9FPXrj%2Fk7U1fUdypparrSaZE3g72t2mHMrXbEQC6MTocUFu8A0eexuvuSy%2BBy0222tSbWgxg1gTUqUWn65BbXWAwiTKs6cluw%2BVDHbWwJcw9JKn9Wv5Ov8k2CGKKYl9NOEOSMFyW%2FBko0BzFmY39eWtiNGOJ1HLbtA%2F5F3nBzV92g%2BJMDZZ%2Bud8bBEK2GDQGsxShMTycc4HzgMH2ieRhQN8mDdSR%2BllGsRuD4AmnfyKwshMgVktaikxqd0nNX1E7Ueg1f97Dh4iZGRzFaKDFQ1FHxuakcn9S697P%2BoWtB4HdBbUjvXJUdTN%2F7fGyg3mmbYmWC4mMfZRrzMpmZGmaS%2BICQh90T9tYn3UuoeCiALZxio%2BA7w5TrXo4Sa8ouUvQUZxo%2BjSyd7K%2BWWVQSY9Xs%2F%2BR0C1knqysEfNizC95Zo6topQ2Kv47AiayR%2BVDZKkizpbb0ag2m0p176llNj1Yh9HkObX57QMkVK7Czl4o8%2FZvReUGJyzAVpBrJMmZozmUozoVdzedu3b1mRT%2BPxJzxnNdbyGKIegxcf8%2FGDLLmzviTb4l%2FagWW8%2BB4bAuZHlK6AeV6toTOw6pamuFCflb65QTRURzAli5Ipol1jtdVSW4Lme7%2Byeu3zan9ezGNy%2BzKAY1odmWLHMbLFzu4l1R9Hoji02veRuLhtJETxJMHWmdDbvC51hsrKPR2%2BoAoPtcT2PNM44hLcS15sBCeP24wopKDzQY6mAGdw0LtUpU2J1eUzpgGhdWTjnITcD%2B9rv6JENN18OiKLbjCaWZxTsy9RDrYlAOMYORyi4i%2F2I%2FlyyL685C1t9UNv6wwwyWhdZhFsXkeuac3TsUm0PTOQGZoV7ILOVQ8ttyGvl2y86ZnpJJTQ4FDsmOL6RZ87vUlTQmKREpYvuRM9KiI%2Ba8pd6qEOsHZTKZ4FQqtuhZ8wf5Dmw%3D%3D&amp;Expires=1772149517">Peyton-Ramsey_Resume.pdf</a> - PEYTON RAMSEY</li>
+</ol>
+<ol start="860" type="1">
+<li>515-6245 | ramseypeyton@gmail.com | LinkedIn | GitHub EDUCATION University of Ne…</li>
+</ol>
+<ol start="2" type="1">
+<li><p><a href="https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/23142623/461440c7-38ab-4e4e-8796-b4b888ebb479/gymlog-summary.pdf?AWSAccessKeyId=ASIA2F3EMEYE3WSSWEDN&amp;Signature=gHsUUAFAhPRJ3NCClM7d7y6ahSo%3D&amp;x-amz-security-token=IQoJb3JpZ2luX2VjEGcaCXVzLWVhc3QtMSJHMEUCIHgKHHUq5Ax%2B%2BT6%2FwhcR62AkLBIZ9jguog5AP7Q4gsm7AiEA9utKfP9o9bXr92PWE97smBU3bUNqenZemviwgtATcKIq8wQIMBABGgw2OTk3NTMzMDk3MDUiDKeX1lP7Pku8BMTgvirQBH%2BewRGdayOL5D61JzSJrbuxktxw%2BYc6gg%2FpR4mEeTUgScA5Uw3nvT5Pivd%2FXgMLfCl9FPXrj%2Fk7U1fUdypparrSaZE3g72t2mHMrXbEQC6MTocUFu8A0eexuvuSy%2BBy0222tSbWgxg1gTUqUWn65BbXWAwiTKs6cluw%2BVDHbWwJcw9JKn9Wv5Ov8k2CGKKYl9NOEOSMFyW%2FBko0BzFmY39eWtiNGOJ1HLbtA%2F5F3nBzV92g%2BJMDZZ%2Bud8bBEK2GDQGsxShMTycc4HzgMH2ieRhQN8mDdSR%2BllGsRuD4AmnfyKwshMgVktaikxqd0nNX1E7Ueg1f97Dh4iZGRzFaKDFQ1FHxuakcn9S697P%2BoWtB4HdBbUjvXJUdTN%2F7fGyg3mmbYmWC4mMfZRrzMpmZGmaS%2BICQh90T9tYn3UuoeCiALZxio%2BA7w5TrXo4Sa8ouUvQUZxo%2BjSyd7K%2BWWVQSY9Xs%2F%2BR0C1knqysEfNizC95Zo6topQ2Kv47AiayR%2BVDZKkizpbb0ag2m0p176llNj1Yh9HkObX57QMkVK7Czl4o8%2FZvReUGJyzAVpBrJMmZozmUozoVdzedu3b1mRT%2BPxJzxnNdbyGKIegxcf8%2FGDLLmzviTb4l%2FagWW8%2BB4bAuZHlK6AeV6toTOw6pamuFCflb65QTRURzAli5Ipol1jtdVSW4Lme7%2Byeu3zan9ezGNy%2BzKAY1odmWLHMbLFzu4l1R9Hoji02veRuLhtJETxJMHWmdDbvC51hsrKPR2%2BoAoPtcT2PNM44hLcS15sBCeP24wopKDzQY6mAGdw0LtUpU2J1eUzpgGhdWTjnITcD%2B9rv6JENN18OiKLbjCaWZxTsy9RDrYlAOMYORyi4i%2F2I%2FlyyL685C1t9UNv6wwwyWhdZhFsXkeuac3TsUm0PTOQGZoV7ILOVQ8ttyGvl2y86ZnpJJTQ4FDsmOL6RZ87vUlTQmKREpYvuRM9KiI%2Ba8pd6qEOsHZTKZ4FQqtuhZ8wf5Dmw%3D%3D&amp;Expires=1772149517">gymlog-summary.pdf</a> - GymLog: Full-Stack Fitness Tracking Web Application Technical Project Analysis Executive Summary …</p></li>
+<li><p><a href="https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/23142623/75ffe1ed-136e-498b-823f-28a23bf1c3f4/README.md?AWSAccessKeyId=ASIA2F3EMEYE3WSSWEDN&amp;Signature=02jAC4YWsHTcOAJY5qiejqOOCP8%3D&amp;x-amz-security-token=IQoJb3JpZ2luX2VjEGcaCXVzLWVhc3QtMSJHMEUCIHgKHHUq5Ax%2B%2BT6%2FwhcR62AkLBIZ9jguog5AP7Q4gsm7AiEA9utKfP9o9bXr92PWE97smBU3bUNqenZemviwgtATcKIq8wQIMBABGgw2OTk3NTMzMDk3MDUiDKeX1lP7Pku8BMTgvirQBH%2BewRGdayOL5D61JzSJrbuxktxw%2BYc6gg%2FpR4mEeTUgScA5Uw3nvT5Pivd%2FXgMLfCl9FPXrj%2Fk7U1fUdypparrSaZE3g72t2mHMrXbEQC6MTocUFu8A0eexuvuSy%2BBy0222tSbWgxg1gTUqUWn65BbXWAwiTKs6cluw%2BVDHbWwJcw9JKn9Wv5Ov8k2CGKKYl9NOEOSMFyW%2FBko0BzFmY39eWtiNGOJ1HLbtA%2F5F3nBzV92g%2BJMDZZ%2Bud8bBEK2GDQGsxShMTycc4HzgMH2ieRhQN8mDdSR%2BllGsRuD4AmnfyKwshMgVktaikxqd0nNX1E7Ueg1f97Dh4iZGRzFaKDFQ1FHxuakcn9S697P%2BoWtB4HdBbUjvXJUdTN%2F7fGyg3mmbYmWC4mMfZRrzMpmZGmaS%2BICQh90T9tYn3UuoeCiALZxio%2BA7w5TrXo4Sa8ouUvQUZxo%2BjSyd7K%2BWWVQSY9Xs%2F%2BR0C1knqysEfNizC95Zo6topQ2Kv47AiayR%2BVDZKkizpbb0ag2m0p176llNj1Yh9HkObX57QMkVK7Czl4o8%2FZvReUGJyzAVpBrJMmZozmUozoVdzedu3b1mRT%2BPxJzxnNdbyGKIegxcf8%2FGDLLmzviTb4l%2FagWW8%2BB4bAuZHlK6AeV6toTOw6pamuFCflb65QTRURzAli5Ipol1jtdVSW4Lme7%2Byeu3zan9ezGNy%2BzKAY1odmWLHMbLFzu4l1R9Hoji02veRuLhtJETxJMHWmdDbvC51hsrKPR2%2BoAoPtcT2PNM44hLcS15sBCeP24wopKDzQY6mAGdw0LtUpU2J1eUzpgGhdWTjnITcD%2B9rv6JENN18OiKLbjCaWZxTsy9RDrYlAOMYORyi4i%2F2I%2FlyyL685C1t9UNv6wwwyWhdZhFsXkeuac3TsUm0PTOQGZoV7ILOVQ8ttyGvl2y86ZnpJJTQ4FDsmOL6RZ87vUlTQmKREpYvuRM9KiI%2Ba8pd6qEOsHZTKZ4FQqtuhZ8wf5Dmw%3D%3D&amp;Expires=1772149517">README.md</a> - # Airbnb Market Prediction Analysis: San Francisco</p></li>
+</ol>
+<p>Predicting high-booking Airbnb listings using …</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

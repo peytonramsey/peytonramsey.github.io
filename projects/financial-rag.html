@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial News RAG Analyst,Peyton Ramsey</title>
+  <meta name="description" content="Production RAG system enabling natural-language queries across 500+ financial articles with 92% retrieval precision and FinBERT sentiment analysis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    .tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background-color: #161b22; border: 1px solid #30363d; border-radius: 9999px; color: #8b949e; }
+    .section-label { font-family: monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #2dd4bf; margin-bottom: 0.5rem; display: block; }
+    .prose-content p { color: rgba(230,237,243,0.80); line-height: 1.75; margin-bottom: 1rem; }
+    .prose-content ul { color: rgba(230,237,243,0.80); margin-bottom: 1rem; }
+    .prose-content li { margin-bottom: 0.4rem; padding-left: 0.25rem; }
+    .metric-card { background: #1c2333; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
+    .arch-flow { font-family: monospace; font-size: 0.8rem; color: #8b949e; background: #161b22; border: 1px solid #30363d; border-radius: 0.5rem; padding: 1.25rem 1.5rem; line-height: 2; }
+    .arch-flow span { color: #2dd4bf; }
+    .arch-flow .arrow { color: #30363d; }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ─── NAV ─── -->
+  <nav class="sticky top-0 z-50 border-b" style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-color: #30363d;">
+    <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-2 text-sm transition-colors" style="color: #8b949e;"
+         onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Peyton Ramsey
+      </a>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+           class="transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'" aria-label="GitHub">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>
+        </a>
+        <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
+           style="background: #2dd4bf; color: #0d1117;">
+          Live Demo ↗
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <header class="px-6 pt-16 pb-12" style="border-bottom: 1px solid #30363d;">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class="tag">Python</span>
+        <span class="tag">LangChain</span>
+        <span class="tag">ChromaDB</span>
+        <span class="tag">FinBERT</span>
+        <span class="tag">sentence-transformers</span>
+        <span class="tag">Docker</span>
+        <span class="tag">Hugging Face</span>
+        <span class="tag">Gradio</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 leading-tight" style="color: #e6edf3;">
+        Financial News RAG Analyst
+      </h1>
+      <p class="text-lg mb-6" style="color: #8b949e;">
+        An intelligent information retrieval system for financial markets
+      </p>
+      <div class="flex flex-wrap gap-4 text-sm" style="color: #8b949e;">
+        <span>Role: Sole Developer</span>
+        <span style="color: #30363d;">·</span>
+        <span>January 2026</span>
+        <span style="color: #30363d;">·</span>
+        <span style="color: #2dd4bf;">Production · Deployed</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── CONTENT ─── -->
+  <main class="px-6 py-16">
+    <div class="max-w-4xl mx-auto space-y-16">
+
+      <!-- TL;DR -->
+      <section>
+        <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
+          <span class="section-label">TL;DR</span>
+          <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
+            Built a production RAG system that enables natural-language queries across 500+ financial articles, reducing research time from 30+ minutes to under 5 seconds. The system achieves <strong style="color: #e6edf3;">92% retrieval precision</strong> and <strong style="color: #e6edf3;">90% answer accuracy</strong> across 30 test queries, with FinBERT-powered sentiment analysis enriching every response. Deployed on Hugging Face Spaces via Docker with end-to-end latency of 2.5–4.5 seconds.
+          </p>
+        </div>
+      </section>
+
+      <!-- Problem & Context -->
+      <section class="prose-content">
+        <span class="section-label">Problem &amp; Context</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">The Problem with Financial News</h2>
+        <p>
+          Financial markets generate approximately 10,000+ news articles daily across outlets like Bloomberg, Reuters, the Wall Street Journal, and MarketWatch. Analysts, portfolio managers, and traders need to rapidly synthesize this information to answer questions like "What are the current risks to tech stocks?" or "How is the Fed addressing inflation?"
+        </p>
+        <p>
+          Traditional approaches are broken: manual research takes 30+ minutes per query, keyword search requires knowing exactly what to look for (5–10 minutes), and professional terminals like Bloomberg or FactSet cost thousands per seat. Generic LLMs hallucinate financial facts and have knowledge cutoffs. News aggregators can surface articles but can't synthesize or reason across them.
+        </p>
+        <p>
+          The goal was to bridge this gap,combining the semantic understanding of LLMs with real, grounded news content to deliver fast, accurate, cited answers to financial questions.
+        </p>
+      </section>
+
+      <!-- Data & Indexing -->
+      <section class="prose-content">
+        <span class="section-label">Data &amp; Indexing</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Building the Knowledge Base</h2>
+        <p>
+          Financial news is sourced from the <strong style="color: #e6edf3;">Finnhub API</strong>, covering general market news and company-specific articles for 50 priority tickers across 6 sectors:
+        </p>
+        <ul class="list-none space-y-1 mb-4 pl-0">
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Technology 25% (AAPL, MSFT, NVDA, META, GOOGL)</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Financial 25% (JPM, BAC, GS, V, MA)</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>General Market 20% (SPY, Fed policy, macro news)</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Healthcare 12%, Consumer 10%, Energy 8%</li>
+        </ul>
+        <p>
+          Raw articles go through a <strong style="color: #e6edf3;">5-stage filtering pipeline</strong> that reduces 500+ raw articles down to 50 high-quality, diverse articles (90% noise reduction):
+        </p>
+
+        <div class="overflow-x-auto mt-4 mb-6">
+          <table class="w-full text-sm">
+            <thead>
+              <tr style="border-bottom: 1px solid #30363d;">
+                <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">Stage</th>
+                <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">What It Does</th>
+                <th class="text-right pb-2" style="color: #8b949e; font-weight: 500;">Remaining</th>
+              </tr>
+            </thead>
+            <tbody style="color: rgba(230,237,243,0.75);">
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4">1. Quality</td>
+                <td class="py-2 pr-4">Min 100-char content, 15-char title; blocks PR wires &amp; spam keywords</td>
+                <td class="text-right py-2">~287</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4">2. Relevance</td>
+                <td class="py-2 pr-4">Retains articles mentioning priority tickers or macro topics</td>
+                <td class="text-right py-2">~156</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4">3. Deduplication</td>
+                <td class="py-2 pr-4">Removes exact &amp; fuzzy duplicates (SequenceMatcher, threshold=0.75)</td>
+                <td class="text-right py-2">~98</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4">4. Quality Score</td>
+                <td class="py-2 pr-4">Ranks by recency, length, source tier; premium sources +30 pts</td>
+                <td class="text-right py-2">~98</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4">5. Diversity</td>
+                <td class="py-2 pr-4">Sector quotas enforced (e.g., max 25 Technology articles)</td>
+                <td class="text-right py-2">50</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Each article is then embedded using <strong style="color: #e6edf3;">all-MiniLM-L6-v2</strong> (384-dimensional), split into chunks of 1,000 characters with 100-character overlap via <code style="color: #2dd4bf; font-size: 0.85em;">RecursiveCharacterTextSplitter</code>, yielding ~120 chunks. Each chunk retains metadata: title, source, date, URL, FinBERT sentiment label/score, and sector. The index is stored in ChromaDB (~15 MB).
+        </p>
+      </section>
+
+      <!-- Architecture -->
+      <section>
+        <span class="section-label">Architecture</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">System Architecture</h2>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3" style="color: #e6edf3;">Phase 1,Offline Pipeline</h4>
+            <div class="arch-flow">
+              <span>Finnhub API</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>5-Stage Filter</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>FinBERT Sentiment</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Text Chunking</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Embedding (MiniLM)</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>ChromaDB Storage</span>
+            </div>
+          </div>
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3" style="color: #e6edf3;">Phase 2,Online Query</h4>
+            <div class="arch-flow">
+              <span>User Query</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Query Embedding</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Cosine Search (K=5)</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Context + Sentiment</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>LLM Generation</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Cited Answer + Sources</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl p-5 prose-content" style="background: #161b22; border: 1px solid #30363d;">
+          <h4 class="font-semibold mb-3" style="color: #e6edf3;">Key Component Decisions</h4>
+          <ul class="list-none space-y-2 mb-0">
+            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">all-MiniLM-L6-v2</strong> for embeddings,fast CPU inference (~10ms/chunk) with strong semantic similarity at only 384 dimensions</li>
+            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">ChromaDB</strong> for vector storage,persistent, local, supports cosine similarity with metadata filtering, ~15MB index for 120 chunks</li>
+            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">FinBERT (ProsusAI)</strong> for sentiment,domain-specific model trained on financial texts; 86% accuracy vs ~70% for generic BERT</li>
+            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">Dual LLM backends</strong>,Llama-3.1-8B-Instruct via HuggingFace Inference API (2–4s) for production; Phi-3 Mini via Ollama (5–10s) for local dev</li>
+            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">LangChain orchestration</strong>,structured prompt templates, context assembly, source attribution, streaming token output</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- A/B Testing & Evaluation -->
+      <section class="prose-content">
+        <span class="section-label">Evaluation &amp; A/B Testing</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Measuring What Matters</h2>
+        <p>
+          Rather than relying on "it feels good" evaluation, the system was tested rigorously across retrieval quality, generation quality, and latency.
+        </p>
+        <p>
+          <strong style="color: #e6edf3;">A/B test on article window size:</strong> tested 25, 50, 75, and 100 articles in the index. The 100-article window provided the optimal balance,more coverage without significantly increasing latency or degrading retrieval precision from irrelevant chunks diluting results. Below 50 articles, precision dropped for niche sector queries.
+        </p>
+        <p>
+          <strong style="color: #e6edf3;">Retrieval evaluation:</strong> 20 diverse queries manually evaluated. Top-5 results contained a relevant article 92% of the time; highly relevant 78% of the time.
+        </p>
+        <p>
+          <strong style="color: #e6edf3;">Sentiment validation:</strong> 50 articles manually labeled by human annotators. FinBERT achieved 86% overall agreement, 88% positive/negative precision, 82% neutral recall. Neutral class is hardest,financial news often has mixed signals.
+        </p>
+      </section>
+
+      <!-- Results -->
+      <section>
+        <span class="section-label">Results &amp; Impact</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Performance Metrics</h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">92%</p>
+            <p class="text-xs" style="color: #8b949e;">Retrieval precision<br/>(top-5 relevant)</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">90%</p>
+            <p class="text-xs" style="color: #8b949e;">Answer accuracy<br/>(factual, 30 queries)</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">86%</p>
+            <p class="text-xs" style="color: #8b949e;">Sentiment accuracy<br/>(FinBERT)</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">&lt;5s</p>
+            <p class="text-xs" style="color: #8b949e;">End-to-end latency<br/>(2.5–4.5s avg)</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-sm">
+            <thead>
+              <tr style="border-bottom: 1px solid #30363d;">
+                <th class="text-left pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Operation</th>
+                <th class="text-right pb-2" style="color: #8b949e; font-weight: 500;">Latency</th>
+              </tr>
+            </thead>
+            <tbody style="color: rgba(230,237,243,0.75);">
+              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-2 pr-6">Query embedding</td><td class="text-right py-2">10–20 ms</td></tr>
+              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-2 pr-6">Vector search (K=5)</td><td class="text-right py-2">30–50 ms</td></tr>
+              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-2 pr-6">LLM generation (500 tokens)</td><td class="text-right py-2">2–4 sec</td></tr>
+              <tr><td class="py-2 pr-6 font-medium" style="color: #e6edf3;">Total end-to-end</td><td class="text-right py-2 font-medium" style="color: #2dd4bf;">2.5–4.5 sec</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+          <p class="text-sm" style="color: #8b949e;">
+            Compared to manual research (30+ min) or Google Search (5–10 min), the system reduces query time by <strong style="color: #2dd4bf;">95%+</strong>. The live demo is publicly accessible on Hugging Face Spaces, allowing analysts and researchers to run real queries against current financial news.
+          </p>
+        </div>
+      </section>
+
+      <!-- What Was Learned -->
+      <section class="prose-content">
+        <span class="section-label">What Was Learned</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Lessons &amp; Challenges</h2>
+        <ul class="list-none space-y-3">
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
+            <div><strong style="color: #e6edf3;">Multi-stage filtering is critical.</strong> Raw financial APIs are full of press releases, duplicates, and low-quality aggregator content. The 90% noise reduction from 500+ to 50 articles dramatically improved answer quality,more isn't always better in RAG.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">02.</span>
+            <div><strong style="color: #e6edf3;">Domain-specific models matter.</strong> FinBERT's 86% accuracy vs ~70% for generic BERT isn't just a number,financial language has domain-specific signals ("beat expectations" = positive) that generic models miss entirely.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">03.</span>
+            <div><strong style="color: #e6edf3;">Evaluation discipline prevents overconfidence.</strong> Manual evaluation on 20–50 samples instead of "it feels good" revealed that neutral sentiment recall (82%) was the weak point,sentiment is often mixed in financial news and article-level labels don't always reflect query-specific sentiment.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">04.</span>
+            <div><strong style="color: #e6edf3;">Dual backend flexibility has real value.</strong> Supporting Ollama locally (no API cost) and HuggingFace cloud (production) via a single environment variable meant fast iteration during development without burning API credits.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">05.</span>
+            <div><strong style="color: #e6edf3;">Static knowledge base is a real limitation.</strong> The system requires periodic re-ingestion for fresh news. Real-time updates would require webhook integration or a continuous ingestion pipeline,a natural next step.</div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Links -->
+      <section>
+        <span class="section-label">Links &amp; Resources</span>
+        <div class="flex flex-wrap gap-4">
+          <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+             style="background: #2dd4bf; color: #0d1117;"
+             onmouseover="this.style.background='#14b8a6'" onmouseout="this.style.background='#2dd4bf'">
+            Live Demo on Hugging Face ↗
+          </a>
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+             style="border: 1px solid #30363d; color: #8b949e;"
+             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
+             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
+            GitHub Repository ↗
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
+    <a href="../index.html#projects" class="text-sm transition-colors" style="color: #8b949e;"
+       onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#8b949e'">
+      ← Back to all projects
+    </a>
+  </footer>
+
+</body>
+</html>

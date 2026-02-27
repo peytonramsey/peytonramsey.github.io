@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Energy Market AI Agent,Peyton Ramsey</title>
+  <meta name="description" content="AI-powered FERC natural gas data analyst using Pydantic AI,enabling natural-language exploration of multi-year volume trends and counterparty activity." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    .tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background-color: #161b22; border: 1px solid #30363d; border-radius: 9999px; color: #8b949e; }
+    .section-label { font-family: monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #2dd4bf; margin-bottom: 0.5rem; display: block; }
+    .prose-content p { color: rgba(230,237,243,0.80); line-height: 1.75; margin-bottom: 1rem; }
+    .prose-content li { color: rgba(230,237,243,0.80); margin-bottom: 0.4rem; }
+    .roadmap-phase { background: #1c2333; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.25rem; }
+    .roadmap-phase.active { border-color: #2dd4bf; }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ─── NAV ─── -->
+  <nav class="sticky top-0 z-50 border-b" style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-color: #30363d;">
+    <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-2 text-sm transition-colors" style="color: #8b949e;"
+         onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Peyton Ramsey
+      </a>
+      <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #78350f; color: #fbbf24;">
+        In Progress,Feb 2026
+      </span>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <header class="px-6 pt-16 pb-12" style="border-bottom: 1px solid #30363d;">
+    <div class="max-w-4xl mx-auto">
+      <!-- WIP Banner -->
+      <div class="rounded-lg px-4 py-3 mb-8 flex items-center gap-3" style="background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25);">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="#fbbf24" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-sm" style="color: #fbbf24;">This project is actively in development. The overview, goals, and roadmap below reflect the current state as of February 2026.</p>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class="tag">Pydantic AI</span>
+        <span class="tag">Python</span>
+        <span class="tag">FERC Data</span>
+        <span class="tag">AI Agents</span>
+        <span class="tag">NLP</span>
+        <span class="tag">Time Series</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 leading-tight" style="color: #e6edf3;">
+        Energy Market Data Analyst AI Agent
+      </h1>
+      <p class="text-lg mb-6" style="color: #8b949e;">
+        Natural-language exploration of FERC natural gas transaction data
+      </p>
+      <div class="flex flex-wrap gap-4 text-sm" style="color: #8b949e;">
+        <span>Role: Sole Developer</span>
+        <span style="color: #30363d;">·</span>
+        <span>February 2026 – In Progress</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── CONTENT ─── -->
+  <main class="px-6 py-16">
+    <div class="max-w-4xl mx-auto space-y-16">
+
+      <!-- Overview -->
+      <section>
+        <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
+          <span class="section-label">Project Vision</span>
+          <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
+            Building an AI-powered analyst that ingests and analyzes FERC (Federal Energy Regulatory Commission) natural gas transaction data, enabling natural-language exploration of multi-year volume trends, counterparty activity, and market dynamics. The goal is to make a complex, structured government dataset queryable in plain English,turning raw pipeline transaction records into accessible market intelligence.
+          </p>
+        </div>
+      </section>
+
+      <!-- Why It Matters -->
+      <section class="prose-content">
+        <span class="section-label">Why This Project</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Domain Context</h2>
+        <p>
+          FERC Form 552 data contains annual natural gas transaction records from major pipeline companies,buyer, seller, counterparty, volume, price, and pipeline location. This data is public but notoriously difficult to query: it spans multiple years, heterogeneous formats, and requires domain knowledge to interpret meaningfully.
+        </p>
+        <p>
+          Questions like "Which counterparties have increased their purchases on the Texas Eastern Transmission pipeline over the past 3 years?" or "What's the volume trend for LDC buyers in the Northeast?" currently require manual data wrangling across multiple CSV files and domain familiarity with FERC filing conventions. An AI agent with tool use can dramatically lower the barrier to entry for this analysis.
+        </p>
+        <p>
+          This project also connects directly to experience from Sprague Operating Resources (commodity data analysis),the energy domain is familiar, making it possible to build something practically useful rather than academically interesting.
+        </p>
+      </section>
+
+      <!-- Planned Stack -->
+      <section>
+        <span class="section-label">Planned Stack</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Technical Approach</h2>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3 text-sm" style="color: #e6edf3;">Agent Framework</h4>
+            <ul class="text-sm space-y-1.5" style="color: #8b949e;">
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Pydantic AI</strong>,structured agent definition, tool registration, type-safe outputs</li>
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Tool use: SQL query generation, data aggregation, trend calculation</li>
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Claude or GPT-4o as the underlying LLM</li>
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Structured validation of all agent outputs</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3 text-sm" style="color: #e6edf3;">Data Layer</h4>
+            <ul class="text-sm space-y-1.5" style="color: #8b949e;">
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>FERC Form 552 data ingestion pipeline</li>
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>DuckDB or SQLite for fast analytical queries</li>
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>pandas for transformation and feature engineering</li>
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Multi-year data stitching with schema normalization</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+          <h4 class="font-semibold mb-3 text-sm" style="color: #e6edf3;">Why Pydantic AI?</h4>
+          <p class="text-sm" style="color: #8b949e;">
+            Pydantic AI provides a Pythonic, type-safe framework for building production-quality AI agents. Unlike LangChain (complex orchestration) or raw function-calling (no validation), Pydantic AI enforces structured outputs through Pydantic models,meaning the agent's data extraction results are validated at the type level before being processed. For a data analyst agent where correct schema interpretation is critical, this prevents silent data errors.
+          </p>
+        </div>
+      </section>
+
+      <!-- Roadmap -->
+      <section>
+        <span class="section-label">Development Roadmap</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Three-Phase Plan</h2>
+
+        <div class="space-y-4">
+          <div class="roadmap-phase active">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background: rgba(45,212,191,0.15); color: #2dd4bf; border: 1px solid rgba(45,212,191,0.3);">Phase 1,Current</span>
+              <h4 class="font-semibold" style="color: #e6edf3;">Data Ingestion &amp; Basic Querying</h4>
+            </div>
+            <ul class="text-sm space-y-1" style="color: #8b949e;">
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Parse and normalize FERC Form 552 filings across multiple years</li>
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Schema design: transactions, counterparties, pipelines, regions</li>
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Basic Pydantic AI agent with SQL query generation tools</li>
+              <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Natural-language → structured query → formatted response pipeline</li>
+            </ul>
+          </div>
+
+          <div class="roadmap-phase">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background: #161b22; color: #8b949e; border: 1px solid #30363d;">Phase 2,Planned</span>
+              <h4 class="font-semibold" style="color: #e6edf3;">Semantic Search &amp; Aggregation</h4>
+            </div>
+            <ul class="text-sm space-y-1" style="color: #8b949e;">
+              <li class="flex gap-2"><span style="color: #30363d;">▸</span>Counterparty entity resolution (name variations across years)</li>
+              <li class="flex gap-2"><span style="color: #30363d;">▸</span>Volume trend calculations and year-over-year comparisons</li>
+              <li class="flex gap-2"><span style="color: #30363d;">▸</span>Regional aggregation (Northeast, Gulf Coast, Permian, etc.)</li>
+              <li class="flex gap-2"><span style="color: #30363d;">▸</span>Agent tool: "find similar counterparties" using semantic matching</li>
+            </ul>
+          </div>
+
+          <div class="roadmap-phase">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background: #161b22; color: #8b949e; border: 1px solid #30363d;">Phase 3,Future</span>
+              <h4 class="font-semibold" style="color: #e6edf3;">Scenario Analysis &amp; Anomaly Detection</h4>
+            </div>
+            <ul class="text-sm space-y-1" style="color: #8b949e;">
+              <li class="flex gap-2"><span style="color: #30363d;">▸</span>Anomaly detection on volume and price patterns</li>
+              <li class="flex gap-2"><span style="color: #30363d;">▸</span>"What-if" scenario analysis for supply disruptions</li>
+              <li class="flex gap-2"><span style="color: #30363d;">▸</span>Time-series forecasting of counterparty demand</li>
+              <li class="flex gap-2"><span style="color: #30363d;">▸</span>Deployed interface (Gradio or FastAPI)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why It Demonstrates Value -->
+      <section class="prose-content">
+        <span class="section-label">Skill Demonstration</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What This Project Shows</h2>
+        <ul class="list-none space-y-2 pl-0">
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">AI agent engineering</strong> with Pydantic AI,structured outputs, tool registration, type-safe data handling</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Energy domain knowledge</strong>,FERC data structures, pipeline markets, counterparty dynamics</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Complex data ingestion</strong>,multi-year, heterogeneous government data with real-world messiness</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">NL-to-SQL and analytical reasoning</strong>,connecting natural language to structured query execution</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span><strong style="color: #e6edf3;">Applied AI for business problems</strong>,not a benchmark exercise, but a tool that solves a real analyst workflow</li>
+        </ul>
+      </section>
+
+      <!-- Back link -->
+      <section>
+        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+           style="border: 1px solid #30363d; color: #8b949e;"
+           onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
+           onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
+          GitHub,Follow Progress ↗
+        </a>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
+    <a href="../index.html#projects" class="text-sm transition-colors" style="color: #8b949e;"
+       onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#8b949e'">
+      ← Back to all projects
+    </a>
+  </footer>
+
+</body>
+</html>

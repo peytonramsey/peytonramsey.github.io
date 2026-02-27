@@ -1,0 +1,10 @@
+# Planning documents (contain AWS presigned URLs from AI tools)
+portfolio-outline.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+*.swp
