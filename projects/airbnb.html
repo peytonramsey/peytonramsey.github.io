@@ -169,22 +169,22 @@
             <tbody>
               <tr style="border-bottom: 1px solid #1c2333; background: rgba(45,212,191,0.05);">
                 <td class="py-2.5 pr-6 font-medium" style="color: #2dd4bf;">Random Forest ✓ Best</td>
-                <td class="text-right py-2.5 pr-6 font-bold" style="color: #2dd4bf;">95%</td>
+                <td class="text-right py-2.5 pr-6 font-bold" style="color: #2dd4bf;">91.7%</td>
                 <td class="py-2.5 text-xs" style="color: #8b949e;">Strong feature interactions, natural feature importance, robust to correlated features</td>
               </tr>
               <tr style="border-bottom: 1px solid #1c2333;">
                 <td class="py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">Bagged Trees</td>
-                <td class="text-right py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">94%</td>
+                <td class="text-right py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">90.5%</td>
                 <td class="py-2.5 text-xs" style="color: #8b949e;">Close second; Random Forest's feature sampling gives the edge</td>
               </tr>
               <tr style="border-bottom: 1px solid #1c2333;">
                 <td class="py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">LightGBM</td>
-                <td class="text-right py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">93%</td>
+                <td class="text-right py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">91.3%</td>
                 <td class="py-2.5 text-xs" style="color: #8b949e;">Gradient boosting; fast but similar performance to RF at this scale</td>
               </tr>
               <tr>
                 <td class="py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">Logistic Regression</td>
-                <td class="text-right py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">59%</td>
+                <td class="text-right py-2.5 pr-6" style="color: rgba(230,237,243,0.75);">78.7%</td>
                 <td class="py-2.5 text-xs" style="color: #8b949e;">Baseline; fails to capture non-linear interactions (pricing × bedrooms × location)</td>
               </tr>
             </tbody>
@@ -231,44 +231,48 @@
         <span class="section-label">Visualizations</span>
         <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Key Charts</h2>
 
-        <!-- Slide chart images -->
-        <div>
-          <p class="text-sm mb-4" style="color: #8b949e;">Key charts from the project analysis:</p>
-          <div class="grid md:grid-cols-2 gap-4">
+        <div class="grid md:grid-cols-2 gap-4">
 
-            <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
-              <img src="../assets/airbnb-price-distribution.png"
-                   alt="Price Distribution of SF Airbnb Listings"
-                   class="w-full"
-                   onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>Drop airbnb-price-distribution.png into assets/</div>'" />
-              <p class="text-xs px-3 py-2" style="color: #8b949e;">Price distribution (log scale),$150 median vs $257 mean, right-skewed by luxury outliers</p>
-            </div>
-
-            <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
-              <img src="../assets/airbnb-weekly-discount.png"
-                   alt="Weekly Discount Impact on Booking Rate"
-                   class="w-full"
-                   onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>Drop airbnb-weekly-discount.png into assets/</div>'" />
-              <p class="text-xs px-3 py-2" style="color: #8b949e;">High-booking listings use 14.3% weekly discounts vs 5% industry average</p>
-            </div>
-
-            <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
-              <img src="../assets/airbnb-roc-curve.png"
-                   alt="ROC Curve Comparison"
-                   class="w-full"
-                   onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>Drop airbnb-roc-curve.png into assets/</div>'" />
-              <p class="text-xs px-3 py-2" style="color: #8b949e;">ROC curves: Random Forest 95% AUC vs Logistic Regression 59% after preprocessing</p>
-            </div>
-
-            <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
-              <img src="../assets/airbnb-room-type.png"
-                   alt="Room Type Price Distribution"
-                   class="w-full"
-                   onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>Drop airbnb-room-type.png into assets/</div>'" />
-              <p class="text-xs px-3 py-2" style="color: #8b949e;">4× price gap from shared rooms ($50) to entire homes ($200)</p>
-            </div>
-
+          <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
+            <img src="../assets/airbnb-price-distribution.png"
+                 alt="Price Distribution of SF Airbnb Listings"
+                 class="w-full"
+                 onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>airbnb-price-distribution.png</div>'" />
+            <p class="text-xs px-3 py-2" style="color: #8b949e;">Price distribution (log scale) — $150 median vs $257 mean, right-skewed by luxury outliers</p>
           </div>
+
+          <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
+            <img src="../assets/airbnb-weekly-discount.png"
+                 alt="Weekly Price by Booking Status"
+                 class="w-full"
+                 onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>airbnb-weekly-discount.png</div>'" />
+            <p class="text-xs px-3 py-2" style="color: #8b949e;">High-booking listings command higher weekly rates — consistent with the 14.3% avg discount finding</p>
+          </div>
+
+          <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
+            <img src="../assets/airbnb-ratings-vs-price.png"
+                 alt="Ratings vs Price colored by Booking Status"
+                 class="w-full"
+                 onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>airbnb-ratings-vs-price.png</div>'" />
+            <p class="text-xs px-3 py-2" style="color: #8b949e;">Review score vs price (log scale) — high-booking listings cluster across all price points, not just budget</p>
+          </div>
+
+          <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
+            <img src="../assets/airbnb-review-scores.png"
+                 alt="Review Scores by Booking Status"
+                 class="w-full"
+                 onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>airbnb-review-scores.png</div>'" />
+            <p class="text-xs px-3 py-2" style="color: #8b949e;">Review score breakdown by category — high-booking listings score marginally higher across all dimensions</p>
+          </div>
+
+          <div class="rounded-xl overflow-hidden md:col-span-2" style="background: #1c2333; border: 1px solid #30363d;">
+            <img src="../assets/airbnb-roc_comparison_plot.png"
+                 alt="ROC Curve Comparison"
+                 class="w-full"
+                 onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#30363d;font-size:0.75rem;\'>airbnb-roc_comparison_plot.png</div>'" />
+            <p class="text-xs px-3 py-2" style="color: #8b949e;">ROC curves: RF 91.7% | LightGBM 91.3% | Bagged Trees 90.5% | Logistic 78.7%</p>
+          </div>
+
         </div>
       </section>
 
@@ -279,7 +283,7 @@
         <ul class="list-none space-y-3">
           <li class="flex gap-3">
             <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
-            <div><strong style="color: #e6edf3;">Ensemble methods dominate tabular data.</strong> The 36-point ROC-AUC gap between Random Forest (95%) and Logistic Regression (59%) on a dataset with just 32 features illustrates how linear models fail on problems with strong feature interactions,pricing × property size × neighborhood are deeply non-linear.</div>
+            <div><strong style="color: #e6edf3;">Ensemble methods dominate tabular data.</strong> The 13-point ROC-AUC gap between Random Forest (91.7%) and Logistic Regression (78.7%) on a dataset with just 32 features illustrates how linear models fail on problems with strong feature interactions — pricing × property size × neighborhood are deeply non-linear.</div>
           </li>
           <li class="flex gap-3">
             <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">02.</span>
