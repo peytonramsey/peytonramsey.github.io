@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dropout Prediction | Peyton Ramsey</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #0d1117; color: #e6edf3; }
+    .section-label {
+      font-family: monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #2dd4bf;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .prose-content p {
+      color: rgba(230,237,243,0.80);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    .prose-content li {
+      color: rgba(230,237,243,0.80);
+      margin-bottom: 0.4rem;
+    }
+    .metric-card {
+      background: #1c2333;
+      border: 1px solid #30363d;
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .tag {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 9999px;
+      color: #8b949e;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav class="sticky top-0 z-50 px-6 py-4 flex items-center justify-between" style="background: rgba(13,17,23,0.95); border-bottom: 1px solid #30363d; backdrop-filter: blur(8px);">
+    <a href="../index.html#projects" class="text-sm transition-colors flex items-center gap-2" style="color: #8b949e;"
+       onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
+      ← Back to Portfolio
+    </a>
+    <a href="#" target="_blank" rel="noopener noreferrer"
+       class="inline-flex items-center gap-2 px-3 py-1.5 text-xs rounded-lg transition-colors"
+       style="border: 1px solid #30363d; color: #8b949e;"
+       onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
+       onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      GitHub
+    </a>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <header class="py-16 px-6" style="border-bottom: 1px solid #30363d;">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class="tag">Classification</span>
+        <span class="tag">R</span>
+        <span class="tag">Random Forest</span>
+        <span class="tag">SVM</span>
+        <span class="tag">KNN</span>
+        <span class="tag">Logistic Regression</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-extrabold mb-4 leading-tight" style="color: #e6edf3;">
+        Student Dropout Prediction
+      </h1>
+      <p class="text-base mb-6" style="color: #8b949e; max-width: 600px; line-height: 1.7;">
+        Comparing four classification models to identify at-risk university students before they drop out, framed around the real cost of missing a true dropout versus triggering a false alarm.
+      </p>
+      <div class="flex flex-wrap gap-5 text-sm" style="color: #8b949e;">
+        <span>4,424 students</span>
+        <span style="color: #30363d;">·</span>
+        <span>UCI ML Repository</span>
+        <span style="color: #30363d;">·</span>
+        <span>Spring 2026</span>
+        <span style="color: #30363d;">·</span>
+        <span>Team: Ashlyn Smith, Farzaneh Farhoodi, Peyton Ramsey</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <main class="py-16 px-6">
+    <div class="max-w-4xl mx-auto space-y-16">
+
+      <!-- TL;DR -->
+      <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
+        <span class="section-label">TL;DR</span>
+        <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
+          Random Forest with a lowered classification threshold (0.3) correctly identifies <strong style="color: #e6edf3;">89.79% of true dropouts</strong>, roughly 9 out of 10 at-risk students, while achieving the lowest overall test error (16.86%) among all models tested. Second-semester academic performance and tuition fee status are the strongest predictors. A vanilla VAR or logistic model with 0.5 threshold misses too many real dropouts to be useful for intervention programs.
+        </p>
+      </div>
+
+      <!-- Problem & Context -->
+      <section class="prose-content">
+        <span class="section-label">Problem &amp; Context</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">The Cost of Waiting Until It's Too Late</h2>
+        <p>Student dropout is expensive on both sides. Universities lose tuition revenue and see funding tied to retention rates erode; students lose time, money, and momentum. The window for intervention (academic coaching, emergency financial aid, course load adjustment) only exists if you can identify risk early enough to act.</p>
+        <p>This project treats dropout prediction as a classification problem where <strong style="color: #e6edf3;">the cost of a false negative (missing a real dropout) significantly outweighs the cost of a false positive</strong> (sending an advisor to check in on a student who would have been fine). That asymmetry shaped every modeling decision, most importantly the choice to evaluate all models at both the default 0.5 threshold and a more aggressive 0.3 threshold.</p>
+        <p>The deployment scenario: run the model at the end of each student's first semester, flag students above the risk threshold, and route them to targeted support before the second semester begins.</p>
+      </section>
+
+      <!-- Dataset -->
+      <section>
+        <span class="section-label">Dataset</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">UCI Dropout &amp; Academic Success Dataset</h2>
+        <p class="text-sm leading-relaxed mb-5" style="color: rgba(230,237,243,0.80);">
+          4,424 students from a Portuguese higher education institution across multiple academic years. The original three-class outcome (Dropout / Enrolled / Graduate) was collapsed into a binary target: Dropout vs. Not Dropout.
+        </p>
+        <div class="grid md:grid-cols-2 gap-4 my-6">
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Academic Predictors</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>1st &amp; 2nd semester units enrolled, approved, grade</li>
+              <li>Admission grade (0–200 scale)</li>
+              <li>Application mode &amp; order</li>
+              <li>Course type, daytime vs. evening attendance</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Financial &amp; Demographic</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>Tuition fees up to date (binary)</li>
+              <li>Scholarship holder status</li>
+              <li>Debtor status</li>
+              <li>Age at enrollment, gender, nationality</li>
+              <li>Mother's &amp; father's qualification &amp; occupation</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Macroeconomic Context</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>GDP at time of enrollment</li>
+              <li>Unemployment rate</li>
+              <li>Inflation rate</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Train / Test Split</h4>
+            <ul class="text-xs space-y-1" style="color: #8b949e;">
+              <li>Stratified 80/20 split (seed = 31)</li>
+              <li>Training: 3,539 observations</li>
+              <li>Testing: 885 observations</li>
+              <li>No missing values in dataset</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- EDA Callout -->
+        <div class="rounded-xl p-5 space-y-3 mt-4" style="background: #161b22; border: 1px solid #30363d;">
+          <h4 class="font-semibold" style="color: #e6edf3;">Key EDA Findings</h4>
+          <div class="text-sm space-y-2" style="color: #8b949e;">
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Bimodal grade distribution for dropouts.</strong> Dropout students show a sharp spike at zero grades in the first semester: many stopped showing up before completing any coursework.</span></div>
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Tuition fees are a strong binary signal.</strong> Students behind on tuition had an 85% dropout rate vs. 25% for students current on payments.</span></div>
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Scholarships significantly reduce dropout.</strong> Scholarship holders dropped out at 12.5% vs. 40% without scholarships.</span></div>
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Evening students at higher risk.</strong> 38.7% dropout rate vs. 31.2% for daytime students.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Approach -->
+      <section class="prose-content">
+        <span class="section-label">Approach</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Four Models, Two Thresholds</h2>
+        <p>All models were evaluated at both threshold=0.5 (default) and threshold=0.3 (aggressive, optimized for recall). The primary evaluation criteria were <strong style="color: #e6edf3;">negative-class recall</strong> (did we catch the dropouts?) and <strong style="color: #e6edf3;">test error rate</strong>.</p>
+
+        <div class="space-y-4 mt-5">
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-1" style="color: #e6edf3;">Logistic Regression</h4>
+            <p class="text-xs" style="color: #8b949e;">5 hand-selected predictors: tuition fees status, 1st semester grades, scholarship status, debtor status, admission grade. All significant at p &lt; 0.01. Interpretable but linear decision boundary caps recall.</p>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-1" style="color: #e6edf3;">K-Nearest Neighbors (k=15)</h4>
+            <p class="text-xs" style="color: #8b949e;">Tuned k via 10-fold repeated CV. Can only use numeric predictors, excluding tuition fees and scholarship status (two of the strongest signals). Center + scale preprocessing applied to normalize distances.</p>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-1" style="color: #2dd4bf;">Random Forest: Selected Model</h4>
+            <p class="text-xs" style="color: #8b949e;">mtry=4, ntree=500, both tuned via OOB error. Uses all predictors including categorical variables. Captures non-linear interactions between financial and academic signals. Best recall at both thresholds.</p>
+          </div>
+          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
+            <h4 class="text-sm font-semibold mb-1" style="color: #e6edf3;">Support Vector Machine (Radial Kernel)</h4>
+            <p class="text-xs" style="color: #8b949e;">cost=10, gamma=0.01, tuned via 10-fold CV. Competitive error rate but no feature importance output, making it hard to explain to academic advisors or administrators.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results -->
+      <section>
+        <span class="section-label">Results</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Model Comparison</h2>
+
+        <!-- Metric Cards -->
+        <div class="grid md:grid-cols-3 gap-4 mb-8">
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">89.79%</p>
+            <p class="text-xs" style="color: #8b949e;">Random Forest recall<br/>on dropout class (threshold=0.3)</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">16.86%</p>
+            <p class="text-xs" style="color: #8b949e;">Test error rate<br/>Random Forest, threshold=0.3</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">4,424</p>
+            <p class="text-xs" style="color: #8b949e;">Students<br/>UCI Dataset</p>
+          </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
+          <div class="px-5 py-3" style="border-bottom: 1px solid #30363d;">
+            <p class="text-xs font-medium" style="color: #8b949e;">Threshold = 0.3 (optimized for recall)</p>
+          </div>
+          <div class="px-5 pb-5 overflow-x-auto">
+            <table class="w-full text-sm mt-4">
+              <thead>
+                <tr style="border-bottom: 1px solid #30363d;">
+                  <th class="text-left pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Model</th>
+                  <th class="text-right pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Test Error</th>
+                  <th class="text-right pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Recall (Dropout)</th>
+                  <th class="text-right pb-2" style="color: #8b949e; font-weight: 500;">Specificity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid #1c2333;">
+                  <td class="py-2.5 pr-6" style="color: #8b949e;">Baseline (Majority Class)</td>
+                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">32.13%</td>
+                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">0.00%</td>
+                  <td class="text-right py-2.5" style="color: #8b949e;">—</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #1c2333;">
+                  <td class="py-2.5 pr-6" style="color: #8b949e;">Logistic Regression</td>
+                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">18.10%</td>
+                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">67.25%</td>
+                  <td class="text-right py-2.5" style="color: #8b949e;">88.83%</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #1c2333;">
+                  <td class="py-2.5 pr-6" style="color: #8b949e;">KNN (k=15)</td>
+                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">18.21%</td>
+                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">76.06%</td>
+                  <td class="text-right py-2.5" style="color: #8b949e;">84.50%</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #1c2333; background: rgba(45,212,191,0.05);">
+                  <td class="py-2.5 pr-6 font-medium" style="color: #2dd4bf;">Random Forest ✓ Best</td>
+                  <td class="text-right py-2.5 pr-6 font-bold" style="color: #2dd4bf;">16.86%</td>
+                  <td class="text-right py-2.5 pr-6 font-bold" style="color: #2dd4bf;">89.79%</td>
+                  <td class="text-right py-2.5" style="color: #2dd4bf;">78.38%</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 pr-6" style="color: #8b949e;">SVM (Radial)</td>
+                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">10.86%</td>
+                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">86.62%</td>
+                  <td class="text-right py-2.5" style="color: #8b949e;">90.33%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="px-5 py-3" style="border-top: 1px solid #30363d; background: #161b22;">
+            <p class="text-xs" style="color: #8b949e;">SVM has lower test error but no feature importance; Random Forest selected for its recall and interpretability combination.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Variable Importance -->
+      <section>
+        <span class="section-label">Variable Importance</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What Actually Predicts Dropout</h2>
+        <p class="text-sm leading-relaxed mb-5" style="color: rgba(230,237,243,0.80);">Random Forest variable importance ranked by mean decrease in accuracy when each variable is permuted out of the model:</p>
+
+        <div class="space-y-2">
+          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
+            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">01</span>
+            <div class="flex-1">
+              <p class="text-sm font-semibold" style="color: #e6edf3;">Curricular units 2nd semester (approved)</p>
+              <p class="text-xs" style="color: #8b949e;">How many courses a student passed in their second semester, the strongest single predictor</p>
+            </div>
+            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 90px;"></div>
+          </div>
+          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
+            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">02</span>
+            <div class="flex-1">
+              <p class="text-sm font-semibold" style="color: #e6edf3;">Curricular units 2nd semester (grade)</p>
+              <p class="text-xs" style="color: #8b949e;">Average grade on completed coursework, confirming academic engagement, not just enrollment</p>
+            </div>
+            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 75px;"></div>
+          </div>
+          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
+            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">03</span>
+            <div class="flex-1">
+              <p class="text-sm font-semibold" style="color: #e6edf3;">Tuition fees up to date</p>
+              <p class="text-xs" style="color: #8b949e;">85% dropout rate when behind on fees, a strong financial distress signal</p>
+            </div>
+            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 60px;"></div>
+          </div>
+          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
+            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">04</span>
+            <div class="flex-1">
+              <p class="text-sm font-semibold" style="color: #e6edf3;">Scholarship holder status</p>
+              <p class="text-xs" style="color: #8b949e;">Scholarship students retain at much higher rates, a protective financial signal</p>
+            </div>
+            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 48px;"></div>
+          </div>
+          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
+            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">05</span>
+            <div class="flex-1">
+              <p class="text-sm font-semibold" style="color: #e6edf3;">Debtor status</p>
+              <p class="text-xs" style="color: #8b949e;">Outstanding debt compounds dropout risk on top of tuition delinquency</p>
+            </div>
+            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 38px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Findings -->
+      <section>
+        <span class="section-label">Key Findings</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What the Models Revealed</h2>
+        <div class="rounded-xl p-5 space-y-3" style="background: #161b22; border: 1px solid #30363d;">
+          <div class="text-sm space-y-3" style="color: #8b949e;">
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Non-linear interactions matter.</strong> The reason Random Forest beats Logistic Regression isn't just more predictors; the interaction between academic and financial distress is non-linear. A student who's behind on tuition AND has zero 1st semester approvals is dramatically higher risk than either signal alone suggests.</span></div>
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">KNN's categorical exclusion cost it the race.</strong> KNN can't handle categorical predictors without encoding hacks, which forced exclusion of tuition status and scholarship holder — the 3rd and 4th most important predictors. This is a fundamental algorithm limitation, not a hyperparameter problem.</span></div>
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Threshold tuning is a business decision, not just a modeling one.</strong> Moving from 0.5 to 0.3 increased Random Forest recall from 79.23% to 89.79%, an extra 10 out of 100 true dropouts correctly flagged, at the cost of more false alarms. Whether that trade-off is worth it depends on advisor bandwidth and intervention cost, not test accuracy.</span></div>
+            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Evening students are better identified.</strong> Segment analysis showed the model achieved 92.7% recall on evening students vs. 89.3% on daytime, likely because evening students have stronger, less ambiguous predictor signals (more pronounced financial stress patterns).</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lessons -->
+      <section class="prose-content">
+        <span class="section-label">Lessons</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What I'd Do Differently</h2>
+        <ul class="list-none space-y-4">
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
+            <div><strong style="color: #e6edf3;">Frame the evaluation metric before picking a model.</strong> Starting from "maximize recall, subject to error rate below X%" makes model selection much cleaner than comparing a table of numbers post-hoc. The business objective should define the metric, not the other way around.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">02.</span>
+            <div><strong style="color: #e6edf3;">Interpretability is a real constraint.</strong> SVM had the lowest test error but was eliminated because advisors need to understand why a student was flagged. A model that can't explain itself won't get used, no matter how accurate.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">03.</span>
+            <div><strong style="color: #e6edf3;">Mid-semester updates would sharpen predictions.</strong> The model currently runs on end-of-first-semester data, but payment status and attendance could be observed in real time. A version that updates risk scores continuously throughout the semester would catch struggling students earlier.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">04.</span>
+            <div><strong style="color: #e6edf3;">Class imbalance deserves explicit treatment.</strong> We handled imbalance through stratified splitting and threshold tuning, but techniques like SMOTE or class-weighted loss could be worth testing, especially if the minority class shrinks in a smaller institution's dataset.</div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Tech Stack -->
+      <section>
+        <span class="section-label">Tech Stack</span>
+        <div class="flex flex-wrap gap-2">
+          <span class="tag">R</span>
+          <span class="tag">caret</span>
+          <span class="tag">randomForest</span>
+          <span class="tag">e1071 (SVM)</span>
+          <span class="tag">class (KNN)</span>
+          <span class="tag">ggplot2</span>
+          <span class="tag">dplyr</span>
+          <span class="tag">kableExtra</span>
+          <span class="tag">Quarto</span>
+        </div>
+      </section>
+
+      <!-- Links -->
+      <section>
+        <span class="section-label">Links &amp; Resources</span>
+        <div class="flex flex-wrap gap-4">
+          <a href="#" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+             style="border: 1px solid #30363d; color: #8b949e;"
+             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
+             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
+            GitHub Repository ↗
+          </a>
+          <a href="https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+             style="border: 1px solid #30363d; color: #8b949e;"
+             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
+             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
+            UCI Dataset ↗
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
+    <a href="../index.html#projects" class="text-sm transition-colors" style="color: #8b949e;"
+       onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#8b949e'">
+      ← Back to all projects
+    </a>
+  </footer>
+
+</body>
+</html>
