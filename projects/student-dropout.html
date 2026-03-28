@@ -172,9 +172,18 @@
         </div>
       </section>
 
-      <!-- Approach -->
+      <!-- My Approach -->
       <section class="prose-content">
-        <span class="section-label">Approach</span>
+        <span class="section-label">My Approach</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Recall First, Then Model Selection</h2>
+        <p>
+          Four algorithms were evaluated at two classification thresholds because the threshold is a business decision that shouldn't be separated from model selection: moving from 0.5 to 0.3 changes which students get flagged, and that choice belongs to the institution, not the modeler. The primary constraint was interpretability; the best-performing model also needs to explain which features drove the flag so advisors can have an informed conversation, which is why SVM was eliminated despite its lower test error. Recall on the dropout class was chosen as the primary metric before any model was run, not selected post-hoc to favor a preferred result.
+        </p>
+      </section>
+
+      <!-- Model Comparison -->
+      <section class="prose-content">
+        <span class="section-label">Model Selection</span>
         <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Four Models, Two Thresholds</h2>
         <p>All models were evaluated at both threshold=0.5 (default) and threshold=0.3 (aggressive, optimized for recall). The primary evaluation criteria were <strong style="color: #e6edf3;">negative-class recall</strong> (did we catch the dropouts?) and <strong style="color: #e6edf3;">test error rate</strong>.</p>
 
@@ -338,9 +347,9 @@
         </div>
       </section>
 
-      <!-- Lessons -->
+      <!-- Limitations -->
       <section class="prose-content">
-        <span class="section-label">Lessons</span>
+        <span class="section-label">Limitations &amp; What I'd Do Differently</span>
         <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What I'd Do Differently</h2>
         <ul class="list-none space-y-4">
           <li class="flex gap-3">

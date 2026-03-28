@@ -102,6 +102,15 @@
         </p>
       </section>
 
+      <!-- My Approach -->
+      <section class="prose-content">
+        <span class="section-label">My Approach</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Real Application, Not a Demo</h2>
+        <p>
+          Flask was chosen over Django because the project required full control over API design (40+ endpoints built exactly to spec) and didn't need Django's built-in admin or form-handling machinery. The ML component was scoped to Gradient Boosting Regression rather than a neural network because user-specific training history is sparse: most users have 10 to 50 workouts per exercise, making a network's generalization advantage irrelevant while GBR's explicit 12-feature structure handles sparse histories reliably. Deployment on Gunicorn with PostgreSQL in production (SQLite in development) was a deliberate choice to treat this as a real application from day one.
+        </p>
+      </section>
+
       <!-- Stack & Architecture -->
       <section>
         <span class="section-label">Stack &amp; Architecture</span>
@@ -257,10 +266,10 @@
         </div>
       </section>
 
-      <!-- Lessons -->
+      <!-- Limitations -->
       <section class="prose-content">
-        <span class="section-label">What Was Learned</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Lessons &amp; Challenges</h2>
+        <span class="section-label">Limitations &amp; What I'd Do Differently</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Constraints and Next Steps</h2>
         <ul class="list-none space-y-3">
           <li class="flex gap-3">
             <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>

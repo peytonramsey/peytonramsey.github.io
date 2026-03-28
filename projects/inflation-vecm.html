@@ -115,6 +115,15 @@
         <p>The core research question: <em style="color: #e6edf3;">How do demand, supply, and labor market shocks dynamically affect U.S. inflation, and through what channels?</em></p>
       </section>
 
+      <!-- My Approach -->
+      <section class="prose-content">
+        <span class="section-label">My Approach</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Model Selection by Elimination</h2>
+        <p>
+          The VECM specification was arrived at by ruling out simpler alternatives in sequence, not chosen upfront. ARIMA on CPI alone captures persistence but attributes everything to its own past values. VAR on differences preserves stationarity but destroys the long-run relationships between variables in the process. Only after ADF tests confirmed I(1) behavior across all four series and Johansen's trace test confirmed three cointegrating vectors was VECM the correct model. The key constraint throughout was the 2020 to 2022 COVID period, a structural break that sits outside the equilibrium estimated on 1992 to 2019 data and complicates formal inference on the residuals.
+        </p>
+      </section>
+
       <!-- Dataset -->
       <section>
         <span class="section-label">Dataset</span>

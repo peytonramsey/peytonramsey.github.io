@@ -106,6 +106,15 @@
         </p>
       </section>
 
+      <!-- My Approach -->
+      <section class="prose-content">
+        <span class="section-label">My Approach</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Production-First, Not Benchmark-First</h2>
+        <p>
+          Random Forest was chosen after testing Logistic Regression, XGBoost, and a neural network: RF matched XGBoost on AUC while producing native feature importance scores essential for credit risk explainability. The production scope was intentional; the goal was to demonstrate a complete ML workflow (data pipeline, experiment tracking, drift monitoring, deployment) rather than chase another fraction of a percent in AUC. The core trade-off was using PyTorch for the data pipeline despite the model being scikit-learn, because PyTorch DataLoaders solved the OOM problem that scikit-learn's in-memory loading couldn't handle at 148K rows.
+        </p>
+      </section>
+
       <!-- Data & Features -->
       <section class="prose-content">
         <span class="section-label">Data &amp; Features</span>
@@ -250,10 +259,10 @@
         </div>
       </section>
 
-      <!-- What Was Learned -->
+      <!-- Limitations -->
       <section class="prose-content">
-        <span class="section-label">What Was Learned</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Lessons &amp; Challenges</h2>
+        <span class="section-label">Limitations &amp; What I'd Do Differently</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Constraints and Next Steps</h2>
         <ul class="list-none space-y-3">
           <li class="flex gap-3">
             <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>

@@ -107,6 +107,15 @@
         </p>
       </section>
 
+      <!-- My Approach -->
+      <section class="prose-content">
+        <span class="section-label">My Approach</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">RAG Over Fine-Tuning</h2>
+        <p>
+          RAG was chosen over fine-tuning an LLM on financial data: fine-tuning requires expensive compute and goes stale within days as news changes, while RAG grounds every answer in a live, attributed knowledge base that can be updated without retraining. The simpler alternative, keyword search, surfaces articles but can't synthesize or reason across them. The key constraint shaping every decision was latency: a system that takes 30 seconds isn't useful in fast-moving markets, which drove the choice of a lightweight embedding model (MiniLM over larger alternatives), a curated 50-article corpus over an open-ended index, and a cloud-hosted inference API over a locally-quantized model.
+        </p>
+      </section>
+
       <!-- Data & Indexing -->
       <section class="prose-content">
         <span class="section-label">Data &amp; Indexing</span>
@@ -286,10 +295,10 @@
         </div>
       </section>
 
-      <!-- What Was Learned -->
+      <!-- Limitations -->
       <section class="prose-content">
-        <span class="section-label">What Was Learned</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Lessons &amp; Challenges</h2>
+        <span class="section-label">Limitations &amp; What I'd Do Differently</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Constraints and Next Steps</h2>
         <ul class="list-none space-y-3">
           <li class="flex gap-3">
             <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
