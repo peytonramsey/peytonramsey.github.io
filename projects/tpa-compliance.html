@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TPA Compliance Review System, Peyton Ramsey</title>
+  <meta name="description" content="End-to-end third-party administrator oversight platform built at Nassau Financial Group. ETL pipelines, weighted compliance scoring, and a self-serve R Shiny dashboard managing 120K+ policies." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    .tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background-color: #161b22; border: 1px solid #30363d; border-radius: 9999px; color: #8b949e; }
+    .section-label { font-family: monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #2dd4bf; margin-bottom: 0.5rem; display: block; }
+    .prose-content p { color: rgba(230,237,243,0.80); line-height: 1.75; margin-bottom: 1rem; }
+    .prose-content ul { color: rgba(230,237,243,0.80); margin-bottom: 1rem; }
+    .prose-content li { margin-bottom: 0.4rem; padding-left: 0.25rem; }
+    .metric-card { background: #1c2333; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
+    .arch-flow { font-family: monospace; font-size: 0.8rem; color: #8b949e; background: #161b22; border: 1px solid #30363d; border-radius: 0.5rem; padding: 1.25rem 1.5rem; line-height: 2; }
+    .arch-flow span { color: #2dd4bf; }
+    .arch-flow .arrow { color: #30363d; }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ─── NAV ─── -->
+  <nav class="sticky top-0 z-50 border-b" style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-color: #30363d;">
+    <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-2 text-sm transition-colors" style="color: #8b949e;"
+         onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Peyton Ramsey
+      </a>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank" rel="noopener noreferrer"
+           class="transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'" aria-label="GitHub">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <header class="px-6 pt-16 pb-12" style="border-bottom: 1px solid #30363d;">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class="tag">R</span>
+        <span class="tag">R Shiny</span>
+        <span class="tag">AWS</span>
+        <span class="tag">Apache Arrow</span>
+        <span class="tag">Parquet</span>
+        <span class="tag">ETL</span>
+        <span class="tag">tidyverse</span>
+        <span class="tag">Plotly</span>
+        <span class="tag">ggplot2</span>
+        <span class="tag">DT</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 leading-tight" style="color: #e6edf3;">
+        TPA Compliance Review System
+      </h1>
+      <p class="text-lg mb-6" style="color: #8b949e;">
+        End-to-end third-party administrator oversight platform, Nassau Financial Group
+      </p>
+      <div class="flex flex-wrap gap-4 text-sm" style="color: #8b949e;">
+        <span>Role: Data Engineer Intern, Sole Developer</span>
+        <span style="color: #30363d;">·</span>
+        <span>Summer 2025</span>
+        <span style="color: #30363d;">·</span>
+        <span style="color: #2dd4bf;">Production · Deployed</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── CONTENT ─── -->
+  <main class="px-6 py-16">
+    <div class="max-w-4xl mx-auto space-y-16">
+
+      <!-- TL;DR -->
+      <section>
+        <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
+          <span class="section-label">TL;DR</span>
+          <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
+            Built a production TPA compliance platform solo at Nassau Financial Group, from ETL through dashboard, that automated quality reviews across <strong style="color: #e6edf3;">120K+ insurance policies</strong> and <strong style="color: #e6edf3;">8 activity types</strong>. Integrated 7 AWS data sources, designed a configurable weighted scoring engine, and shipped a self-serve R Shiny dashboard to a 30-person compliance team. Reduced manual review time by <strong style="color: #e6edf3;">60%</strong>. Presented to 50+ stakeholders including C-level executives.
+          </p>
+        </div>
+      </section>
+
+      <!-- Outcomes -->
+      <section>
+        <span class="section-label">Outcomes</span>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="metric-card">
+            <div class="text-2xl font-bold mb-1" style="color: #2dd4bf;">60%</div>
+            <div class="text-xs" style="color: #8b949e;">reduction in manual review time</div>
+          </div>
+          <div class="metric-card">
+            <div class="text-2xl font-bold mb-1" style="color: #2dd4bf;">120K+</div>
+            <div class="text-xs" style="color: #8b949e;">insurance policies managed</div>
+          </div>
+          <div class="metric-card">
+            <div class="text-2xl font-bold mb-1" style="color: #2dd4bf;">30</div>
+            <div class="text-xs" style="color: #8b949e;">compliance analysts served</div>
+          </div>
+          <div class="metric-card">
+            <div class="text-2xl font-bold mb-1" style="color: #2dd4bf;">50+</div>
+            <div class="text-xs" style="color: #8b949e;">stakeholders presented to, incl. C-suite</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Problem & Approach -->
+      <section class="prose-content">
+        <span class="section-label">Problem &amp; Approach</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Manual Oversight at Scale</h2>
+        <p>
+          Nassau manages 120K+ insurance policies through third-party administrators responsible for transactions, claims, disbursements, and valuations. Compliance review was fully manual: analysts pulled reports from disparate systems, reconciled entity mismatches by hand, and scored quality inconsistently across 8 activity types, with no historical trend data and no self-serve path.
+        </p>
+        <p>
+          I was brought in as the sole developer to build the system end to end. The binding constraint was that compliance analysts aren't engineers, so the solution had to be entirely self-serve. That ruled out ad-hoc SQL and pointed toward R Shiny as the delivery layer, with parquet-backed storage via Apache Arrow for persistent, auditable records.
+        </p>
+        <p>
+          For scoring, I designed an activity-specific weighted system rather than a single global score. Disbursement reviews carry different risk profiles than routine transaction checks, so weights and pass thresholds are defined per activity type and externalized as config, meaning the team can tune the system as their understanding matures without a code deploy.
+        </p>
+      </section>
+
+      <!-- Architecture -->
+      <section class="prose-content">
+        <span class="section-label">Architecture</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">System Overview</h2>
+
+        <div class="arch-flow mb-10">
+          <span>AWS Enterprise Data Warehouse</span> <span class="arrow">──►</span> <span>ETL Pipeline (R / tidyverse)</span><br>
+          <span class="arrow ml-8">└──►</span> <span>Parquet Data Layer (Apache Arrow)</span><br>
+          <span class="arrow ml-16">└──►</span> <span>Compliance Scoring Engine</span><br>
+          <span class="arrow ml-24">└──►</span> <span>R Shiny Dashboard</span> <span class="arrow">──►</span> <span>30-person compliance team</span>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-3" style="color: #e6edf3;">1. ETL Pipeline</h3>
+        <p>
+          The pipeline (<code style="color: #2dd4bf; font-size: 0.85em;">processing_data.Rmd</code>) pulls from 7 insurance activity streams in the AWS Enterprise Data Warehouse: transactions, claims, disbursements, policies, automated activities, and annuity/life valuations. Each source has its own schema and update cadence, requiring activity-specific ingestion logic.
+        </p>
+        <ul class="list-none space-y-1 pl-0">
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Monthly delta processing: only new or updated records are pulled each run</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Many-to-many entity deduplication across roles, names, and agent IDs using latest-record logic</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Output written to parquet via Apache Arrow for fast reads and audit trail persistence</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Handles 1M–100M row datasets across the full policy book</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold mt-8 mb-3" style="color: #e6edf3;">2. Compliance Scoring Engine</h3>
+        <p>
+          The scoring engine evaluates each policy review against activity-specific weighted checklists. Rather than a one-size-fits-all quality score, each of the 8 activity types (transactions, claims, disbursements, automated activities, annuity values, life values, and two others) has its own category weights and configurable pass threshold, defaulting to 80%.
+        </p>
+        <ul class="list-none space-y-1 pl-0">
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Weighted scoring per activity type: high-risk activities carry greater weight toward overall compliance score</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Dollar-risk classification (High / Low / Normal) applied via configurable threshold rules</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Pass/fail determination at configurable threshold, defaulting to 80%</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>12-month rolling quality trend computed per TPA for longitudinal oversight</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold mt-8 mb-3" style="color: #e6edf3;">3. R Shiny Dashboard</h3>
+        <p>
+          The dashboard (<code style="color: #2dd4bf; font-size: 0.85em;">insurance_oversight_app.R</code>) is the primary interface for the 30-person compliance team. It was built for self-serve use: analysts can flag reviews, adjust scoring thresholds, and track policy status without any engineering support.
+        </p>
+        <ul class="list-none space-y-1 pl-0">
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Executive KPI panels: contract counts, completion rates, risk breakdowns by TPA</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Activity-level quality assessment with drill-down per policy</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Risk tier classification (High / Low / Normal) with exception flagging</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>12-month trend charts via Plotly and ggplot2</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Interactive data tables (DT) for analyst-level review and export</li>
+          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Reactive programming: all views update instantly on filter changes</li>
+        </ul>
+      </section>
+
+      <!-- Scalability -->
+      <section class="prose-content">
+        <span class="section-label">If I Were to Revisit It</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What Scales, What Doesn't</h2>
+        <p>
+          It was designed to scale within a bounded compliance workflow: parquet storage, configurable thresholds, and modular ETL all hold up well. The main architectural tradeoff I'd revisit is the parquet upsert pattern for review persistence, which would need a proper indexed database at higher review volumes.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-6 mt-6">
+          <div>
+            <p class="text-sm font-semibold mb-3" style="color: #2dd4bf;">What scales well</p>
+            <ul class="list-none space-y-3 pl-0 text-sm" style="color: rgba(230,237,243,0.80);">
+              <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><span><strong style="color: #e6edf3;">Parquet storage:</strong> columnar format handles wide, sparse insurance data efficiently and reads far faster than CSVs at large row counts</span></li>
+              <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><span><strong style="color: #e6edf3;">Externalized config:</strong> thresholds like <code style="color: #2dd4bf; font-size: 0.85em;">HIGH_THRESHOLD</code> and <code style="color: #2dd4bf; font-size: 0.85em;">quality_pass_threshold</code> adapt to new business rules without code changes</span></li>
+              <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><span><strong style="color: #e6edf3;">Contract sampling design:</strong> pulling 50 contracts per month per stream keeps memory usage bounded regardless of warehouse growth</span></li>
+              <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><span><strong style="color: #e6edf3;">Modular ETL:</strong> each activity stream is processed independently, so adding a new stream is additive rather than a refactor</span></li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-sm font-semibold mb-3" style="color: #e8a045;">What doesn't</p>
+            <ul class="list-none space-y-3 pl-0 text-sm" style="color: rgba(230,237,243,0.80);">
+              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><span><strong style="color: #e6edf3;"><code style="font-size: 0.85em;">save_review_to_parquet():</code></strong> reads the full file, modifies in memory, rewrites the whole thing. Fine at a few hundred reviews; an O(n) bottleneck at tens of thousands. Indexed upserts in a real database would replace this</span></li>
+              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><span><strong style="color: #e6edf3;"><code style="font-size: 0.85em;">collect()</code> everywhere:</strong> every stream is fully pulled into R memory before filtering. Works at current volumes; breaks under production-scale row counts without lazy evaluation or server-side filtering</span></li>
+              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><span><strong style="color: #e6edf3;">Hard-coded checklists:</strong> adding a new insurance product type requires a code deploy, not a config change. A database-driven checklist system would be more extensible</span></li>
+              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><span><strong style="color: #e6edf3;">Single-threaded Shiny:</strong> handles a 30-person team fine; for 300 concurrent users it would need async processing or a different framework</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tech Stack -->
+      <section>
+        <span class="section-label">Tech Stack</span>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: #8b949e;">Data Processing</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="tag">R</span>
+              <span class="tag">tidyverse</span>
+              <span class="tag">dplyr</span>
+              <span class="tag">lubridate</span>
+              <span class="tag">Apache Arrow</span>
+              <span class="tag">Parquet</span>
+              <span class="tag">R Markdown</span>
+            </div>
+          </div>
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: #8b949e;">Infrastructure</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="tag">AWS EDW</span>
+              <span class="tag">R Shiny</span>
+              <span class="tag">Plotly</span>
+              <span class="tag">ggplot2</span>
+              <span class="tag">DT</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Links -->
+      <section>
+        <span class="section-label">Repository</span>
+        <div class="flex flex-wrap gap-4">
+          <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+             style="background: #1c2333; border: 1px solid #30363d; color: #e6edf3;"
+             onmouseover="this.style.borderColor='rgba(45,212,191,0.4)'" onmouseout="this.style.borderColor='#30363d'">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>
+            View on GitHub ↗
+          </a>
+        </div>
+        <p class="mt-3 text-xs" style="color: #8b949e;">Repository contains anonymized source code. Proprietary data and credentials are excluded.</p>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="px-6 py-8 mt-8" style="border-top: 1px solid #30363d;">
+    <div class="max-w-4xl mx-auto flex items-center justify-between text-xs" style="color: #8b949e;">
+      <a href="../index.html" class="transition-colors" style="color: #8b949e;"
+         onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">← Back to Portfolio</a>
+      <span>Peyton Ramsey</span>
+    </div>
+  </footer>
+
+</body>
+</html>
