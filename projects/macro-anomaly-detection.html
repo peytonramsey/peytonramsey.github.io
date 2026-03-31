@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Macroeconomic Anomaly Detection, Peyton Ramsey</title>
+  <meta name="description" content="Deployed LSTM Autoencoder system that ingests 7 FRED macroeconomic indicators, flags structural breaks by reconstruction error, and generates plain-English explanations via Llama-3.1-8B." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    .tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background-color: #161b22; border: 1px solid #30363d; border-radius: 9999px; color: #8b949e; }
+    .section-label { font-family: monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #e8a045; margin-bottom: 0.5rem; display: block; }
+    .prose-content p { color: rgba(230,237,243,0.80); line-height: 1.75; margin-bottom: 1rem; }
+    .prose-content ul { color: rgba(230,237,243,0.80); margin-bottom: 1rem; }
+    .prose-content li { margin-bottom: 0.4rem; padding-left: 0.25rem; }
+    .metric-card { background: #1c2333; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
+    .arch-flow { font-family: monospace; font-size: 0.8rem; color: #8b949e; background: #161b22; border: 1px solid #30363d; border-radius: 0.5rem; padding: 1.25rem 1.5rem; line-height: 2; }
+    .arch-flow span { color: #e8a045; }
+    .arch-flow .arrow { color: #30363d; }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- NAV -->
+  <nav class="sticky top-0 z-50 border-b" style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-color: #30363d;">
+    <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-2 text-sm transition-colors" style="color: #8b949e;"
+         onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Peyton Ramsey
+      </a>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+           class="transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'" aria-label="GitHub">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>
+        </a>
+        <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
+           style="background: #e8a045; color: #0d1117;"
+           onmouseover="this.style.background='#c97a25'" onmouseout="this.style.background='#e8a045'">
+          Live Demo ↗
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="px-6 pt-16 pb-12" style="border-bottom: 1px solid #30363d;">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class="tag">Python</span>
+        <span class="tag">PyTorch</span>
+        <span class="tag">LSTM</span>
+        <span class="tag">FRED</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">MLflow</span>
+        <span class="tag">Gradio</span>
+        <span class="tag">HuggingFace</span>
+        <span class="tag">scikit-learn</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 leading-tight" style="color: #e6edf3;">
+        Macroeconomic Anomaly Detection
+      </h1>
+      <p class="text-lg mb-6" style="color: #8b949e;">
+        A deployed LSTM Autoencoder that flags structural breaks in the macro environment, grounded in 32 years of FRED data
+      </p>
+      <div class="flex flex-wrap gap-4 text-sm" style="color: #8b949e;">
+        <span>Role: Sole Developer</span>
+        <span style="color: #30363d;">·</span>
+        <span>Spring 2026</span>
+        <span style="color: #30363d;">·</span>
+        <span style="color: #e8a045;">Production · Deployed</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="px-6 py-16">
+    <div class="max-w-4xl mx-auto space-y-16">
+
+      <!-- TL;DR -->
+      <section>
+        <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #e8a045; border-left-width: 4px;">
+          <span class="section-label">TL;DR</span>
+          <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
+            Built a deployed macroeconomic anomaly detection system that ingests 7 FRED indicators in real time, runs a <strong style="color: #e6edf3;">multivariate LSTM Autoencoder</strong>, and flags periods where the macro environment deviates from learned normal patterns. The anomaly threshold is calibrated on a pre-2007 baseline (mean + 2 std = <strong style="color: #e6edf3;">0.0203</strong>), and the model correctly identified all three target events: the <strong style="color: #e6edf3;">2008 GFC</strong>, <strong style="color: #e6edf3;">COVID-19 shock</strong>, and <strong style="color: #e6edf3;">2022 Fed rate cycle</strong>, with minimal false positives in the 1990-2007 baseline. Flagged windows are passed to Llama-3.1-8B for plain-English explanation. Live on Hugging Face Spaces via Gradio with FastAPI and MLflow tracking.
+          </p>
+        </div>
+      </section>
+
+      <!-- Problem & Context -->
+      <section class="prose-content">
+        <span class="section-label">Problem &amp; Context</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">The Fintech Risk Team Problem</h2>
+        <p>
+          Fintech risk teams, especially those running anomaly detection and macro risk monitoring, follow a core loop: <strong style="color: #e6edf3;">flag changes, identify root causes, generate response rules</strong>. The challenge is that macroeconomic regime shifts don't announce themselves. They emerge from the co-movement of multiple indicators: credit spreads widen as unemployment rises while the Fed cuts rates simultaneously. No single series captures that.
+        </p>
+        <p>
+          Monitoring 7 macro indicators independently fails to capture those joint dynamics. The 2008 GFC, for example, wasn't a credit spread anomaly or an unemployment anomaly in isolation; it was the simultaneous, correlated deterioration across all of them that signaled a genuine regime shift. A univariate model on any single series would have missed it or flagged it late.
+        </p>
+        <p>
+          The goal was a system that learns the normal co-movement structure across macro indicators and flags deviations from that structure as a single anomaly signal, along with a plain-English explanation of what likely drove the deviation.
+        </p>
+        <p>
+          This project also builds directly on a prior <strong style="color: #e6edf3;">VECM analysis in R</strong> on 4 of the same FRED series, which identified 3 cointegrating relationships among CPI, Industrial Production, Retail Sales, and Unemployment. That finding confirmed the series share long-run equilibrium dynamics and directly motivated the multivariate design: rather than 7 independent models, one joint model learns the co-movement structure.
+        </p>
+      </section>
+
+      <!-- Approach -->
+      <section class="prose-content">
+        <span class="section-label">My Approach</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">LSTM Autoencoder Over Forecasting</h2>
+        <p>
+          The standard LSTM setup for time series is a forecasting model: predict the next step and flag large prediction errors as anomalies. That approach was ruled out for two reasons. First, macro series are noisy enough that forecasting errors are high even in normal conditions, making the threshold unstable. Second, a forecasting model is directional: it flags a specific value being wrong, not a structural deviation in the joint pattern.
+        </p>
+        <p>
+          An autoencoder inverts this: train the model to <strong style="color: #e6edf3;">reconstruct</strong> normal sequences, not predict future ones. At inference time, high reconstruction error means the current window doesn't look like anything the model learned during training, which is the anomaly signal. The MSE across all 7 features and all 12 time steps collapses into a single number per window that can be directly compared to a stable threshold.
+        </p>
+        <p>
+          The threshold calibration approach was also deliberate. An initial attempt using percentile-based thresholds (85th, 95th) on the full reconstruction error distribution produced nearly identical values because the crisis events in the training data distort the upper tail. The fix was calibrating on the <strong style="color: #e6edf3;">pre-2007 baseline only</strong>, representing stable macro conditions before any major crisis entered the data. Mean + 2 std on that calm period gives a threshold that reflects genuine normal variation without being inflated by the events the model is trying to detect.
+        </p>
+      </section>
+
+      <!-- Data -->
+      <section class="prose-content">
+        <span class="section-label">Data</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">7 FRED Indicators</h2>
+        <p>
+          All data is pulled via <code style="color: #e8a045; font-size: 0.85em;">fredapi</code> from the Federal Reserve Economic Database. The 7 indicators were selected to cover the major transmission channels of macroeconomic stress: price regime, monetary policy, labor market, demand-side activity, long-term rates, credit risk, and market fear.
+        </p>
+
+        <div class="overflow-x-auto mt-4 mb-6">
+          <table class="w-full text-sm">
+            <thead>
+              <tr style="border-bottom: 1px solid #30363d;">
+                <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">Ticker</th>
+                <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">Indicator</th>
+                <th class="text-left pb-2" style="color: #8b949e; font-weight: 500;">Purpose</th>
+              </tr>
+            </thead>
+            <tbody style="color: rgba(230,237,243,0.75);">
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4 font-mono text-xs" style="color: #e8a045;">CPIAUCSL</td>
+                <td class="py-2 pr-4">CPI Inflation</td>
+                <td class="py-2">Price regime shifts</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4 font-mono text-xs" style="color: #e8a045;">FEDFUNDS</td>
+                <td class="py-2 pr-4">Federal Funds Rate</td>
+                <td class="py-2">Monetary policy breaks</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4 font-mono text-xs" style="color: #e8a045;">UNRATE</td>
+                <td class="py-2 pr-4">Unemployment Rate</td>
+                <td class="py-2">Labor market shocks</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4 font-mono text-xs" style="color: #e8a045;">RSXFS</td>
+                <td class="py-2 pr-4">Retail Sales</td>
+                <td class="py-2">Demand-side anomalies</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4 font-mono text-xs" style="color: #e8a045;">DGS10</td>
+                <td class="py-2 pr-4">10-Year Treasury Yield</td>
+                <td class="py-2">Credit market stress</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4 font-mono text-xs" style="color: #e8a045;">BAA10Y</td>
+                <td class="py-2 pr-4">Credit Spread (BAA-AAA)</td>
+                <td class="py-2">Default risk signal</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4 font-mono text-xs" style="color: #e8a045;">VIXCLS</td>
+                <td class="py-2 pr-4">VIX</td>
+                <td class="py-2">Market fear regime</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Monthly frequency. Training window: January 1990 to December 2021 (32 years). Test window: January 2022 to present. A <code style="color: #e8a045; font-size: 0.85em;">MinMaxScaler</code> is fit on the training data only and applied to all other windows, preventing data leakage. Missing values are dropped after aligning all series on the date index. Sequences are created with a 12-month sliding window (shape: batch x 12 x 7), matching the monthly granularity and capturing annual macro cycles.
+        </p>
+      </section>
+
+      <!-- Architecture -->
+      <section>
+        <span class="section-label">Architecture</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Four-Layer System</h2>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3" style="color: #e6edf3;">Detection Layer (PyTorch)</h4>
+            <div class="arch-flow">
+              <span>FRED Data (7 series)</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>MinMaxScaler</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>12-Month Windows</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>LSTM Encoder</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>LSTM Decoder</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>MSE Reconstruction Error</span>
+            </div>
+          </div>
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3" style="color: #e6edf3;">Explanation + Demo Layer</h4>
+            <div class="arch-flow">
+              <span>Anomaly Flagged</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Dates + Threshold</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Structured Prompt</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Llama-3.1-8B (HF API)</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Plain-English Summary</span><br/>
+              <span class="arrow">  ↓</span><br/>
+              <span>Gradio on HF Spaces</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl p-5 mb-6" style="background: #161b22; border: 1px solid #30363d;">
+          <h4 class="font-semibold mb-4" style="color: #e6edf3;">Model Architecture</h4>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr style="border-bottom: 1px solid #30363d;">
+                  <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">Component</th>
+                  <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">Config</th>
+                  <th class="text-left pb-2" style="color: #8b949e; font-weight: 500;">Role</th>
+                </tr>
+              </thead>
+              <tbody style="color: rgba(230,237,243,0.75);">
+                <tr style="border-bottom: 1px solid #1c2333;">
+                  <td class="py-2 pr-4" style="color: #e6edf3;">Encoder</td>
+                  <td class="py-2 pr-4 font-mono text-xs">2-layer LSTM, hidden=64</td>
+                  <td class="py-2">Compresses 12x7 sequence into hidden state</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #1c2333;">
+                  <td class="py-2 pr-4" style="color: #e6edf3;">Decoder</td>
+                  <td class="py-2 pr-4 font-mono text-xs">2-layer LSTM, hidden=64</td>
+                  <td class="py-2">Reconstructs full sequence from hidden state</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #1c2333;">
+                  <td class="py-2 pr-4" style="color: #e6edf3;">Output</td>
+                  <td class="py-2 pr-4 font-mono text-xs">Linear(64, 7)</td>
+                  <td class="py-2">Projects back to 7 features per time step</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #1c2333;">
+                  <td class="py-2 pr-4" style="color: #e6edf3;">Loss</td>
+                  <td class="py-2 pr-4 font-mono text-xs">MSELoss</td>
+                  <td class="py-2">Per-window reconstruction error = anomaly score</td>
+                </tr>
+                <tr>
+                  <td class="py-2 pr-4" style="color: #e6edf3;">Optimizer</td>
+                  <td class="py-2 pr-4 font-mono text-xs">Adam, lr=0.001, 100 epochs</td>
+                  <td class="py-2">Standard for sequence models</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="rounded-xl p-5 prose-content" style="background: #161b22; border: 1px solid #30363d;">
+          <h4 class="font-semibold mb-3" style="color: #e6edf3;">Key Design Decisions</h4>
+          <ul class="list-none space-y-2 mb-0">
+            <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">Autoencoder vs forecasting LSTM:</strong> reconstruction error is a stable, threshold-able anomaly signal; forecasting error is noisy and directional</li>
+            <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">Multivariate (7 series):</strong> VECM analysis confirmed cointegration across 4 of these series, justifying a joint model that captures co-movement structure</li>
+            <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">Pre-2007 threshold calibration:</strong> percentile-based thresholds on the full distribution were distorted by the crisis events in training data; the calm baseline isolates genuine normal variation</li>
+            <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">MinMaxScaler fit on train only:</strong> prevents future price levels from bleeding into the scaler's normalization range (data leakage)</li>
+            <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">12-month window:</strong> matches monthly data granularity and captures annual macro cycles; short enough to keep sequence length tractable</li>
+            <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">Inline inference in app.py:</strong> app.py fetches FRED data and runs inference directly instead of calling a local FastAPI server, making it self-contained for HF Spaces deployment</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Threshold -->
+      <section class="prose-content">
+        <span class="section-label">Threshold Calibration</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Why 0.0203</h2>
+        <p>
+          The anomaly threshold is the most important hyperparameter in this system because it determines the false positive rate. Two approaches were tried before landing on the final one.
+        </p>
+        <p>
+          <strong style="color: #e6edf3;">Attempt 1: percentile-based.</strong> Thresholds at the 85th and 95th percentiles of reconstruction error across the full history produced values of 0.1565 and 0.1571, nearly identical. The reason: crisis periods like 2008 and 2020 inflate the upper tail of the distribution, compressing the difference between percentile cutoffs. Neither threshold correctly flagged all three known events.
+        </p>
+        <p>
+          <strong style="color: #e6edf3;">Attempt 2: hardcoded.</strong> Setting threshold = 0.04 by visual inspection of the reconstruction error plot worked in the sense that it flagged the right events, but it was unprincipled and would not generalize.
+        </p>
+        <p>
+          <strong style="color: #e6edf3;">Final: pre-2007 calm baseline.</strong> Restrict the reference distribution to the period before any major crises entered the training data (1990 to 2007). Compute mean + 2 std on that subset. The result is 0.0203, a threshold grounded in what normal reconstruction error looks like during genuinely stable macro conditions. The pre-2007 period shows minimal false positives, and all three target events exceed it with clear margin.
+        </p>
+      </section>
+
+      <!-- Validation -->
+      <section>
+        <span class="section-label">Ground-Truth Validation</span>
+        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Three Structurally Different Crises</h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #e8a045;">3/3</p>
+            <p class="text-xs" style="color: #8b949e;">Target events<br/>correctly flagged</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #e8a045;">0.0203</p>
+            <p class="text-xs" style="color: #8b949e;">Anomaly threshold<br/>(pre-2007 baseline)</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #e8a045;">7</p>
+            <p class="text-xs" style="color: #8b949e;">FRED indicators<br/>jointly modeled</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-3xl font-extrabold mb-1" style="color: #e8a045;">32yr</p>
+            <p class="text-xs" style="color: #8b949e;">Training window<br/>(1990-2022)</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-sm">
+            <thead>
+              <tr style="border-bottom: 1px solid #30363d;">
+                <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">Event</th>
+                <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">Period</th>
+                <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">What drove it</th>
+                <th class="text-right pb-2" style="color: #8b949e; font-weight: 500;">Result</th>
+              </tr>
+            </thead>
+            <tbody style="color: rgba(230,237,243,0.75);">
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4" style="color: #e6edf3;">2008 GFC</td>
+                <td class="py-2 pr-4">Sep 2008 – Mar 2009</td>
+                <td class="py-2 pr-4">Credit spread spike, Fed to zero, unemployment surge</td>
+                <td class="text-right py-2" style="color: #e8a045;">Flagged</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1c2333;">
+                <td class="py-2 pr-4" style="color: #e6edf3;">COVID-19</td>
+                <td class="py-2 pr-4">Mar 2020 – Jun 2020</td>
+                <td class="py-2 pr-4">Unemployment to 14.7%, VIX to 80, retail sales collapse</td>
+                <td class="text-right py-2" style="color: #e8a045;">Flagged</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4" style="color: #e6edf3;">2022 Fed Shock</td>
+                <td class="py-2 pr-4">Mar 2022 – Dec 2022</td>
+                <td class="py-2 pr-4">Rapid rate hiking cycle, sustained regime shift</td>
+                <td class="text-right py-2" style="color: #e8a045;">Flagged</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rounded-xl p-5 prose-content" style="background: #161b22; border: 1px solid #30363d;">
+          <p class="mb-0">
+            The 2022 Fed shock is the most interesting case. Unlike 2008 and COVID (discrete shocks with clear onset and recovery), the Fed rate hiking cycle produced a <strong style="color: #e6edf3;">persistent regime shift</strong> in reconstruction error. The model doesn't just spike; it stays elevated through 2023-2025, reflecting that the macro environment hasn't returned to the learned normal. That pattern is real information: the system is correctly distinguishing between a temporary shock and a structural change in the macro regime.
+          </p>
+        </div>
+      </section>
+
+      <!-- MLflow -->
+      <section class="prose-content">
+        <span class="section-label">MLOps Layer</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">MLflow Experiment Tracking</h2>
+        <p>
+          All training runs are logged via MLflow. The experiment tracks both the parameters that define the model and the metrics that evaluate it, so any configuration can be reproduced from the log.
+        </p>
+        <div class="grid md:grid-cols-2 gap-6 mt-2">
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3 text-sm" style="color: #e6edf3;">Logged Parameters</h4>
+            <ul class="list-none space-y-1.5 text-sm" style="color: rgba(230,237,243,0.75);">
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">input_size</code> = 7</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">hidden_size</code> = 64</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">num_layers</code> = 2</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">window_size</code> = 12</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">epochs</code> = 100</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">learning_rate</code> = 0.001</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">threshold_method</code> = calm_baseline_mean+2std</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">threshold_baseline_end</code> = 2007-01-01</li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
+            <h4 class="font-semibold mb-3 text-sm" style="color: #e6edf3;">Logged Metrics + Artifacts</h4>
+            <ul class="list-none space-y-1.5 text-sm" style="color: rgba(230,237,243,0.75);">
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">threshold</code> = 0.0203</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">n_anomalies</code> across full history</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">final_train_loss</code></li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">model.pt</code> via mlflow.pytorch.log_model</li>
+              <li class="flex gap-2"><span style="color: #e8a045;">▸</span><code class="font-mono text-xs" style="color: #e8a045;">scaler.pkl</code> + <code class="font-mono text-xs" style="color: #e8a045;">threshold.pkl</code> saved for API</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Explanation Layer -->
+      <section class="prose-content">
+        <span class="section-label">Explanation Layer</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">LLM Post-Processing via Llama-3.1-8B</h2>
+        <p>
+          When the model flags anomalies in a selected date range, the flagged window dates and summary statistics are passed to <code style="color: #e8a045; font-size: 0.85em;">meta-llama/Llama-3.1-8B-Instruct</code> via the Hugging Face Inference API. The model returns a 2-3 sentence plain-English explanation of the likely macroeconomic cause.
+        </p>
+        <p>
+          This layer is intentionally thin. The prompt passes only the flagged dates, the threshold value, and the total anomaly count, so the LLM is doing pattern matching against its macro knowledge, not data analysis. The goal is interpretability for the user, not a second layer of modeling.
+        </p>
+        <div class="rounded-xl p-5 font-mono text-sm" style="background: #161b22; border: 1px solid #30363d; color: #8b949e; line-height: 1.75;">
+          <span style="color: #e8a045;">You are a macroeconomic analyst.</span> An LSTM anomaly detection model<br/>
+          flagged the following months as anomalous: <span style="color: #e6edf3;">[dates]</span>.<br/>
+          The anomaly threshold was <span style="color: #e6edf3;">{threshold}</span>.<br/>
+          There were <span style="color: #e6edf3;">{n_anomalies}</span> anomalies total.<br/>
+          In 2-3 sentences, explain what macroeconomic events likely caused these anomalies.
+        </div>
+        <p class="mt-4">
+          The final model selection was <code style="color: #e8a045; font-size: 0.85em;">Llama-3.1-8B-Instruct</code> after two prior models failed: Mistral-7B did not support chat completion via the HF Inference API, and <code style="color: #e8a045; font-size: 0.85em;">zephyr-7b-beta</code> was not supported by any active provider. Llama-3.1-8B works on both local and HF Spaces environments via the same token.
+        </p>
+      </section>
+
+      <!-- What I Learned -->
+      <section class="prose-content">
+        <span class="section-label">What I Learned</span>
+        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Key Takeaways</h2>
+        <ul class="list-none space-y-3">
+          <li class="flex gap-3">
+            <span style="color: #e8a045; flex-shrink: 0; font-weight: 600;">01.</span>
+            <div><strong style="color: #e6edf3;">Threshold calibration matters more than architecture.</strong> The LSTM architecture was straightforward. Getting the threshold right required three attempts and understanding why percentile-based approaches fail on distributions that contain the events you're trying to detect.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #e8a045; flex-shrink: 0; font-weight: 600;">02.</span>
+            <div><strong style="color: #e6edf3;">Prior statistical work transfers in non-obvious ways.</strong> The VECM cointegration finding didn't port as code, but it ported as architectural justification. Knowing the series are cointegrated is the reason to use one multivariate model instead of 7 univariate ones.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #e8a045; flex-shrink: 0; font-weight: 600;">03.</span>
+            <div><strong style="color: #e6edf3;">Deployment constraints shape design.</strong> The FastAPI layer was built first, then dropped from the deployed version when it became clear that HF Spaces doesn't run a local uvicorn server. The final app.py runs inference inline, making it self-contained.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #e8a045; flex-shrink: 0; font-weight: 600;">04.</span>
+            <div><strong style="color: #e6edf3;">Persistent regime shifts look different from discrete shocks.</strong> The 2022 Fed shock produces sustained elevated reconstruction error, not a spike-and-recovery. That's real information the model is surfacing, and it changes how you interpret the plot.</div>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: #e8a045; flex-shrink: 0; font-weight: 600;">05.</span>
+            <div><strong style="color: #e6edf3;">Encoding issues cause silent failures late.</strong> The UTF-16-encoded requirements.txt passed local checks but broke the HF Spaces build with character-level pip errors. Small environment mismatches surface at the worst time.</div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Links -->
+      <section>
+        <span class="section-label">Links &amp; Resources</span>
+        <div class="flex flex-wrap gap-4">
+          <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+             style="background: #e8a045; color: #0d1117;"
+             onmouseover="this.style.background='#c97a25'" onmouseout="this.style.background='#e8a045'">
+            Live Demo on Hugging Face ↗
+          </a>
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
+             style="border: 1px solid #30363d; color: #8b949e;"
+             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
+             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
+            GitHub ↗
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
+    <a href="../index.html#production" class="text-sm transition-colors" style="color: #8b949e;"
+       onmouseover="this.style.color='#e8a045'" onmouseout="this.style.color='#8b949e'">
+      &larr; Back to all projects
+    </a>
+  </footer>
+
+</body>
+</html>
