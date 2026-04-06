@@ -1,322 +1,906 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GymLog,Full-Stack Fitness App,Peyton Ramsey</title>
-  <meta name="description" content="Production-ready full-stack fitness tracking web app with Flask, PostgreSQL, ML-powered progressive overload predictions, and dual nutrition APIs." />
+  <title>GymLog — Full-Stack Fitness App — Peyton Ramsey</title>
+  <meta name="description" content="Production-ready full-stack fitness tracking web app built with Python Flask, PostgreSQL, and a Gradient Boosting Regressor for progressive overload predictions. 11,500+ lines of code, 40+ REST endpoints, 12 database models." />
+
+  <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500&f[]=cabinet-grotesk@700&display=swap" rel="stylesheet" />
+  <!-- Google Fonts: Geist Mono (metrics/data) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
-    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', system-ui, sans-serif; }
+    /* ── DESIGN TOKENS ──────────────────────────────────────── */
+    :root {
+      --bg-base:     #0f0f0e;
+      --bg-surface:  #161614;
+      --bg-card:     #1c1b19;
+      --bg-elevated: #222120;
+
+      --text-1: #cdccca;
+      --text-2: #797876;
+      --text-3: #5a5957;
+      --accent:  #e8a035;
+      --border:  oklch(from #cdccca l c h / 0.10);
+
+      --font-body:    'Satoshi', system-ui, sans-serif;
+      --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
+      --font-mono:    'Geist Mono', monospace;
+
+      --radius-chip: 4px;
+      --radius-card: 10px;
+
+      --section-pad: clamp(3rem, 6vw, 6rem);
+      --container:   52rem;
+      --pad-x:       clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+    a  { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0d1117; }
-    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
-    .tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background-color: #161b22; border: 1px solid #30363d; border-radius: 9999px; color: #8b949e; }
-    .section-label { font-family: monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #2dd4bf; margin-bottom: 0.5rem; display: block; }
-    .prose-content p { color: rgba(230,237,243,0.80); line-height: 1.75; margin-bottom: 1rem; }
-    .prose-content li { color: rgba(230,237,243,0.80); margin-bottom: 0.4rem; }
-    .metric-card { background: #1c2333; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
-    .impl-card { background: #161b22; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.25rem; }
-    .impl-card h4 { color: #e6edf3; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; }
-    .impl-card p, .impl-card li { color: #8b949e; font-size: 0.85rem; line-height: 1.6; }
+    ::-webkit-scrollbar-track  { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb  { background: var(--bg-elevated); border-radius: 3px; }
+
+    /* ── TYPOGRAPHY ─────────────────────────────────────────── */
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    /* Editorial section labels — Geist Mono, accent, uppercase */
+    .label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    .container {
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--pad-x);
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 15, 14, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 3.75rem;
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-2);
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--text-1); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-icon {
+      color: var(--text-2);
+      padding: 0.25rem;
+      display: flex;
+      transition: color 0.15s;
+    }
+    .nav-icon:hover { color: var(--text-1); }
+
+    /* Live Demo CTA — amber, not teal */
+    .btn-demo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.875rem;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+      color: var(--bg-base);
+      background: var(--accent);
+      border-radius: var(--radius-chip);
+      transition: opacity 0.15s;
+    }
+    .btn-demo:hover { opacity: 0.88; }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .page-header {
+      padding-block: clamp(3rem, 6vw, 5rem) clamp(2rem, 4vw, 3rem);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.875rem, 5vw, 3rem);
+      color: var(--text-1);
+      margin-bottom: 0.625rem;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.0625rem;
+      color: var(--text-2);
+      margin-bottom: 1.5rem;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      font-size: 0.875rem;
+      color: var(--text-2);
+      align-items: center;
+    }
+
+    .header-meta .sep { color: var(--text-3); }
+
+    /* amber badge — never teal */
+    .badge-deployed {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      border: 1px solid oklch(from #e8a035 l c h / 0.30);
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+    }
+
+    /* ── CONTENT SECTIONS ───────────────────────────────────── */
+    .content {
+      padding-block: clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .content-stack {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(3rem, 6vw, 5rem);
+    }
+
+    /* ── TL;DR BOX — amber left border, never teal ──────────── */
+    .tldr-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--accent);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+    }
+
+    .tldr-box p {
+      font-size: 0.9375rem;
+      line-height: 1.75;
+      color: rgba(205, 204, 202, 0.85);
+      margin: 0;
+    }
+
+    .tldr-box strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── METRICS — pure typographic hierarchy ───────────────── */
+    /* Primary: thesis-level claim — Geist Mono, large, amber */
+    .metric-primary {
+      margin-bottom: 2rem;
+    }
+
+    .metric-primary .value {
+      font-family: var(--font-mono);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.375rem;
+    }
+
+    .metric-primary .label-text {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+    }
+
+    /* Secondary: smaller, inline value + label */
+    .metric-secondary-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .metric-secondary-wide {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .metric-secondary-wide .value {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .metric-secondary-wide .label-text {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    /* Tertiary pair — muted, smallest */
+    .metric-secondary-pair {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .metric-secondary-sm .value {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      color: var(--text-2);
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-secondary-sm .label-text {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+      line-height: 1.35;
+    }
+
+    /* ── PROSE ──────────────────────────────────────────────── */
+    .prose p {
+      font-size: 0.9375rem;
+      line-height: 1.8;
+      color: rgba(205, 204, 202, 0.80);
+      margin-bottom: 1rem;
+    }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .prose h3 {
+      font-family: var(--font-heading);
+      font-size: 1.125rem;
+      color: var(--text-1);
+      margin-top: 2rem;
+      margin-bottom: 0.625rem;
+    }
+
+    .prose-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .prose-list li {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.9375rem;
+      color: rgba(205, 204, 202, 0.80);
+      line-height: 1.65;
+    }
+
+    .prose-list li::before {
+      content: '▸';
+      color: var(--text-3);
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .prose-list li strong { color: var(--text-1); font-weight: 500; }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      color: var(--text-2);
+      background: var(--bg-elevated);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    /* ── DATA TABLE ─────────────────────────────────────────── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .data-table thead tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      text-align: left;
+      padding-bottom: 0.625rem;
+      padding-right: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      font-weight: 400;
+    }
+
+    .data-table th:last-child { text-align: right; padding-right: 0; }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid oklch(from #cdccca l c h / 0.05);
+    }
+
+    .data-table td {
+      padding: 0.625rem 1.5rem 0.625rem 0;
+      color: rgba(205, 204, 202, 0.75);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .data-table td:last-child {
+      text-align: right;
+      padding-right: 0;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+    }
+
+    .data-table tbody tr:last-child td { border-bottom: none; }
+
+    .data-table td.mono {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--text-2);
+    }
+
+    /* ── ARCHITECTURE — ASCII pre/code, never SVG or Mermaid ── */
+    .arch-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow-x: auto;
+    }
+
+    .arch-block pre {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.9;
+      color: var(--text-2);
+      padding: 1.5rem 1.75rem;
+      margin: 0;
+      white-space: pre;
+    }
+
+    /* Two-column arch layout */
+    .arch-cols {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 640px) {
+      .arch-cols { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── REVISIT SECTION ────────────────────────────────────── */
+    .revisit-intro {
+      margin-bottom: 1.75rem;
+    }
+
+    .revisit-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .revisit-col-head {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-2);
+      margin-bottom: 1rem;
+    }
+
+    /* ── TECH STACK — chips appear ONCE on page, here only ──── */
+    .stack-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 480px) {
+      .stack-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .stack-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.25rem;
+    }
+
+    .stack-card-head {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.875rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-2);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-chip);
+      padding: 0.25rem 0.625rem;
+    }
+
+    /* ── LINKS SECTION ──────────────────────────────────────── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5625rem 1.125rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--bg-base);
+      background: var(--accent);
+      border-radius: 6px;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.87; }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-1);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--text-2); }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-block: 2rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+      color: var(--text-3);
+    }
+
+    .footer-back {
+      color: var(--text-3);
+      transition: color 0.15s;
+    }
+    .footer-back:hover { color: var(--text-2); }
   </style>
 </head>
-<body class="antialiased">
+<body>
 
   <!-- ─── NAV ─── -->
-  <nav class="sticky top-0 z-50 border-b" style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-color: #30363d;">
-    <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
-      <a href="../index.html" class="flex items-center gap-2 text-sm transition-colors" style="color: #8b949e;"
-         onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        Peyton Ramsey
-      </a>
-      <div class="flex items-center gap-3">
-        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
-           class="transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'" aria-label="GitHub">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-back">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Peyton Ramsey
         </a>
-        <a href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md"
-           style="background: #2dd4bf; color: #0d1117;">
-          Live Demo ↗
-        </a>
+        <div class="nav-right">
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="nav-icon" aria-label="GitHub">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+            </svg>
+          </a>
+          <a href="https://github.com/peytonramsey/gymlog" target="_blank" rel="noopener noreferrer" class="btn-demo">
+            Live Demo ↗
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- ─── HERO ─── -->
-  <header class="px-6 pt-16 pb-12" style="border-bottom: 1px solid #30363d;">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex flex-wrap gap-2 mb-5">
-        <span class="tag">Python Flask</span>
-        <span class="tag">PostgreSQL</span>
-        <span class="tag">SQLAlchemy</span>
-        <span class="tag">scikit-learn</span>
-        <span class="tag">Bootstrap 5</span>
-        <span class="tag">Chart.js</span>
-        <span class="tag">Gunicorn</span>
-        <span class="tag">REST API</span>
-      </div>
-      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 leading-tight" style="color: #e6edf3;">
-        GymLog,Full-Stack Fitness Tracking App
-      </h1>
-      <p class="text-lg mb-6" style="color: #8b949e;">
-        Production-ready web application with ML-powered training recommendations
-      </p>
-      <div class="flex flex-wrap gap-4 text-sm" style="color: #8b949e;">
-        <span>Role: Sole Developer</span>
-        <span style="color: #30363d;">·</span>
+  <!-- ─── HEADER ─── -->
+  <header class="page-header">
+    <div class="container">
+      <h1>GymLog</h1>
+      <p class="subtitle">A production-quality full-stack fitness tracking application built from scratch — workout logging, ML-powered progressive overload, and dual-API nutrition search</p>
+      <div class="header-meta">
+        <span>Sole Developer</span>
+        <span class="sep">·</span>
         <span>2025</span>
-        <span style="color: #30363d;">·</span>
-        <span>~11,500 lines of code · v1.0.4</span>
+        <span class="sep">·</span>
+        <span class="badge-deployed">Self-Deployed · Live</span>
       </div>
     </div>
   </header>
 
   <!-- ─── CONTENT ─── -->
-  <main class="px-6 py-16">
-    <div class="max-w-4xl mx-auto space-y-16">
+  <main class="content">
+    <div class="container">
+      <div class="content-stack">
 
-      <!-- TL;DR -->
-      <section>
-        <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
-          <span class="section-label">TL;DR</span>
-          <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
-            GymLog is a production-ready full-stack fitness tracking web application built with Python Flask and PostgreSQL,<strong style="color: #e6edf3;">11,500+ lines of code</strong>, 40+ REST endpoints, 12 database models, and 6 Alembic migration versions. Features include workout logging with draft auto-save, a Gradient Boosting Regressor for progressive overload predictions, dual-API nutrition search with custom relevance scoring, barcode food scanning, and a glassmorphism UI with Chart.js visualizations. Deployed live with Gunicorn on cloud infrastructure.
-          </p>
-        </div>
-      </section>
-
-      <!-- Problem & Context -->
-      <section class="prose-content">
-        <span class="section-label">Problem &amp; Context</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Why Build This?</h2>
-        <p>
-          Fitness tracking apps either give you a bloated, subscription-locked experience (MyFitnessPal, Whoop) or a barebones spreadsheet. Neither integrates the three core pillars of training in one place: workout execution, nutrition logging, and progressive overload guidance informed by your actual history.
-        </p>
-        <p>
-          GymLog was built as both a personal tool and a full-stack engineering project,the goal was to build something production-quality with a real ML integration, not a demo. This meant handling real data entry patterns (inconsistent exercise names, missing fields, browser crashes mid-workout), designing a normalized schema that could evolve, and deploying a system that non-technical users could actually use.
-        </p>
-      </section>
-
-      <!-- My Approach -->
-      <section class="prose-content">
-        <span class="section-label">My Approach</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Real Application, Not a Demo</h2>
-        <p>
-          Flask was chosen over Django because the project required full control over API design (40+ endpoints built exactly to spec) and didn't need Django's built-in admin or form-handling machinery. The ML component was scoped to Gradient Boosting Regression rather than a neural network because user-specific training history is sparse: most users have 10 to 50 workouts per exercise, making a network's generalization advantage irrelevant while GBR's explicit 12-feature structure handles sparse histories reliably. Deployment on Gunicorn with PostgreSQL in production (SQLite in development) was a deliberate choice to treat this as a real application from day one.
-        </p>
-      </section>
-
-      <!-- Stack & Architecture -->
-      <section>
-        <span class="section-label">Stack &amp; Architecture</span>
-        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Technology Stack</h2>
-
-        <div class="grid md:grid-cols-3 gap-4 mb-8">
-          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
-            <h4 class="font-semibold mb-3 text-sm" style="color: #2dd4bf;">Backend</h4>
-            <ul class="text-sm space-y-1.5" style="color: #8b949e;">
-              <li>Python Flask 3.0.0</li>
-              <li>SQLAlchemy ORM</li>
-              <li>Flask-Login (auth)</li>
-              <li>Flask-Migrate / Alembic</li>
-              <li>PostgreSQL + SQLite (dev)</li>
-              <li>Gunicorn (WSGI)</li>
-            </ul>
+        <!-- TL;DR -->
+        <section>
+          <span class="label">TL;DR</span>
+          <div class="tldr-box">
+            <p>GymLog is a production-ready full-stack fitness tracking web application built with Python Flask and PostgreSQL — <strong>11,500+ lines of code</strong>, 40+ REST endpoints, 12 database models, and 6 Alembic migration versions. Features include workout logging with draft auto-save, a Gradient Boosting Regressor for progressive overload predictions, dual-API nutrition search with custom relevance scoring, barcode food scanning, and a Chart.js visualization layer. Deployed live with Gunicorn on cloud infrastructure.</p>
           </div>
-          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
-            <h4 class="font-semibold mb-3 text-sm" style="color: #2dd4bf;">Frontend</h4>
-            <ul class="text-sm space-y-1.5" style="color: #8b949e;">
-              <li>Bootstrap 5.3.0</li>
-              <li>Vanilla JavaScript (Fetch API)</li>
-              <li>Chart.js (visualizations)</li>
-              <li>Glassmorphism UI</li>
-              <li>Dark mode (localStorage)</li>
-            </ul>
+        </section>
+
+        <!-- Outcomes -->
+        <section>
+          <span class="label">Outcomes</span>
+          <!-- Primary metric: thesis-level claim, typeset large in Geist Mono, amber -->
+          <div class="metric-primary">
+            <div class="value">11.5K+</div>
+            <div class="label-text">lines of code across core application, ML module, and 15+ templates</div>
           </div>
-          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
-            <h4 class="font-semibold mb-3 text-sm" style="color: #2dd4bf;">ML &amp; Data</h4>
-            <ul class="text-sm space-y-1.5" style="color: #8b949e;">
-              <li>scikit-learn (GBR)</li>
-              <li>pandas / numpy</li>
-              <li>pickle (model persistence)</li>
-              <li>OpenFoodFacts API</li>
-              <li>USDA FoodData Central</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
-          <h4 class="font-semibold mb-3" style="color: #e6edf3;">Database Schema,12 Interconnected Models</h4>
-          <div class="grid md:grid-cols-2 gap-x-8 gap-y-1 text-sm" style="color: #8b949e;">
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span>User,auth, timezone, session management</div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span>WorkoutTemplate → TemplateExercise</div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Workout → Exercise (one-to-many, cascade)</div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span>TemplateSchedule (many-to-many assoc. table)</div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Meal → FoodItem (macro aggregation)</div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span>WeightPrediction (ML tracking &amp; versioning)</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Notable Implementations -->
-      <section>
-        <span class="section-label">Notable Implementations</span>
-        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Six Technical Highlights</h2>
-
-        <div class="space-y-4">
-
-          <div class="impl-card">
-            <h4>1. Progressive Overload ML Model <code style="color: #2dd4bf; font-size: 0.8rem;">ml_models/progressive_overload.py</code></h4>
-            <p class="mb-2">A Gradient Boosting Regressor (100 estimators, depth 4) trained on per-user workout history to predict the optimal weight for each exercise next session. 12 engineered features:</p>
-            <div class="grid md:grid-cols-2 gap-x-6 text-xs" style="color: #8b949e;">
-              <ul class="space-y-0.5 list-none">
-                <li class="flex gap-1.5"><span style="color: #2dd4bf;">▸</span>Temporal: last 5 workout weights</li>
-                <li class="flex gap-1.5"><span style="color: #2dd4bf;">▸</span>Recovery: days since last workout</li>
-                <li class="flex gap-1.5"><span style="color: #2dd4bf;">▸</span>Volume: total training load</li>
-              </ul>
-              <ul class="space-y-0.5 list-none">
-                <li class="flex gap-1.5"><span style="color: #2dd4bf;">▸</span>Performance: success rate, progression velocity</li>
-                <li class="flex gap-1.5"><span style="color: #2dd4bf;">▸</span>Rep range analysis</li>
-                <li class="flex gap-1.5"><span style="color: #2dd4bf;">▸</span>Fallback: +2.5 lbs heuristic for new exercises</li>
-              </ul>
+          <!-- Secondary metrics: descending weight, no cards, no borders -->
+          <div class="metric-secondary-group">
+            <div class="metric-secondary-wide">
+              <div class="value">40%+</div>
+              <div class="label-text">improvement in food search relevance over single-API approach, via custom scoring algorithm</div>
             </div>
-            <p class="mt-2 text-xs">Outputs include confidence intervals (±5%), smart rounding to nearest 2.5 lb plate increment, and model versioning for continuous learning.</p>
+            <div class="metric-secondary-pair">
+              <div class="metric-secondary-sm">
+                <div class="value">40+</div>
+                <div class="label-text">REST endpoints<br/>across 7 functional areas</div>
+              </div>
+              <div class="metric-secondary-sm">
+                <div class="value">12</div>
+                <div class="label-text">database models<br/>with cascading foreign keys</div>
+              </div>
+              <div class="metric-secondary-sm">
+                <div class="value">6</div>
+                <div class="label-text">Alembic migrations<br/>for schema evolution</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Problem & Approach -->
+        <section>
+          <span class="label">Problem &amp; Approach</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Real Application, Not a Demo</h2>
+          <div class="prose">
+            <p>Fitness tracking apps either give you a bloated, subscription-locked experience (MyFitnessPal, Whoop) or a barebones spreadsheet. Neither integrates the three core pillars of training in one place: workout execution, nutrition logging, and progressive overload guidance informed by your actual history.</p>
+            <p>GymLog was built as both a personal tool and a full-stack engineering project — the goal was to build something production-quality with a real ML integration, not a demo. This meant handling real data entry patterns (inconsistent exercise names, missing fields, browser crashes mid-workout), designing a normalized schema that could evolve, and deploying a system that non-technical users could actually use.</p>
+            <h3>Why Flask Over Django</h3>
+            <p>Flask was chosen because the project required full control over API design — 40+ endpoints built exactly to spec — and didn't need Django's built-in admin or form-handling machinery. The ML component was scoped to Gradient Boosting Regression rather than a neural network because user-specific training history is sparse: most users have 10 to 50 workouts per exercise, making a network's generalization advantage irrelevant while GBR's explicit 12-feature structure handles sparse histories reliably. Deployment on Gunicorn with PostgreSQL in production (SQLite in development) was a deliberate choice to treat this as a real application from day one.</p>
+          </div>
+        </section>
+
+        <!-- Architecture -->
+        <section>
+          <span class="label">Architecture</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">System Design</h2>
+
+          <div class="arch-cols" style="margin-bottom: 2rem;">
+            <div class="arch-block">
+              <pre>Request Layer (Flask)
+
+Browser / Mobile
+  │
+  └──► Gunicorn (WSGI)
+         │  multi-worker
+         │
+         └──► Flask app.py
+                │  40+ endpoints
+                │
+                ├──► Flask-Login
+                │      session auth
+                │
+                └──► SQLAlchemy ORM
+                       │
+                       ├──► PostgreSQL (prod)
+                       └──► SQLite (dev)</pre>
+            </div>
+            <div class="arch-block">
+              <pre>ML + Data Layer
+
+Workout History (per user)
+  │
+  └──► 12-Feature Engineering
+         │  last 5 weights, days rest,
+         │  volume, velocity, rep range
+         │
+         └──► GBR Model (100 est, depth 4)
+                │  per-exercise, per-user
+                │  pickle persistence
+                │
+                └──► Weight Recommendation
+                       │  ±5% confidence
+                       └──► 2.5 lb rounding
+
+Nutrition Search
+  └──► OpenFoodFacts API (primary)
+         │  fallback on gaps
+         └──► USDA FoodData Central
+                └──► Custom Relevance Score</pre>
+            </div>
           </div>
 
-          <div class="impl-card">
-            <h4>2. Dual-API Food Search with Relevance Scoring <code style="color: #2dd4bf; font-size: 0.8rem;">app.py</code></h4>
-            <p class="mb-2">Single-API nutrition data is insufficient. The system implements an intelligent fallback chain: primary OpenFoodFacts (15+ results), fallback to USDA FoodData Central. A custom relevance algorithm ranks results by:</p>
-            <ul class="list-none text-xs space-y-0.5">
-              <li class="flex gap-1.5"><span style="color: #2dd4bf;">▸</span>Exact phrase matching (+50 pts)</li>
-              <li class="flex gap-1.5"><span style="color: #2dd4bf;">▸</span>Complete word presence (+30 pts)</li>
-              <li class="flex gap-1.5"><span style="color: #2dd4bf;">▸</span>Word boundary detection and length penalization</li>
-            </ul>
-            <p class="mt-2 text-xs">Result: 40%+ improvement in food search relevance over single-API approach.</p>
+          <div class="prose">
+            <h3>Database Schema — 12 Models</h3>
           </div>
 
-          <div class="impl-card">
-            <h4>3. Exercise Name Normalization System <code style="color: #2dd4bf; font-size: 0.8rem;">utils.py</code></h4>
-            <p>Users enter exercise names inconsistently ("DB bench", "dumbbell bench press", "bench DB") causing fragmented ML training data. A multi-stage normalization pipeline uses regex pattern matching, 40+ abbreviation expansions (DB→Dumbbell, RDL→Romanian Deadlift), word reordering, and special case handling to standardize 100+ exercise variations. Includes a preview-before-apply UI so users can confirm changes.</p>
-          </div>
-
-          <div class="impl-card">
-            <h4>4. Draft Workout Auto-Save System <code style="color: #2dd4bf; font-size: 0.8rem;">app.py</code></h4>
-            <p>Browser crashes and accidental navigation were causing workout data loss. The solution: every edit auto-saves to <code style="color: #2dd4bf; font-size: 0.8rem;">is_draft=True</code>. Drafts are excluded from history views but visible in the active session. A 24-hour cleanup task removes stale drafts. On "Finish Workout", the draft is converted to a completed record. Result: 100% data retention with no user-facing complexity.</p>
-          </div>
-
-          <div class="impl-card">
-            <h4>5. Multi-Day Template Scheduling with Backwards Compatibility <code style="color: #2dd4bf; font-size: 0.8rem;">app.py</code></h4>
-            <p>Original schema limited templates to one day of the week. The migration to multi-day support needed to be zero-downtime: a <code style="color: #2dd4bf; font-size: 0.8rem;">TemplateSchedule</code> association table for many-to-many scheduling was added while keeping the deprecated <code style="color: #2dd4bf; font-size: 0.8rem;">day_of_week</code> field for existing data. The API accepts both single day and array formats; queries check both fields. Clean backwards-compatible migration.</p>
-          </div>
-
-          <div class="impl-card">
-            <h4>6. Diagonal Split Calendar Visualization <code style="color: #2dd4bf; font-size: 0.8rem;">templates/index.html</code></h4>
-            <p>When two workout templates fall on the same calendar day, the cell renders as a 135° diagonal gradient splitting both template colors 50/50. Dynamic CSS gradient generation detects 2+ templates on the same day, extracts hex colors, converts to rgba for opacity control, and generates the gradient inline. Hover shows a tooltip with both workout names. Elegant solution to a real UX problem.</p>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- Scale & Results -->
-      <section>
-        <span class="section-label">Scale &amp; Metrics</span>
-        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Project Scale</h2>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div class="metric-card">
-            <p class="text-2xl font-extrabold mb-1" style="color: #2dd4bf;">11.5K+</p>
-            <p class="text-xs" style="color: #8b949e;">Lines of code<br/>(core application)</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-2xl font-extrabold mb-1" style="color: #2dd4bf;">40+</p>
-            <p class="text-xs" style="color: #8b949e;">REST endpoints<br/>across 7 areas</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-2xl font-extrabold mb-1" style="color: #2dd4bf;">12</p>
-            <p class="text-xs" style="color: #8b949e;">Database models<br/>with cascading FKs</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-2xl font-extrabold mb-1" style="color: #2dd4bf;">6</p>
-            <p class="text-xs" style="color: #8b949e;">Alembic migrations<br/>for schema evolution</p>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
+          <table class="data-table" style="margin-top: 0.75rem;">
             <thead>
-              <tr style="border-bottom: 1px solid #30363d;">
-                <th class="text-left pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Module</th>
-                <th class="text-left pb-2 pr-6" style="color: #8b949e; font-weight: 500;">File</th>
-                <th class="text-right pb-2" style="color: #8b949e; font-weight: 500;">Lines</th>
+              <tr>
+                <th>Model</th>
+                <th>Relationship</th>
+                <th style="text-align:left; padding-right:0;">Notes</th>
               </tr>
             </thead>
-            <tbody style="color: rgba(230,237,243,0.75);">
-              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-1.5 pr-6">Main application</td><td class="py-1.5 pr-6 font-mono text-xs" style="color: #2dd4bf;">app.py</td><td class="text-right py-1.5">1,844</td></tr>
-              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-1.5 pr-6">Database models</td><td class="py-1.5 pr-6 font-mono text-xs" style="color: #2dd4bf;">models.py</td><td class="text-right py-1.5">307</td></tr>
-              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-1.5 pr-6">ML module</td><td class="py-1.5 pr-6 font-mono text-xs" style="color: #2dd4bf;">progressive_overload.py</td><td class="text-right py-1.5">276</td></tr>
-              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-1.5 pr-6">Utility functions</td><td class="py-1.5 pr-6 font-mono text-xs" style="color: #2dd4bf;">utils.py</td><td class="text-right py-1.5">263</td></tr>
-              <tr><td class="py-1.5 pr-6">HTML templates (15+)</td><td class="py-1.5 pr-6 font-mono text-xs" style="color: #2dd4bf;">templates/</td><td class="text-right py-1.5">7,000+</td></tr>
+            <tbody>
+              <tr>
+                <td style="color: var(--text-1);">User</td>
+                <td>root</td>
+                <td style="text-align:left; padding-right:0;">auth, timezone, session management</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-1);">WorkoutTemplate → TemplateExercise</td>
+                <td>one-to-many</td>
+                <td style="text-align:left; padding-right:0;">reusable session blueprints</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-1);">Workout → Exercise</td>
+                <td>one-to-many, cascade</td>
+                <td style="text-align:left; padding-right:0;"><code>is_draft</code> flag for auto-save</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-1);">TemplateSchedule</td>
+                <td>many-to-many assoc.</td>
+                <td style="text-align:left; padding-right:0;">multi-day scheduling support</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-1);">Meal → FoodItem</td>
+                <td>one-to-many</td>
+                <td style="text-align:left; padding-right:0;">macro aggregation per meal</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-1);">WeightPrediction</td>
+                <td>per-user, per-exercise</td>
+                <td style="text-align:left; padding-right:0;">ML tracking &amp; model versioning</td>
+              </tr>
             </tbody>
           </table>
-        </div>
-      </section>
 
-      <!-- Limitations -->
-      <section class="prose-content">
-        <span class="section-label">Limitations &amp; What I'd Do Differently</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Constraints and Next Steps</h2>
-        <ul class="list-none space-y-3">
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
-            <div><strong style="color: #e6edf3;">Schema design decisions compound.</strong> Adding multi-day template support after launch required careful backwards compatibility work. Designing for extensibility upfront (even when it feels like over-engineering) saves painful migrations.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">02.</span>
-            <div><strong style="color: #e6edf3;">User data consistency requires automation.</strong> Asking users to normalize exercise names themselves doesn't work,they won't. Automated normalization with a preview step (not silent correction) was the right balance of control and convenience.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">03.</span>
-            <div><strong style="color: #e6edf3;">Single-API data sources are fragile.</strong> OpenFoodFacts has excellent coverage for US packaged foods but gaps in international products. The fallback to USDA plus custom relevance scoring solved what would have been a persistent user pain point.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">04.</span>
-            <div><strong style="color: #e6edf3;">Auto-save is not optional in data entry apps.</strong> The first version had no auto-save. After losing a long workout once, building a proper draft system became the highest priority feature,and made the whole UX feel professional.</div>
-          </li>
-        </ul>
-      </section>
+          <div class="prose" style="margin-top: 2rem;">
+            <h3>Key Design Decisions</h3>
+            <ul class="prose-list">
+              <li><strong>GBR over neural network:</strong> user training histories are sparse (10–50 workouts per exercise); GBR's 12-feature explicit structure handles sparsity with no generalization cost</li>
+              <li><strong>Pickle model persistence:</strong> one model file per exercise-user pair; lightweight, retrainable on demand without a versioned model registry at this scale</li>
+              <li><strong>Dual-API fallback chain:</strong> OpenFoodFacts has excellent US packaged food coverage but gaps in international products; USDA FoodData Central fills those gaps with a custom relevance scorer resolving conflicts</li>
+              <li><strong>Draft auto-save as first-class feature:</strong> <code>is_draft=True</code> on every keystroke, excluded from history views, converted to completed record on "Finish Workout" — 100% data retention with no UX complexity</li>
+              <li><strong>PostgreSQL/SQLite parity:</strong> production uses PostgreSQL via DATABASE_URL env var, development uses SQLite; same ORM layer, zero code changes between environments</li>
+            </ul>
+          </div>
+        </section>
 
-      <!-- Links -->
-      <section>
-        <span class="section-label">Links &amp; Resources</span>
-        <div class="flex flex-wrap gap-4">
-          <a href="#" class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
-             style="background: #2dd4bf; color: #0d1117;"
-             onmouseover="this.style.background='#14b8a6'" onmouseout="this.style.background='#2dd4bf'">
-            Live Demo ↗
-          </a>
-          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
-             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
-             style="border: 1px solid #30363d; color: #8b949e;"
-             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
-             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
-            GitHub Repository ↗
-          </a>
-        </div>
-      </section>
+        <!-- Notable Implementations -->
+        <section>
+          <span class="label">Notable Implementations</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Six Technical Highlights</h2>
 
+          <div class="prose">
+            <h3>1. Progressive Overload ML Model <code>ml_models/progressive_overload.py</code></h3>
+            <p>A Gradient Boosting Regressor (100 estimators, depth 4) trained on per-user workout history to predict the optimal weight for each exercise next session. 12 engineered features: last 5 workout weights, days since last workout, total training volume, success rate, progression velocity, and rep range analysis. Outputs include confidence intervals (±5%), smart rounding to the nearest 2.5 lb plate increment, and model versioning for continuous learning. Falls back to +2.5 lbs heuristic for exercises with fewer than 5 logged sessions.</p>
+
+            <h3>2. Dual-API Food Search with Relevance Scoring <code>app.py</code></h3>
+            <p>Single-API nutrition data is insufficient. The system implements an intelligent fallback chain: primary OpenFoodFacts (15+ results), fallback to USDA FoodData Central. A custom relevance algorithm ranks results by: exact phrase matching (+50 pts), complete word presence (+30 pts), word boundary detection, and length penalization. Result: 40%+ improvement in food search relevance over single-API approach.</p>
+
+            <h3>3. Exercise Name Normalization System <code>utils.py</code></h3>
+            <p>Users enter exercise names inconsistently — "DB bench", "dumbbell bench press", "bench DB" — causing fragmented ML training data. A multi-stage normalization pipeline uses regex pattern matching, 40+ abbreviation expansions (DB→Dumbbell, RDL→Romanian Deadlift), word reordering, and special case handling to standardize 100+ exercise variations. Includes a preview-before-apply UI so users can confirm changes without silent correction.</p>
+
+            <h3>4. Draft Workout Auto-Save System <code>app.py</code></h3>
+            <p>Browser crashes and accidental navigation were causing workout data loss. The solution: every edit auto-saves to <code>is_draft=True</code>. Drafts are excluded from history views but visible in the active session. A 24-hour cleanup task removes stale drafts. On "Finish Workout", the draft is converted to a completed record. Result: 100% data retention with no user-facing complexity.</p>
+
+            <h3>5. Multi-Day Template Scheduling with Backwards Compatibility <code>app.py</code></h3>
+            <p>Original schema limited templates to one day of the week. The migration to multi-day support was zero-downtime: a <code>TemplateSchedule</code> association table for many-to-many scheduling was added while keeping the deprecated <code>day_of_week</code> field for existing data. The API accepts both single-day and array formats; queries check both fields. Clean backwards-compatible migration with no data loss.</p>
+
+            <h3>6. Diagonal Split Calendar Visualization <code>templates/index.html</code></h3>
+            <p>When two workout templates fall on the same calendar day, the cell renders as a 135° diagonal gradient splitting both template colors 50/50. Dynamic CSS gradient generation detects 2+ templates on the same day, extracts hex colors, converts to rgba for opacity control, and generates the gradient inline. Hover shows a tooltip with both workout names. Elegant solution to a genuine UX problem that appeared only after real usage data emerged.</p>
+          </div>
+        </section>
+
+        <!-- Codebase Scale -->
+        <section>
+          <span class="label">Codebase Scale</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Line Count by Module</h2>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Module</th>
+                <th>File</th>
+                <th>Lines</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Main application</td>
+                <td class="mono">app.py</td>
+                <td>1,844</td>
+              </tr>
+              <tr>
+                <td>Database models</td>
+                <td class="mono">models.py</td>
+                <td>307</td>
+              </tr>
+              <tr>
+                <td>ML module</td>
+                <td class="mono">progressive_overload.py</td>
+                <td>276</td>
+              </tr>
+              <tr>
+                <td>Utility functions</td>
+                <td class="mono">utils.py</td>
+                <td>263</td>
+              </tr>
+              <tr>
+                <td>HTML templates (15+)</td>
+                <td class="mono">templates/</td>
+                <td>7,000+</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- IF I WERE TO REVISIT IT — editorial label, verbatim -->
+        <section>
+          <span class="label">IF I WERE TO REVISIT IT</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1rem;">What Scales, What Doesn't</h2>
+          <div class="prose revisit-intro">
+            <p>The application is production-quality and the deployed version works. The main constraints are design decisions that made sense for a solo-developer personal tool but would require re-architecture at team scale or under real user load.</p>
+          </div>
+          <div class="revisit-grid">
+            <div>
+              <p class="revisit-col-head">What scales well</p>
+              <ul class="prose-list">
+                <li><strong>GBR feature engineering:</strong> the 12-feature structure for progressive overload generalizes naturally — adding new features is additive, not architectural. The explicit feature set also makes the model's predictions debuggable in a way that a neural network would not be.</li>
+                <li><strong>Dual-API fallback with custom scoring:</strong> the relevance algorithm is content-agnostic. The same pattern — primary source, scored fallback, explicit tie-breaking — applies to any domain where two data sources have complementary strengths.</li>
+                <li><strong>Draft auto-save as data integrity system:</strong> treating every user action as provisional until confirmed is the right abstraction for any data-entry application. The <code>is_draft</code> pattern is reusable.</li>
+                <li><strong>Backwards-compatible schema migration:</strong> keeping the deprecated <code>day_of_week</code> field alongside the new <code>TemplateSchedule</code> table while accepting both formats in the API is the right way to handle breaking schema changes in a live system.</li>
+              </ul>
+            </div>
+            <div>
+              <p class="revisit-col-head">What doesn't</p>
+              <ul class="prose-list">
+                <li><strong>Schema design decisions compound:</strong> adding multi-day template support after launch required careful backwards compatibility work. Designing for extensibility upfront — even when it feels like over-engineering — saves painful migrations. The initial one-day-per-template constraint was not revisited early enough.</li>
+                <li><strong>User data consistency requires automation:</strong> asking users to normalize exercise names themselves doesn't work — they won't. Automated normalization with a preview step (not silent correction) was the right balance, but it should have been designed in from the start, not added reactively after training data fragmentation emerged.</li>
+                <li><strong>Single-file monolith:</strong> <code>app.py</code> at 1,844 lines is the classic Flask monolith that works until it doesn't. At team scale, splitting by blueprint (auth, workouts, nutrition, ML) would be the first refactor — it's mechanical work that becomes load-bearing when multiple developers touch the same file.</li>
+                <li><strong>No auto-save was a mistake:</strong> the first version had no auto-save. After losing a long workout once, building a proper draft system became the highest priority feature. Every data-entry application should have this from day one.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tech Stack — chips appear ONCE on this page, here only -->
+        <section>
+          <span class="label">Tech Stack</span>
+          <div class="stack-grid">
+            <div class="stack-card">
+              <div class="stack-card-head">Backend</div>
+              <div class="chips">
+                <span class="chip">Python Flask 3.0</span>
+                <span class="chip">SQLAlchemy ORM</span>
+                <span class="chip">Flask-Login</span>
+                <span class="chip">Flask-Migrate</span>
+                <span class="chip">Alembic</span>
+                <span class="chip">Gunicorn</span>
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-card-head">Database</div>
+              <div class="chips">
+                <span class="chip">PostgreSQL</span>
+                <span class="chip">SQLite (dev)</span>
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-card-head">ML &amp; Data</div>
+              <div class="chips">
+                <span class="chip">scikit-learn</span>
+                <span class="chip">Gradient Boosting</span>
+                <span class="chip">pandas</span>
+                <span class="chip">numpy</span>
+                <span class="chip">pickle</span>
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-card-head">Frontend &amp; APIs</div>
+              <div class="chips">
+                <span class="chip">Bootstrap 5</span>
+                <span class="chip">Chart.js</span>
+                <span class="chip">Vanilla JS (Fetch)</span>
+                <span class="chip">OpenFoodFacts API</span>
+                <span class="chip">USDA FoodData Central</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Links -->
+        <section>
+          <span class="label">Links &amp; Resources</span>
+          <div class="link-row">
+            <a href="https://github.com/peytonramsey/gymlog" target="_blank" rel="noopener noreferrer" class="btn-primary">
+              Live Demo ↗
+            </a>
+            <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+              GitHub ↗
+            </a>
+          </div>
+        </section>
+
+      </div>
     </div>
   </main>
 
-  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
-    <a href="../index.html#projects" class="text-sm transition-colors" style="color: #8b949e;"
-       onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#8b949e'">
-      ← Back to all projects
-    </a>
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <a href="../index.html" class="footer-back">← Back to all projects</a>
+        <span>Peyton Ramsey</span>
+      </div>
+    </div>
   </footer>
 
 </body>

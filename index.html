@@ -1,225 +1,1088 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Peyton Ramsey, Data Science &amp; AI Engineer</title>
-  <meta name="description" content="Portfolio of Peyton Ramsey, Data Science &amp; AI Engineer building ML systems, data pipelines, and applied AI tools." />
+  <title>Peyton Ramsey — Data Science &amp; AI Engineer</title>
+  <meta name="description"
+    content="Portfolio of Peyton Ramsey, Data Science &amp; AI Engineer building ML systems, data pipelines, and applied AI tools." />
+
+  <!-- Fontshare: Satoshi (body 400/500) + Cabinet Grotesk (headings 700) -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500&f[]=cabinet-grotesk@700&display=swap"
+    rel="stylesheet" />
+  <!-- Google Fonts: Geist Mono (metrics/numbers) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-        },
-      },
-    };
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
-    body { background-color: #0d1117; color: #e6edf3; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0d1117; }
-    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #8b949e; }
-    .hero-glow {
-      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(232,160,69,0.08) 0%, transparent 60%);
+    /* ── DESIGN TOKENS ──────────────────────────────────────── */
+    :root {
+      --bg-base: #0f0f0e;
+      --bg-surface: #161614;
+      --bg-card: #1c1b19;
+      --bg-elevated: #222120;
+
+      --text-1: #cdccca;
+      --text-2: #797876;
+      --text-3: #5a5957;
+      --accent: #e8a035;
+      --border: oklch(from #cdccca l c h / 0.10);
+
+      --font-body: 'Satoshi', system-ui, sans-serif;
+      --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
+      --font-mono: 'Geist Mono', monospace;
+
+      --radius-chip: 4px;
+      --radius-card: 10px;
+
+      --section-pad: clamp(3rem, 6vw, 6rem);
+      --container: 72rem;
+      --pad-x: clamp(1.25rem, 4vw, 2.5rem);
     }
-    .skill-tag {
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-base);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--bg-elevated);
+      border-radius: 3px;
+    }
+
+    /* ── TYPOGRAPHY HELPERS ─────────────────────────────────── */
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .label {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    .container {
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--pad-x);
+    }
+
+    section {
+      padding-block: var(--section-pad);
+    }
+
+    .section-head {
+      margin-bottom: 3rem;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      color: var(--text-1);
+      margin-top: 0.5rem;
+    }
+
+    .section-head p {
+      margin-top: 0.75rem;
+      /* color: var(--text-2); */
+      max-width: 44rem;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 15, 14, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 3.75rem;
+    }
+
+    .nav-logo {
+      font-family: var(--font-heading);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-2);
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-1);
+    }
+
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-icon {
+      color: var(--text-2);
+      padding: 0.25rem;
+      display: flex;
+      transition: color 0.15s;
+    }
+
+    .nav-icon:hover {
+      color: var(--text-1);
+    }
+
+    .btn-resume {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.875rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .btn-resume:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .nav-hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-2);
+      padding: 0.25rem;
+    }
+
+    .mobile-nav {
+      display: none;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-nav.open {
+      display: block;
+    }
+
+    .mobile-nav a {
+      display: block;
+      padding: 0.75rem var(--pad-x);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--text-2);
+      transition: color 0.15s;
+    }
+
+    .mobile-nav a:hover {
+      color: var(--text-1);
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .btn-resume {
+        display: none;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+    }
+
+    /* ── HERO ────────────────────────────────────────────────── */
+    .hero {
+      min-height: calc(100svh - 3.75rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-block: var(--section-pad);
+      background: var(--bg-base);
+    }
+
+    .hero-name {
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      color: var(--text-1);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-role {
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: var(--text-2);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-bio {
+      max-width: 42rem;
+      color: rgba(205, 204, 202, 0.75);
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      background: var(--accent);
+      color: var(--bg-base);
+      border-radius: 6px;
+      transition: opacity 0.15s;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.88;
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-1);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.15s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-2);
+    }
+
+    /* ── WORKPLACE DEPLOYMENT ────────────────────────────────── */
+    #workplace {
+      background: var(--bg-surface);
+    }
+
+    .workplace-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 2rem 2rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .workplace-meta {
+      font-family: var(--font-mono);
       font-size: 0.75rem;
-      padding: 0.25rem 0.65rem;
-      background-color: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 9999px;
-      color: #8b949e;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 1rem;
     }
-    .nav-link.active { color: #e8a045 !important; }
-    .tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background-color: #161b22; border: 1px solid #30363d; border-radius: 9999px; color: #8b949e; }
+
+    .workplace-title {
+      font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+      color: var(--text-1);
+      margin-bottom: 0.75rem;
+    }
+
+    .workplace-desc {
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      color: var(--text-2);
+      max-width: 72ch;
+      margin-bottom: 1.5rem;
+    }
+
+    .workplace-metric {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .workplace-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .workplace-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      /* color: var(--accent); */
+      transition: opacity 0.15s;
+    }
+
+    .workplace-links a:hover {
+      opacity: 0.75;
+    }
+
+    .workplace-links a.muted {
+      /* color: var(--text-2); */
+      font-weight: 400;
+      transition: color 0.15s;
+    }
+
+    .workplace-links a.muted:hover {
+      color: var(--text-1);
+    }
+
+    /* ── SELF-DEPLOYED ───────────────────────────────────────── */
+    #self-deployed {
+      background: var(--bg-base);
+    }
+
+    .sd-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 768px) {
+      .sd-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .sd-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sd-card-meta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.875rem;
+    }
+
+    .sd-card-title {
+      font-size: 1.125rem;
+      color: var(--text-1);
+      margin-bottom: 0.5rem;
+    }
+
+    .sd-card-desc {
+      font-size: 0.9375rem;
+      line-height: 1.65;
+      color: var(--text-2);
+      flex-grow: 1;
+      margin-bottom: 1.25rem;
+    }
+
+    .sd-card-metric {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+
+    .sd-card-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .sd-card-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--accent-2);
+      transition: opacity 0.15s;
+    }
+
+    .sd-card-links a:hover {
+      opacity: 0.75;
+    }
+
+    .sd-card-links a.muted {
+      /* color: var(--text-2); */
+      font-weight: 400;
+      transition: color 0.15s;
+    }
+
+    .sd-card-links a.muted:hover {
+      color: var(--text-1);
+    }
+
+    /* ── PROJECTS LIST (editorial, domain-grouped) ───────────── */
+    #projects {
+      background: var(--bg-surface);
+    }
+
+    .proj-domain {
+      margin-bottom: 3rem;
+    }
+
+    .proj-domain:last-child {
+      margin-bottom: 0;
+    }
+
+    .proj-domain-label {
+      font-family: var(--font-mono);
+      font-size: 0.812rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-1);
+      margin-bottom: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .proj-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .proj-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem 2rem;
+      padding-block: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .proj-body {
+      min-width: 0;
+    }
+
+    .proj-title {
+      font-size: 1.0625rem;
+      color: var(--text-1);
+      margin-bottom: 0.375rem;
+    }
+
+    .proj-summary {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    .proj-aside {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.375rem;
+      padding-top: 0.125rem;
+      min-width: max-content;
+    }
+
+    .proj-metric {
+      font-family: var(--font-mono);
+      font-size: 0.9275rem;
+      color: var(--accent);
+      text-align: right;
+    }
+
+    .proj-aside a {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      /* color: var(--text-2); */
+      white-space: nowrap;
+      transition: color 0.15s;
+    }
+
+    .proj-aside a:hover {
+      color: var(--text-1);
+    }
+
+    .proj-aside a.primary {
+      color: var(--accent-2);
+    }
+
+    .proj-aside a.primary:hover {
+      opacity: 0.8;
+    }
+
+    @media (max-width: 600px) {
+      .proj-row {
+        grid-template-columns: 1fr;
+      }
+
+      .proj-aside {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+        margin-top: 0.5rem;
+      }
+
+      .proj-metric {
+        text-align: left;
+      }
+    }
+
+    /* ── TABLEAU ────────────────────────────────────────────── */
+    .tableau-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+
+    /* ── EXPERIENCE ─────────────────────────────────────────── */
+    #experience {
+      background: var(--bg-surface);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--border);
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .tl-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .tl-dot {
+      position: absolute;
+      left: calc(-1.5rem - 5px);
+      top: 0.5rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg-surface);
+    }
+
+    .tl-dot.dim {
+      background: var(--bg-elevated);
+    }
+
+    .exp-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+    }
+
+    .exp-head {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 0.875rem;
+    }
+
+    @media (min-width: 640px) {
+      .exp-head {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+    }
+
+    .exp-title {
+      font-size: 1.25rem;
+      color: var(--text-1);
+    }
+
+    .exp-org {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--accent);
+      margin-top: 0.125rem;
+    }
+
+    .exp-date {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--text-3);
+      white-space: nowrap;
+      padding-top: 0.25rem;
+      flex-shrink: 0;
+    }
+
+    .exp-bullets {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .exp-bullets li {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .exp-bullets li::before {
+      content: '▸';
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+
+    .exp-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      margin-top: 1rem;
+    }
+
+    .exp-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-chip);
+      padding: 0.1875rem 0.5rem;
+    }
+
+    .edu-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+    }
+
+    .edu-head {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .edu-head {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+    }
+
+    .edu-school {
+      font-size: 1.25rem;
+      color: var(--text-1);
+    }
+
+    .edu-degree {
+      font-size: 0.875rem;
+      color: var(--accent);
+      margin-top: 0.125rem;
+    }
+
+    .edu-rule {
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
+    }
+
+    .edu-bs {
+      font-size: 0.875rem;
+      color: var(--text-3);
+    }
+
+    .edu-honors {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      font-style: italic;
+      margin-top: 0.375rem;
+    }
+
+    /* ── ABOUT ───────────────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .about-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+      }
+    }
+
+    .about-bio p {
+      color: rgba(205, 204, 202, 0.80);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+
+    .about-bio p:last-child {
+      margin-bottom: 0;
+    }
+
+    .on-ai {
+      border-left: 2px solid var(--accent);
+      padding-left: 1rem;
+      margin-block: 1.25rem;
+    }
+
+    .on-ai .on-ai-label {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.375rem;
+    }
+
+    .on-ai p {
+      font-size: 0.9375rem !important;
+      color: var(--text-2) !important;
+      margin-bottom: 0 !important;
+    }
+
+    .about-cta {
+      margin-top: 1.5rem;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--accent);
+      transition: opacity 0.15s;
+    }
+
+    .about-cta:hover {
+      opacity: 0.75;
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .skill-cat h4 {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-cat p {
+      font-size: 0.9375rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── CONTACT ────────────────────────────────────────────── */
+    #contact {
+      background: var(--bg-surface);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .contact-grid {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+      }
+    }
+
+    .contact-heading {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      color: var(--text-1);
+      margin-bottom: 1rem;
+    }
+
+    .contact-copy {
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .contact-email {
+      font-family: var(--font-body);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--accent);
+      display: inline-block;
+      margin-bottom: 0;
+      transition: opacity 0.15s;
+    }
+
+    .contact-email:hover {
+      opacity: 0.75;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--text-2);
+      transition: color 0.15s;
+    }
+
+    .contact-link:hover {
+      color: var(--text-1);
+    }
+
+    .contact-link svg {
+      color: var(--text-3);
+      flex-shrink: 0;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding-block: 1.5rem;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--text-3);
+    }
   </style>
 </head>
-<body class="font-sans antialiased">
 
-  <!-- ─── NAVBAR ─── -->
-  <nav class="sticky top-0 z-50 border-b" style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-color: #30363d;">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-      <!-- Logo -->
-      <a href="#hero" class="font-bold text-xl tracking-tight" style="color: #e8a045;">PR</a>
+<body>
 
-      <!-- Desktop links -->
-      <div class="hidden md:flex items-center gap-8 text-sm font-medium">
-        <a href="#production" class="nav-link transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.classList.contains('active') ? this.style.color='#e8a045' : this.style.color='#8b949e'">Production</a>
-        <a href="#projects" class="nav-link transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.classList.contains('active') ? this.style.color='#e8a045' : this.style.color='#8b949e'">Projects</a>
-        <a href="#experience" class="nav-link transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.classList.contains('active') ? this.style.color='#e8a045' : this.style.color='#8b949e'">Experience</a>
-        <a href="#about" class="nav-link transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.classList.contains('active') ? this.style.color='#e8a045' : this.style.color='#8b949e'">About</a>
-        <a href="#contact" class="nav-link transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.classList.contains('active') ? this.style.color='#e8a045' : this.style.color='#8b949e'">Contact</a>
-      </div>
-
-      <!-- Right icons -->
-      <div class="flex items-center gap-3">
-        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
-           class="transition-colors p-1" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'" aria-label="GitHub">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>
-        </a>
-        <a href="https://www.linkedin.com/in/peytonr-msba/" target="_blank" rel="noopener noreferrer"
-           class="transition-colors p-1" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'" aria-label="LinkedIn">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        </a>
-        <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank"
-           class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
-           style="border: 1px solid #30363d; color: #8b949e;"
-           onmouseover="this.style.color='#e8a045'; this.style.borderColor='#e8a045'"
-           onmouseout="this.style.color='#8b949e'; this.style.borderColor='#30363d'">
-          Resume
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-        </a>
-        <!-- Hamburger -->
-        <button id="menu-toggle" class="md:hidden p-1 transition-colors" style="color: #8b949e;" aria-label="Menu">
-          <svg id="menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-          <svg id="menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
+  <!-- ─── NAV ─────────────────────────────────────────────── -->
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#hero" class="nav-logo">PR</a>
+        <div class="nav-links">
+          <a href="#workplace">Work</a>
+          <a href="#projects">Projects</a>
+          <a href="#experience">Experience</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="nav-actions">
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="nav-icon"
+            aria-label="GitHub">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z" />
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/in/peytonr-msba/" target="_blank" rel="noopener noreferrer" class="nav-icon"
+            aria-label="LinkedIn">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          </a>
+          <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank" class="btn-resume">
+            Resume
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+          <button id="menu-toggle" class="nav-hamburger" aria-label="Menu">
+            <svg id="icon-open" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="icon-close" style="display:none" width="20" height="20" fill="none" stroke="currentColor"
+              stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
-
-    <!-- Mobile nav -->
-    <div id="mobile-nav" class="hidden md:hidden border-t" style="background: #161b22; border-color: #30363d;">
-      <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4 text-sm font-medium">
-        <a href="#production" class="mobile-nav-link transition-colors" style="color: #8b949e;">Production</a>
-        <a href="#projects" class="mobile-nav-link transition-colors" style="color: #8b949e;">Projects</a>
-        <a href="#experience" class="mobile-nav-link transition-colors" style="color: #8b949e;">Experience</a>
-        <a href="#about" class="mobile-nav-link transition-colors" style="color: #8b949e;">About</a>
-        <a href="#contact" class="mobile-nav-link transition-colors" style="color: #8b949e;">Contact</a>
-        <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank" class="transition-colors" style="color: #8b949e;">Resume ↗</a>
-      </div>
+    <div id="mobile-nav" class="mobile-nav">
+      <a href="#workplace">Work</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank">Resume ↗</a>
     </div>
   </nav>
 
-  <!-- ─── HERO ─── -->
-  <section id="hero" class="hero-glow flex flex-col justify-center px-6 py-24 md:py-32" style="min-height: calc(100vh - 4rem);">
-    <div class="max-w-6xl mx-auto w-full">
-      <h1 class="text-6xl md:text-8xl font-extrabold mb-4 leading-none" style="color: #e6edf3;">
-        Peyton<br/>Ramsey
-      </h1>
-      <p class="text-xl md:text-2xl font-semibold mb-5" style="color: #8b949e;">
-        Data Science &amp; AI Engineer
+  <!-- ─── HERO ─────────────────────────────────────────────── -->
+  <section id="hero" class="hero">
+    <div class="container">
+      <h1 class="hero-name">Peyton<br>Ramsey</h1>
+      <p class="hero-role">D1 runner turned data scientist... the measurement habit stuck.</p>
+      <p class="hero-bio">
+        I've shipped systems a 30-person compliance team uses daily and ML pipelines scoring 120K insurance policies.
+        Currently finishing an MS in Business Analytics at the University of New Hampshire — May 2026.
       </p>
-      <p class="max-w-xl text-base md:text-lg leading-relaxed mb-10" style="color: rgba(230,237,243,0.75);">
-        I build fully deployed apps, managing it from the data integration, from the statistical regression models inside, to the LLM-backed analysis to provide a smooth & aesthetic user experience.
-        Currently finishing an MS in Business Analytics at UNH (May 2026).
-      </p>
-      <div class="flex flex-wrap gap-3">
-        <a href="#projects"
-           class="px-5 py-2.5 font-semibold rounded-lg text-sm transition-colors"
-           style="background: #e8a045; color: #0d1117;"
-           onmouseover="this.style.background='#c97a25'"
-           onmouseout="this.style.background='#e8a045'">
-          View Projects
+      <div class="hero-actions">
+        <a href="#deployed" class="btn-primary">View Work</a>
+        <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank" class="btn-secondary">
+          Resume
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          </svg>
         </a>
-        <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank"
-           class="px-5 py-2.5 font-semibold rounded-lg text-sm flex items-center gap-2 transition-colors"
-           style="border: 1px solid #30363d; color: #e6edf3;"
-           onmouseover="this.style.borderColor='#e8a045'; this.style.color='#e8a045'"
-           onmouseout="this.style.borderColor='#30363d'; this.style.color='#e6edf3'">
-          Download Resume
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-        </a>
-        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
-           class="px-5 py-2.5 font-semibold rounded-lg text-sm transition-colors"
-           style="border: 1px solid #30363d; color: #8b949e;"
-           onmouseover="this.style.borderColor='#e6edf3'; this.style.color='#e6edf3'"
-           onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
-          GitHub ↗
-        </a>
+        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="btn-secondary">GitHub
+          ↗</a>
       </div>
     </div>
   </section>
 
-  <!-- ─── PRODUCTION WORK ─── -->
-  <section id="production" class="py-24 px-6">
-    <div class="max-w-6xl mx-auto">
-      <div class="mb-12">
-        <p class="font-mono text-xs tracking-widest uppercase mb-2" style="color: #2dd4bf;">Production Work</p>
-        <h2 class="text-3xl md:text-4xl font-bold" style="color: #e6edf3;">Deployed Projects</h2>
-        <p class="mt-3 max-w-2xl" style="color: #8b949e;">Projects built for real organizations and deployed in production, not demos or coursework.</p>
+  <!-- ─── WORKPLACE DEPLOYMENT ──────────────────────────────── -->
+  <section id="workplace">
+    <div class="container">
+      <div class="section-head">
+        <p class="label">Workplace Deployment</p>
+        <h2>TPA Compliance Review System</h2>
+        <p>Production system built solo during a data engineering internship — not a course project, not a demo.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="workplace-card">
+        <p class="workplace-meta">Data Engineering · Nassau Financial Group · Summer 2025</p>
+        <h3 class="workplace-title">TPA Compliance Review System</h3>
+        <p class="workplace-desc">
+          End-to-end third-party administrator oversight platform built solo at Nassau Financial Group. ETL pipelines
+          integrate 7 insurance data streams from AWS into a parquet-backed layer; a weighted scoring engine assesses
+          compliance across 8 activity types; a self-serve R Shiny dashboard deployed to a 30-person compliance team
+          managing 120K+ policies.
+        </p>
+        <p class="workplace-metric">60% reduction in manual review time</p>
+        <div class="workplace-links">
+          <a href="projects/tpa-compliance.html">View Project →</a>
+          <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank"
+            rel="noopener noreferrer" class="muted">GitHub ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- Card: TPA Compliance Review System -->
-        <div class="rounded-xl p-6 flex flex-col transition-all duration-200 project-card" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="flex items-start justify-between mb-3">
-            <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #30363d; color: #8b949e;">DATA ENGINEERING</span>
-            <span class="text-xs" style="color: #8b949e;">Summer 2025</span>
-          </div>
-          <h3 class="text-lg font-semibold mb-2" style="color: #e6edf3;">TPA Compliance Review System</h3>
-          <p class="text-sm leading-relaxed mb-4 flex-grow" style="color: #8b949e;">
-            End-to-end third-party administrator oversight platform built solo at Nassau Financial Group. ETL pipelines integrate 7 insurance data streams from AWS into a parquet-backed layer, a weighted scoring engine assesses compliance across 8 activity types, and a self-serve R Shiny dashboard was deployed to a 30-person compliance team managing 120K+ policies. Reduced manual review time by 60%.
+  <!-- ─── SELF-DEPLOYED ────────────────────────────────────── -->
+  <section id="self-deployed">
+    <div class="container">
+      <div class="section-head">
+        <p class="label">Self-Deployed</p>
+        <h2>Personal Production</h2>
+        <p>Built and run in production personally. Both are live.</p>
+      </div>
+
+      <div class="sd-grid">
+
+        <!-- Financial RAG -->
+        <div class="sd-card">
+          <p class="sd-card-meta">RAG · Jan 2026</p>
+          <h3 class="sd-card-title">Financial News RAG Analyst</h3>
+          <p class="sd-card-desc">
+            Ask questions about 500+ financial news articles in plain English and get sourced answers in under 5
+            seconds. Built with ChromaDB, LangChain, and FinBERT sentiment scoring.
           </p>
-          <div class="flex flex-wrap gap-1.5 mb-5">
-            <span class="tag">R</span>
-            <span class="tag">R Shiny</span>
-            <span class="tag">AWS</span>
-            <span class="tag">Apache Arrow</span>
-            <span class="tag">ETL</span>
-            <span class="tag">tidyverse</span>
-            <span class="tag">Plotly</span>
-          </div>
-          <div class="flex gap-4 mt-auto">
-            <a href="projects/tpa-compliance.html" class="text-sm font-medium hover:underline" style="color: #e8a045;">View Project →</a>
-            <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank" rel="noopener noreferrer"
-               class="text-sm transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">GitHub ↗</a>
+          <p class="sd-card-metric">92% retrieval precision</p>
+          <div class="sd-card-links">
+            <a href="projects/financial-rag.html">View Project →</a>
+            <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank"
+              rel="noopener noreferrer" class="muted">Live Demo ↗</a>
           </div>
         </div>
 
-        <!-- Card: Financial News RAG Analyst -->
-        <div class="rounded-xl p-6 flex flex-col transition-all duration-200 project-card" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="flex items-start justify-between mb-3">
-            <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #30363d; color: #8b949e;">RAG</span>
-            <span class="text-xs" style="color: #8b949e;">Jan 2026</span>
-          </div>
-          <h3 class="text-lg font-semibold mb-2" style="color: #e6edf3;">Financial News RAG Analyst</h3>
-          <p class="text-sm leading-relaxed mb-4 flex-grow" style="color: #8b949e;">
-            Ask questions about 500+ financial news articles in plain English and get sourced answers in under 5 seconds. Built with ChromaDB, LangChain, and FinBERT sentiment scoring. Hit 92% retrieval precision in A/B testing across article window sizes.
+        <!-- MacroSentinel -->
+        <div class="sd-card">
+          <p class="sd-card-meta">Anomaly Detection · Spring 2026</p>
+          <h3 class="sd-card-title">Macroeconomic Anomaly Detection</h3>
+          <p class="sd-card-desc">
+            LSTM Autoencoder ingesting 7 FRED macroeconomic indicators in real time, flagging structural breaks by
+            reconstruction error with plain-English explanations via Llama-3.1-8B. Calibrated on a pre-2007 baseline.
           </p>
-          <div class="flex flex-wrap gap-1.5 mb-5">
-            <span class="tag">Python</span>
-            <span class="tag">LangChain</span>
-            <span class="tag">ChromaDB</span>
-            <span class="tag">FinBERT</span>
-            <span class="tag">Docker</span>
-          </div>
-          <div class="flex gap-4 mt-auto">
-            <a href="projects/financial-rag.html" class="text-sm font-medium hover:underline" style="color: #e8a045;">View Project →</a>
-            <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank" rel="noopener noreferrer"
-               class="text-sm transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">Live Demo ↗</a>
-          </div>
-        </div>
-
-        <!-- Card: MacroSentinel -->
-        <div class="rounded-xl p-6 flex flex-col transition-all duration-200 project-card" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="flex items-start justify-between mb-3">
-            <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #30363d; color: #8b949e;">ANOMALY DETECTION</span>
-            <span class="text-xs" style="color: #8b949e;">Spring 2026</span>
-          </div>
-          <h3 class="text-lg font-semibold mb-2" style="color: #e6edf3;">Macroeconomic Anomaly Detection</h3>
-          <p class="text-sm leading-relaxed mb-4 flex-grow" style="color: #8b949e;">
-            Deployed LSTM Autoencoder that ingests 7 FRED macroeconomic indicators in real time, flags structural breaks by reconstruction error, and generates plain-English explanations via Llama-3.1-8B. Calibrated on a pre-2007 baseline: correctly identified the 2008 GFC, COVID-19 shock, and 2022 Fed rate cycle with minimal false positives. Built on VECM cointegration findings from R, extended to a nonlinear, full-stack Python system with FastAPI, MLflow tracking, and a Gradio demo on Hugging Face Spaces.
-          </p>
-          <div class="flex flex-wrap gap-1.5 mb-5">
-            <span class="tag">Python</span>
-            <span class="tag">PyTorch</span>
-            <span class="tag">LSTM</span>
-            <span class="tag">FRED</span>
-            <span class="tag">FastAPI</span>
-            <span class="tag">MLflow</span>
-            <span class="tag">Gradio</span>
-            <span class="tag">HuggingFace</span>
-          </div>
-          <div class="flex gap-4 mt-auto">
-            <a href="projects/macro-anomaly-detection.html" class="text-sm font-medium hover:underline" style="color: #e8a045;">View Project →</a>
-            <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank" rel="noopener noreferrer"
-               class="text-sm transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">Live Demo ↗</a>
+          <p class="sd-card-metric">3/3 historical crises identified</p>
+          <div class="sd-card-links">
+            <a href="projects/macro-anomaly-detection.html">View Project →</a>
+            <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank"
+              rel="noopener noreferrer" class="muted">Live Demo ↗</a>
           </div>
         </div>
 
@@ -227,169 +1090,110 @@
     </div>
   </section>
 
-  <!-- ─── PROJECTS ─── -->
-  <section id="projects" class="py-24 px-6">
-    <div class="max-w-6xl mx-auto">
-      <div class="mb-12">
-        <p class="font-mono text-xs tracking-widest uppercase mb-2" style="color: #e8a045;">Featured Work</p>
-        <h2 class="text-3xl md:text-4xl font-bold" style="color: #e6edf3;">Projects</h2>
-        <p class="mt-3 max-w-2xl" style="color: #8b949e;">ML systems, data pipelines, and full-stack apps. Each one started with a concrete problem and ended with something that runs.</p>
+  <!-- ─── PROJECTS (Editorial List, domain-grouped) ────────── -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-head">
+        <p class="label">Projects</p>
+        <h2>More Work</h2>
+        <p>ML systems, data pipelines, and full-stack apps. Each one started with a concrete problem and ended with
+          something that runs.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Domain: Finance & Economics -->
+      <div class="proj-domain">
+        <p class="proj-domain-label">Finance &amp; Economics</p>
+        <div class="proj-list">
 
-        <!-- Card 1: Student Dropout Classification -->
-        <div class="rounded-xl p-6 flex flex-col transition-all duration-200 project-card" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="flex items-start justify-between mb-3">
-            <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #30363d; color: #8b949e;">Classification</span>
-            <span class="text-xs" style="color: #8b949e;">Spring 2026</span>
+          <!-- VECM -->
+          <div class="proj-row">
+            <div class="proj-body">
+              <h3 class="proj-title">U.S. Inflation Dynamics: VECM Analysis</h3>
+              <p class="proj-summary">Modeled how demand, supply, and labor shocks transmit to U.S. inflation using a
+                Vector Error Correction Model on 407 monthly FRED observations (1992–2024). Retail sales explains 35.5%
+                of long-run CPI variance.</p>
+            </div>
+            <div class="proj-aside">
+              <span class="proj-metric">61.6% more external shock variance vs. VAR</span>
+              <a href="projects/inflation-vecm.html" class="primary">View →</a>
+              <a href="https://peytonramsey.github.io/us-inflation-dynamics/" target="_blank"
+                rel="noopener noreferrer">Report ↗</a>
+            </div>
           </div>
-          <h3 class="text-lg font-semibold mb-2" style="color: #e6edf3;">Student Dropout Classification</h3>
-          <p class="text-sm leading-relaxed mb-4 flex-grow" style="color: #8b949e;">
-            Compared Logistic Regression, KNN, Random Forest, and SVM on 4,424 university students to flag dropout risk. Random Forest with threshold=0.3 achieved 89.79% recall on the dropout class, correctly identifying ~9 of 10 at-risk students, by optimizing for the cost of missed interventions over false alarms.
-          </p>
-          <div class="flex flex-wrap gap-1.5 mb-5">
-            <span class="tag">R</span>
-            <span class="tag">caret</span>
-            <span class="tag">randomForest</span>
-            <span class="tag">ggplot2</span>
-            <span class="tag">Quarto</span>
+
+          <!-- Airbnb -->
+          <div class="proj-row">
+            <div class="proj-body">
+              <h3 class="proj-title">Airbnb Market Prediction, SF</h3>
+              <p class="proj-summary">Identified drivers of high booking rates across 12,947 SF listings. Most useful
+                finding: listings with ~14% weekly discounts outperform the 5% industry average significantly.</p>
+            </div>
+            <div class="proj-aside">
+              <span class="proj-metric">95% ROC-AUC on booking rate</span>
+              <a href="projects/airbnb.html" class="primary">View →</a>
+            </div>
           </div>
-          <div class="flex gap-4 mt-auto">
-            <a href="projects/student-dropout.html" class="text-sm font-medium hover:underline" style="color: #e8a045;">View Project →</a>
-            <a href="https://peytonramsey.github.io/student-dropout-classification/" target="_blank" class="text-sm transition-colors" style="color: #2dd4bf;"
-               onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#2dd4bf'">View Report ↗</a>
-            <a href="https://github.com/peytonramsey/student-dropout-classification" target="_blank" class="text-sm transition-colors" style="color: #8b949e;"
-               onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">GitHub ↗</a>
+
+          <!-- Amazon -->
+          <div class="proj-row">
+            <div class="proj-body">
+              <h3 class="proj-title">Amazon Pricing Strategy Analysis</h3>
+              <p class="proj-summary">EDA across 1.4M Amazon products. Found the "Discount Paradox": best sellers
+                average lower discounts than regular products. Sentiment segmentation across 248 categories.</p>
+            </div>
+            <div class="proj-aside">
+              <a href="projects/amazon-pricing.html" class="primary">View →</a>
+              <a href="https://peytonramsey.github.io/amazon-pricing-analysis/amazon-pricing-analysis.html"
+                target="_blank" rel="noopener noreferrer">Report ↗</a>
+              <a href="https://github.com/peytonramsey/amazon-pricing-analysis" target="_blank"
+                rel="noopener noreferrer">GitHub ↗</a>
+            </div>
           </div>
+
         </div>
-
-        <!-- Card 3: U.S. Inflation Dynamics (VECM) -->
-        <div class="rounded-xl p-6 flex flex-col transition-all duration-200 project-card" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="flex items-start justify-between mb-3">
-            <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #30363d; color: #8b949e;">Time Series</span>
-            <span class="text-xs" style="color: #8b949e;">Spring 2026</span>
-          </div>
-          <h3 class="text-lg font-semibold mb-2" style="color: #e6edf3;">U.S. Inflation Dynamics: VECM Analysis</h3>
-          <p class="text-sm leading-relaxed mb-4 flex-grow" style="color: #8b949e;">
-            Modeled how demand, supply, and labor shocks transmit to U.S. inflation using a Vector Error Correction Model on 407 monthly FRED observations (1992–2024). Retail sales explains 35.5% of long-run CPI variance. VECM captures 61.6% more external shock variance than a VAR on differences.
-          </p>
-          <div class="flex flex-wrap gap-1.5 mb-5">
-            <span class="tag">R</span>
-            <span class="tag">vars</span>
-            <span class="tag">VECM</span>
-            <span class="tag">FRED</span>
-            <span class="tag">Time Series</span>
-            <span class="tag">IRF</span>
-          </div>
-          <div class="flex gap-4 mt-auto">
-            <a href="projects/inflation-vecm.html" class="text-sm font-medium hover:underline" style="color: #e8a045;">View Project →</a>
-            <a href="https://peytonramsey.github.io/us-inflation-dynamics/" target="_blank" class="text-sm transition-colors" style="color: #2dd4bf;"
-               onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#2dd4bf'">View Report ↗</a>
-            <a href="https://github.com/peytonramsey/us-inflation-dynamics" target="_blank" class="text-sm transition-colors" style="color: #8b949e;"
-               onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">GitHub ↗</a>
-          </div>
-        </div>
-
-        <!-- Card 4: Airbnb -->
-        <div class="rounded-xl p-6 flex flex-col transition-all duration-200 project-card" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="flex items-start justify-between mb-3">
-            <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #30363d; color: #8b949e;">Classification</span>
-            <span class="text-xs" style="color: #8b949e;">2025</span>
-          </div>
-          <h3 class="text-lg font-semibold mb-2" style="color: #e6edf3;">Airbnb Market Prediction, SF</h3>
-          <p class="text-sm leading-relaxed mb-4 flex-grow" style="color: #8b949e;">
-            Identified drivers of high booking rates across 12,947 SF Airbnb listings using Random Forest and LightGBM (95% ROC-AUC). Most useful finding: listings with ~14% weekly discounts outperform the 5% industry average significantly.
-          </p>
-          <div class="flex flex-wrap gap-1.5 mb-5">
-            <span class="tag">R</span>
-            <span class="tag">Random Forest</span>
-            <span class="tag">LightGBM</span>
-            <span class="tag">tidyverse</span>
-            <span class="tag">EDA</span>
-          </div>
-          <div class="flex gap-4 mt-auto">
-            <a href="projects/airbnb.html" class="text-sm font-medium hover:underline" style="color: #e8a045;">View Project →</a>
-          </div>
-        </div>
-
       </div>
 
-      <!-- More Projects -->
-      <div class="mt-12 pt-10" style="border-top: 1px solid #30363d;">
-        <p class="font-mono text-xs tracking-widest uppercase mb-6" style="color: #8b949e;">More Projects</p>
-        <div class="grid md:grid-cols-3 gap-4">
+      <!-- Domain: Classification & MLOps -->
+      <div class="proj-domain">
+        <p class="proj-domain-label">Classification &amp; MLOps</p>
+        <div class="proj-list">
 
-          <!-- MLOps Loan Default -->
-          <div class="rounded-xl p-5 flex flex-col transition-all duration-200 project-card" style="background: #1c2333; border: 1px solid #30363d;">
-            <div class="flex items-start justify-between mb-3">
-              <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #30363d; color: #8b949e;">Classification</span>
-              <span class="text-xs" style="color: #8b949e;">Dec 2025</span>
+          <!-- Student Dropout -->
+          <div class="proj-row">
+            <div class="proj-body">
+              <h3 class="proj-title">Student Dropout Classification</h3>
+              <p class="proj-summary">Compared Logistic Regression, KNN, Random Forest, and SVM on 4,424 university
+                students. Threshold tuned to 0.3 — optimizing for the cost of a missed intervention over false alarms.
+              </p>
             </div>
-            <h3 class="text-base font-semibold mb-2" style="color: #e6edf3;">MLOps Loan Default Prediction</h3>
-            <p class="text-sm leading-relaxed mb-4 flex-grow" style="color: #8b949e;">
-              Predicts loan defaults across 148K applications with 0.92 ROC-AUC. The PyTorch DataLoader pipeline cut memory usage 4,600×, which matters at that scale. PSI drift monitoring across 51 features flags when the model's input distribution shifts post-deployment.
-            </p>
-            <div class="flex flex-wrap gap-1.5 mb-4">
-              <span class="tag">Python</span>
-              <span class="tag">Random Forest</span>
-              <span class="tag">PyTorch</span>
-              <span class="tag">MLflow</span>
-              <span class="tag">Docker</span>
-            </div>
-            <div class="mt-auto flex gap-4">
-              <a href="projects/loan-default.html" class="text-sm font-medium hover:underline" style="color: #e8a045;">View Project →</a>
-              <a href="https://huggingface.co/spaces/peytonramsey/loan-default-prediction" target="_blank" class="text-sm transition-colors" style="color: #8b949e;"
-                 onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">Live Demo ↗</a>
+            <div class="proj-aside">
+              <span class="proj-metric">89.79% recall on dropout class</span>
+              <a href="projects/student-dropout.html" class="primary">View →</a>
+              <a href="https://peytonramsey.github.io/student-dropout-classification/" target="_blank"
+                rel="noopener noreferrer">Report ↗</a>
             </div>
           </div>
+
+        </div>
+      </div>
+
+      <!-- Domain: Full-Stack -->
+      <div class="proj-domain">
+        <p class="proj-domain-label">Full-Stack</p>
+        <div class="proj-list">
 
           <!-- GymLog -->
-          <div class="rounded-xl p-5 flex flex-col transition-all duration-200 project-card" style="background: #1c2333; border: 1px solid #30363d;">
-            <div class="flex items-start justify-between mb-3">
-              <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #30363d; color: #8b949e;">Full-Stack</span>
-              <span class="text-xs" style="color: #8b949e;">2025</span>
+          <div class="proj-row">
+            <div class="proj-body">
+              <h3 class="proj-title">GymLog: Full-Stack Fitness App</h3>
+              <p class="proj-summary">Built from scratch: workout logging, nutrition tracking with dual-API food search
+                (OpenFoodFacts + USDA), and a Gradient Boosting model for progressive overload predictions.</p>
             </div>
-            <h3 class="text-base font-semibold mb-2" style="color: #e6edf3;">GymLog: Full-Stack Fitness App</h3>
-            <p class="text-sm leading-relaxed mb-4 flex-grow" style="color: #8b949e;">
-              Full-stack fitness app I built from scratch: workout logging, nutrition tracking with dual-API food search (OpenFoodFacts + USDA), and a Gradient Boosting model for progressive overload predictions. 40+ REST endpoints, 11,500+ lines of code.
-            </p>
-            <div class="flex flex-wrap gap-1.5 mb-4">
-              <span class="tag">Flask</span>
-              <span class="tag">PostgreSQL</span>
-              <span class="tag">scikit-learn</span>
-              <span class="tag">Bootstrap 5</span>
-              <span class="tag">Chart.js</span>
-            </div>
-            <div class="mt-auto flex gap-4">
-              <a href="projects/gymlog.html" class="text-sm font-medium hover:underline" style="color: #e8a045;">View Project →</a>
-              <a href="https://gym-log-s702.onrender.com/?demo=true" target="_blank" class="text-sm transition-colors" style="color: #8b949e;"
-                 onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">Live Demo ↗</a>
-            </div>
-          </div>
-
-          <!-- Amazon Pricing -->
-          <div class="rounded-xl p-5 flex flex-col transition-all duration-200 project-card" style="background: #1c2333; border: 1px solid #30363d;">
-            <div class="flex items-start justify-between mb-3">
-              <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background: #161b22; border: 1px solid #30363d; color: #8b949e;">EDA</span>
-              <span class="text-xs" style="color: #8b949e;">Fall 2025</span>
-            </div>
-            <h3 class="text-base font-semibold mb-2" style="color: #e6edf3;">Amazon Pricing Strategy Analysis</h3>
-            <p class="text-sm leading-relaxed mb-4 flex-grow" style="color: #8b949e;">
-              EDA across 1.4M Amazon products in R. Found the "Discount Paradox": best sellers average lower discounts than regular products. Includes category pricing DNA, title keyword analysis via tidytext, and sentiment segmentation across 248 categories.
-            </p>
-            <div class="flex flex-wrap gap-1.5 mb-4">
-              <span class="tag">R</span>
-              <span class="tag">tidyverse</span>
-              <span class="tag">ggplot2</span>
-              <span class="tag">tidytext</span>
-              <span class="tag">Quarto</span>
-            </div>
-            <div class="mt-auto flex gap-4">
-              <a href="https://peytonramsey.github.io/amazon-pricing-analysis/amazon-pricing-analysis.html" target="_blank" class="text-sm transition-colors" style="color: #2dd4bf;"
-                 onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#2dd4bf'">View Report ↗</a>
-              <a href="https://github.com/peytonramsey/amazon-pricing-analysis" target="_blank" class="text-sm transition-colors" style="color: #8b949e;"
-                 onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">GitHub ↗</a>
+            <div class="proj-aside">
+              <span class="proj-metric">40+ REST endpoints · 11,500+ lines</span>
+              <a href="projects/gymlog.html" class="primary">View →</a>
+              <a href="https://gym-log-s702.onrender.com/?demo=true" target="_blank" rel="noopener noreferrer">Demo
+                ↗</a>
             </div>
           </div>
 
@@ -397,25 +1201,22 @@
       </div>
 
       <!-- Tableau -->
-      <div class="mt-12 pt-10" style="border-top: 1px solid #30363d;">
-        <p class="font-mono text-xs tracking-widest uppercase mb-2" style="color: #e8a045;">Data Visualization</p>
-        <h3 class="text-xl font-bold mb-2" style="color: #e6edf3;">Tableau Public</h3>
-        <p class="text-sm mb-5" style="color: #8b949e;">Interactive dashboard, exploring the the average amount of sunlight each major city gets.</p>
-        <div class="rounded-xl overflow-hidden" style="border: 1px solid #30363d;">
+      <div style="margin-top:4rem; padding-top:3rem; border-top:1px solid var(--border);">
+        <p class="label" style="margin-bottom:0.5rem;">Data Visualization</p>
+        <h3 style="font-family:var(--font-heading); font-size:1.125rem; color:var(--text-1); margin-bottom:0.5rem;">
+          Tableau Public</h3>
+        <p style="font-size:0.9375rem; color:var(--text-2); margin-bottom:1.25rem;">Interactive dashboard exploring
+          average sunlight hours across major cities.</p>
+        <div class="tableau-wrap"> 
           <iframe
             src="https://public.tableau.com/views/SunlightAcrossMonthsinVariousCities/Dashboard2?:embed=y&:showVizHome=no&:toolbar=yes&:device=desktop"
-            width="100%"
-            height="520"
-            frameborder="0"
-            style="display: block;">
-          </iframe>
+            width="100%" height="520" frameborder="0" style="display:block;"></iframe>
         </div>
-        <p class="text-xs mt-2 text-right">
-          <a href="https://public.tableau.com/app/profile/peyton.ramsey/vizzes"
-             target="_blank" rel="noopener noreferrer"
-             class="hover:underline" style="color: #8b949e;"
-             onmouseover="this.style.color='#e8a045'" onmouseout="this.style.color='#8b949e'">
-            View full Tableau profile ↗
+        <p style="font-size:0.75rem; color:var(--text-3); margin-top:0.5rem; text-align:right;">
+          <a href="https://public.tableau.com/app/profile/peyton.ramsey/vizzes" target="_blank"
+            rel="noopener noreferrer" style="transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'"
+            onmouseout="this.style.color='var(--text-3)'">
+            Tableau profile ↗
           </a>
         </p>
       </div>
@@ -423,236 +1224,214 @@
     </div>
   </section>
 
-  <!-- ─── EXPERIENCE ─── -->
-  <section id="experience" class="py-24 px-6 border-y" style="background: #161b22; border-color: #30363d;">
-    <div class="max-w-6xl mx-auto">
-      <div class="mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold" style="color: #e6edf3;">Experience</h2>
+  <!-- ─── EXPERIENCE ────────────────────────────────────────── -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-head">
+        <h2>Work Experience</h2>
       </div>
 
-      <p class="text-xs font-semibold uppercase tracking-widest mb-6" style="color: #8b949e; letter-spacing: 0.12em;">Work Experience</p>
-      <div class="relative pl-6" style="border-left: 2px solid #30363d;">
+      <div class="timeline">
 
-        <!-- Graduate RA -->
-        <div class="relative mb-8">
-          <div class="absolute rounded-full" style="left: -29px; top: 6px; width: 14px; height: 14px; background: #e8a045; border: 2px solid #161b22;"></div>
-          <div class="rounded-xl p-6" style="background: #1c2333; border: 1px solid #30363d;">
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-3">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="exp-card">
+            <div class="exp-head">
               <div>
-                <h3 class="font-semibold" style="color: #e6edf3;">Graduate Research Assistant, Data Science &amp; AI</h3>
-                <p class="text-sm font-medium" style="color: #e8a045;">University of New Hampshire · Durham, NH</p>
+                <p class="exp-title">Graduate Research Assistant, Data Science &amp; AI</p>
+                <p class="exp-org">University of New Hampshire · Durham, NH</p>
               </div>
-              <span class="text-xs whitespace-nowrap pt-0.5" style="color: #8b949e;">Aug 2025 – Present</span>
+              <span class="exp-date">Aug 2025 – Present</span>
             </div>
-            <ul class="text-sm space-y-2" style="color: #8b949e;">
-              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0; margin-top: 2px;">▸</span>Co-built a new graduate course on AI tools and production ML deployment for 20 MSBA students, covering Docker, Hugging Face, LLMs, and responsible AI through hands-on labs.</li>
-              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0; margin-top: 2px;">▸</span>Updated 12+ modules across Predictive Analytics, NLP, and Big Data; wrote new labs covering RAG systems, K-means, vector embeddings, and deep learning in Python and R.</li>
+            <ul class="exp-bullets">
+              <li>Co-built a new graduate course on AI tools and production ML deployment for 20 MSBA students, covering
+                Docker, Hugging Face, LLMs, and responsible AI through hands-on labs.</li>
+              <li>Updated 12+ modules across Predictive Analytics, NLP, and Big Data; wrote new labs covering RAG
+                systems, K-means, vector embeddings, and deep learning in Python and R.</li>
             </ul>
-            <div class="flex flex-wrap gap-1.5 mt-4">
-              <span class="tag">Curriculum Design</span><span class="tag">Python</span><span class="tag">R</span><span class="tag">RAG</span><span class="tag">LLMs</span><span class="tag">MLOps</span>
+            <div class="exp-tags">
+              <span class="exp-tag">Curriculum Design</span>
+              <span class="exp-tag">Python</span>
+              <span class="exp-tag">R</span>
+              <span class="exp-tag">RAG</span>
+              <span class="exp-tag">LLMs</span>
+              <span class="exp-tag">MLOps</span>
             </div>
           </div>
         </div>
 
-
-        <!-- Nassau Financial Group -->
-        <div class="relative mb-8">
-          <div class="absolute rounded-full" style="left: -29px; top: 6px; width: 14px; height: 14px; background: #e8a045; border: 2px solid #161b22;"></div>
-          <div class="rounded-xl p-6" style="background: #1c2333; border: 1px solid #30363d;">
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-3">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="exp-card">
+            <div class="exp-head">
               <div>
-                <h3 class="font-semibold" style="color: #e6edf3;">Data Engineer Intern</h3>
-                <p class="text-sm font-medium" style="color: #e8a045;">Nassau Financial Group · Hartford, CT</p>
+                <p class="exp-title">Data Engineer Intern</p>
+                <p class="exp-org">Nassau Financial Group · Hartford, CT</p>
               </div>
-              <span class="text-xs whitespace-nowrap pt-0.5" style="color: #8b949e;">June – Aug 2025</span>
+              <span class="exp-date">June – Aug 2025</span>
             </div>
-            <ul class="text-sm space-y-2" style="color: #8b949e;">
-              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0; margin-top: 2px;">▸</span>Designed and built a TPA Oversight Dashboard in R Shiny, connecting AWS and the enterprise data warehouse: 120K+ insurance policies, up to 100M rows across 7 data sources.</li>
-              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0; margin-top: 2px;">▸</span>Built a weighted compliance scoring engine with category-specific weights and an 80% pass threshold across 8 insurance activity types, backed by Arrow/Parquet ETL pipelines from AWS.</li>
-              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0; margin-top: 2px;">▸</span>Built the reactive Shiny UI so analysts could filter, drill, and export risk data themselves, no more queuing manual reports.</li>
+            <ul class="exp-bullets">
+              <li>Designed and built a TPA Oversight Dashboard in R Shiny, connecting AWS and the enterprise data
+                warehouse: 120K+ insurance policies, up to 100M rows across 7 data sources.</li>
+              <li>Built a weighted compliance scoring engine with category-specific weights and an 80% pass threshold
+                across 8 insurance activity types, backed by Arrow/Parquet ETL pipelines from AWS.</li>
+              <li>Built the reactive Shiny UI so analysts could filter, drill, and export risk data themselves — no more
+                queuing manual reports.</li>
             </ul>
-            <div class="flex flex-wrap gap-1.5 mt-4">
-              <span class="tag">R Shiny</span><span class="tag">AWS S3</span><span class="tag">ETL</span><span class="tag">Arrow/Parquet</span><span class="tag">dbplyr</span>
+            <div class="exp-tags">
+              <span class="exp-tag">R Shiny</span>
+              <span class="exp-tag">AWS S3</span>
+              <span class="exp-tag">ETL</span>
+              <span class="exp-tag">Arrow/Parquet</span>
+              <span class="exp-tag">dbplyr</span>
             </div>
           </div>
         </div>
 
-
-        <!-- Sprague -->
-        <div class="relative mb-8">
-          <div class="absolute rounded-full" style="left: -29px; top: 6px; width: 14px; height: 14px; background: #30363d; border: 2px solid #161b22;"></div>
-          <div class="rounded-xl p-6" style="background: #1c2333; border: 1px solid #30363d;">
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-3">
+        <div class="tl-item">
+          <div class="tl-dot dim"></div>
+          <div class="exp-card">
+            <div class="exp-head">
               <div>
-                <h3 class="font-semibold" style="color: #e6edf3;">Business Intelligence Intern</h3>
-                <p class="text-sm font-medium" style="color: #e8a045;">Sprague Operating Resources · Portsmouth, NH</p>
+                <p class="exp-title">Business Intelligence Intern</p>
+                <p class="exp-org">Sprague Operating Resources · Portsmouth, NH</p>
               </div>
-              <span class="text-xs whitespace-nowrap pt-0.5" style="color: #8b949e;">June – Aug 2024</span>
+              <span class="exp-date">June – Aug 2024</span>
             </div>
-            <ul class="text-sm space-y-2" style="color: #8b949e;">
-              <li class="flex gap-2"><span style="color: #e8a045; flex-shrink: 0; margin-top: 2px;">▸</span>Analyzed commodity contract data using SQL and Python to surface pricing trends and forecast accuracy gaps; built Power BI dashboards enabling the trading team to monitor variance in real time.</li>
+            <ul class="exp-bullets">
+              <li>Analyzed commodity contract data using SQL and Python to surface pricing trends and forecast accuracy
+                gaps; built Power BI dashboards enabling the trading team to monitor variance in real time.</li>
             </ul>
-            <div class="flex flex-wrap gap-1.5 mt-4">
-              <span class="tag">SQL</span><span class="tag">Python</span><span class="tag">Power BI</span><span class="tag">DAX</span>
+            <div class="exp-tags">
+              <span class="exp-tag">SQL</span>
+              <span class="exp-tag">Python</span>
+              <span class="exp-tag">Power BI</span>
+              <span class="exp-tag">DAX</span>
             </div>
           </div>
         </div>
 
       </div>
 
-      <!-- Education subsection -->
-      <div class="mt-12">
-        <p class="text-xs font-semibold uppercase tracking-widest mb-6" style="color: #8b949e; letter-spacing: 0.12em;">Education</p>
-        <div class="rounded-xl p-6" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-3">
+      <div style="margin-top:3rem;">
+        <p
+          style="font-family:var(--font-mono); font-size:0.625rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3); margin-bottom:1rem;">
+          Education</p>
+        <div class="edu-card">
+          <div class="edu-head">
             <div>
-              <h3 class="font-semibold" style="color: #e6edf3;">University of New Hampshire</h3>
-              <p class="text-sm font-medium" style="color: #e8a045;">MS Business Analytics · GPA 3.83 · Aug 2025 – May 2026</p>
+              <p class="edu-school">University of New Hampshire</p>
+              <p class="edu-degree">MS Business Analytics · GPA 3.83 · Aug 2025 – May 2026</p>
             </div>
-            <span class="text-xs whitespace-nowrap pt-0.5" style="color: #8b949e;">Durham, NH</span>
+            <span class="exp-date">Durham, NH</span>
           </div>
-          <div style="border-top: 1px solid #30363d; padding-top: 0.75rem;">
-            <p class="text-sm" style="color: rgba(230,237,243,0.65);">BS Business Administration: Information Systems &amp; Business Analytics · Aug 2021 – May 2025</p>
-            <p class="text-sm mt-2 italic" style="color: #8b949e;">NCAA Division I Cross Country &amp; Track · Dean's List · America East Commissioner's Honor Roll</p>
+          <div class="edu-rule">
+            <p class="edu-bs">BS Business Administration: Information Systems &amp; Business Analytics · Aug 2021 – May
+              2025</p>
+            <p class="edu-honors">NCAA Division I Cross Country &amp; Track · Dean's List · America East Commissioner's
+              Honor Roll</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ─── ABOUT ─── -->
-  <section id="about" class="py-24 px-6">
-    <div class="max-w-6xl mx-auto">
-      <div class="mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold" style="color: #e6edf3;">About</h2>
+  <!-- ─── ABOUT ──────────────────────────────────────────────── -->
+  <section id="about">
+    <div class="container">
+      <div class="section-head">
+        <h2>About</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-        <!-- Bio -->
+      <div class="about-grid">
+        <div class="about-bio">
+          <p>I'm a business analytics student specializing in data science and AI engineering, finishing an MS in
+            Business Analytics at UNH (GPA 3.83, May 2026). Most of my work bridges the technical side of building
+            models and the business context they're meant to serve.</p>
+          <p>I care about the whole problem — building something that fits the need of the actual user, not just
+            something that passes a benchmark. That means understanding what each person actually needs before deciding
+            what to build.</p>
+          <div class="on-ai">
+            <p class="on-ai-label">On AI</p>
+            <p>Working with generative models through my research role has sharpened one view: AI is most effective when
+              treated as a skill, not a shortcut. It can genuinely expand your thinking and accelerate work, but it can
+              just as easily anchor you to mediocre results if you're not skeptical. The practitioners who get the most
+              from it understand its capabilities and its failure modes equally well.</p>
+          </div>
+          <p>Outside of school, I ran Division I Cross Country and Track at UNH for four years. I'm an avid football
+            fan, enjoy road cycling and lifting, and am currently reading <em>Bad Blood</em> by John Carreyrou.</p>
+          <a href="#contact" class="about-cta" style="display:inline-block;">Get in touch →</a>
+        </div>
+
+        <div class="skills-grid">
+          <div class="skill-cat">
+            <h4>ML &amp; Algorithms</h4>
+            <p>Logistic Regression, Lasso/Ridge, SVM, Random Forest, XGBoost, LightGBM, Gradient Boosting, Time Series,
+              Clustering, RAG, LLMs, NLP, AI Agents, Vector Embeddings, A/B Testing, Feature Engineering</p>
+          </div>
+          <div class="skill-cat">
+            <h4>Programming &amp; Frameworks</h4>
+            <p>Python, R, SQL, PyTorch, pandas, scikit-learn, LangChain, Flask, R Shiny, Gradio, FastAPI</p>
+          </div>
+          <div class="skill-cat">
+            <h4>MLOps &amp; Infrastructure</h4>
+            <p>Docker, MLflow, AWS (S3, Lambda), Hugging Face, ChromaDB, Git/GitHub, ETL Pipelines, Apache Arrow/Parquet
+            </p>
+          </div>
+          <div class="skill-cat">
+            <h4>Data Visualization</h4>
+            <p>Tableau, ggplot2, seaborn, matplotlib, Plotly, Power BI</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ───────────────────────────────────────────── -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-grid">
         <div>
-          <p class="leading-relaxed mb-4" style="color: rgba(230,237,243,0.80);">
-            I'm a business analytics student specializing in data science and AI engineering, finishing an MS in Business Analytics at UNH (GPA 3.83, May 2026). Most of my work bridges the technical side of building models and the business context they're meant to serve.
-          </p>
-          <p class="leading-relaxed mb-4" style="color: rgba(230,237,243,0.80);">
-            I care about the whole problem, being able to create a model or app that fits the need of any user. This is what makes or breaks it, you can't use it if people don't see the value. By building something properly and understanding what each person actually needs, you can create something to actually make a difference...(and because it's fun).
-          </p>
-          <div class="mb-4 pl-4" style="border-left: 2px solid #e8a045;">
-            <p class="text-xs font-mono uppercase tracking-widest mb-1" style="color: #e8a045;">On AI</p>
-            <p class="leading-relaxed text-sm" style="color: rgba(230,237,243,0.75);">Working with generative models through my research role has sharpened one view: AI is most effective when treated as a skill, not a shortcut. It can genuinely expand your thinking and accelerate work, but it can just as easily anchor you to mediocre results if you're not skeptical. The practitioners who get the most from it understand its capabilities and its failure modes equally well.</p>
-          </div>
-          <p class="leading-relaxed mb-8" style="color: rgba(230,237,243,0.80);">
-            Outside of school, I ran Division I Cross Country and Track at UNH for four years. I'm an avid football fan and enjoy taking my road bike for a spin, or lifting weights at the gym. I'm currently reading Bad Blood by John Carreyrou.
-          </p>
-          <a href="#contact" class="text-sm font-medium hover:underline" style="color: #e8a045;">Get in touch →</a>
+          <p class="label" style="margin-bottom:0.5rem;">Get in Touch</p>
+          <h2 class="contact-heading">Let's talk.</h2>
+          <p class="contact-copy">If you're working on something in ML, data engineering, or AI — or just want to talk
+            shop — reach out.</p>
+          <a href="mailto:ramseypeyton@gmail.com" class="contact-email">ramseypeyton@gmail.com</a>
         </div>
-
-        <!-- Skills -->
-        <div class="space-y-7">
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: #8b949e;">ML &amp; Algorithms</h4>
-            <div class="flex flex-wrap gap-2">
-              <span class="skill-tag">Logistic Regression</span>
-              <span class="skill-tag">Lasso / Ridge</span>
-              <span class="skill-tag">SVM</span>
-              <span class="skill-tag">Random Forest</span>
-              <span class="skill-tag">XGBoost</span>
-              <span class="skill-tag">LightGBM</span>
-              <span class="skill-tag">Gradient Boosting</span>
-              <span class="skill-tag">Time Series</span>
-              <span class="skill-tag">Clustering</span>
-              <span class="skill-tag">RAG</span>
-              <span class="skill-tag">LLMs</span>
-              <span class="skill-tag">NLP</span>
-              <span class="skill-tag">AI Agents</span>
-              <span class="skill-tag">Vector Embeddings</span>
-              <span class="skill-tag">A/B Testing</span>
-              <span class="skill-tag">Feature Engineering</span>
-            </div>
-          </div>
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: #8b949e;">Programming</h4>
-            <div class="flex flex-wrap gap-2">
-              <span class="skill-tag">Python</span>
-              <span class="skill-tag">R</span>
-              <span class="skill-tag">SQL</span>
-              <span class="skill-tag">PyTorch</span>
-              <span class="skill-tag">pandas</span>
-              <span class="skill-tag">scikit-learn</span>
-              <span class="skill-tag">LangChain</span>
-              <span class="skill-tag">Flask</span>
-              <span class="skill-tag">R Shiny</span>
-              <span class="skill-tag">Gradio</span>
-            </div>
-          </div>
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: #8b949e;">MLOps &amp; Infrastructure</h4>
-            <div class="flex flex-wrap gap-2">
-              <span class="skill-tag">Docker</span>
-              <span class="skill-tag">MLflow</span>
-              <span class="skill-tag">FastAPI</span>
-              <span class="skill-tag">AWS (S3, Lambda)</span>
-              <span class="skill-tag">Hugging Face</span>
-              <span class="skill-tag">ChromaDB</span>
-              <span class="skill-tag">Git/GitHub</span>
-              <span class="skill-tag">ETL Pipelines</span>
-              <span class="skill-tag">CI/CD</span>
-            </div>
-          </div>
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: #8b949e;">Data Visualization</h4>
-            <div class="flex flex-wrap gap-2">
-              <span class="skill-tag">Tableau</span>
-              <span class="skill-tag">ggplot2</span>
-              <span class="skill-tag">seaborn</span>
-              <span class="skill-tag">matplotlib</span>
-              <span class="skill-tag">Plotly</span>
-              <span class="skill-tag">Power BI</span>
-            </div>
-          </div>
+        <div class="contact-links">
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="contact-link">
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z" />
+            </svg>
+            github.com/peytonramsey
+          </a>
+          <a href="https://www.linkedin.com/in/peytonr-msba/" target="_blank" rel="noopener noreferrer"
+            class="contact-link">
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+            linkedin.com/in/peytonr-msba
+          </a>
+          <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank" class="contact-link">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            </svg>
+            Download Resume
+          </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ─── CONTACT ─── -->
-  <section id="contact" class="py-24 px-6 border-t" style="background: #161b22; border-color: #30363d;">
-    <div class="max-w-2xl mx-auto text-center">
-      <p class="leading-relaxed mb-8 max-w-lg mx-auto text-base" style="color: #8b949e;">
-        If you're working on something in ML, data engineering, or AI, or just want to talk shop, I'm reachable below.
-      </p>
-      <a href="mailto:ramseypeyton@gmail.com"
-         class="inline-block text-2xl md:text-3xl font-semibold mb-10 hover:underline"
-         style="color: #e8a045;">
-        ramseypeyton@gmail.com
-      </a>
-      <div class="flex items-center justify-center gap-8">
-        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
-           class="flex items-center gap-2 text-sm font-medium transition-colors" style="color: #8b949e;"
-           onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>
-          GitHub
-        </a>
-        <a href="https://www.linkedin.com/in/peytonr-msba/" target="_blank" rel="noopener noreferrer"
-           class="flex items-center gap-2 text-sm font-medium transition-colors" style="color: #8b949e;"
-           onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          LinkedIn
-        </a>
-        <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank"
-           class="flex items-center gap-2 text-sm font-medium transition-colors" style="color: #8b949e;"
-           onmouseover="this.style.color='#e8a045'" onmouseout="this.style.color='#8b949e'">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-          Resume
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── FOOTER ─── -->
-  <footer class="py-6 px-6 border-t text-center" style="border-color: #30363d;">
-    <p class="text-xs" style="color: #8b949e;">Built by Peyton Ramsey · 2026</p>
+  <!-- ─── FOOTER ────────────────────────────────────────────── -->
+  <footer>
+    Built by Peyton Ramsey · 2026
   </footer>
 
   <script src="js/main.js"></script>
 </body>
+
 </html>

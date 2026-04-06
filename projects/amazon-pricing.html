@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Airbnb Market Prediction | Peyton Ramsey</title>
-  <meta name="description" content="Supervised ML models predicting high-booking Airbnb listings in San Francisco — Random Forest at 91.7% ROC-AUC with actionable pricing insights from 12,947 listings." />
+  <title>Amazon Pricing Strategy Analysis | Peyton Ramsey</title>
+  <meta name="description" content="EDA across 1.4M Amazon products revealing the Discount Paradox — best sellers carry lower average discounts than regular products — with sentiment segmentation across 248 categories." />
 
   <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
   <link rel="preconnect" href="https://api.fontshare.com" />
@@ -441,50 +441,6 @@
       line-height: 1.6;
     }
 
-    /* ── STEP CARDS ─────────────────────────────────────────── */
-    .step-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      margin-top: 1.25rem;
-    }
-
-    .step-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      padding: 1.125rem 1.375rem;
-      display: flex;
-      gap: 1.25rem;
-    }
-
-    .step-num {
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-      color: var(--accent);
-      flex-shrink: 0;
-      padding-top: 0.1rem;
-    }
-
-    .step-body { display: flex; flex-direction: column; }
-
-    .step-body h4 {
-      font-family: var(--font-heading);
-      font-size: 0.9375rem;
-      font-weight: 700;
-      color: var(--text-1);
-      margin-bottom: 0.375rem;
-    }
-
-    .step-body p {
-      font-size: 0.8125rem;
-      color: var(--text-2);
-      line-height: 1.65;
-      margin: 0;
-    }
-
-    .step-body p strong { color: var(--text-1); font-weight: 500; }
-
     /* ── CALLOUT ────────────────────────────────────────────── */
     .callout {
       background: var(--bg-surface);
@@ -601,37 +557,6 @@
       padding: 0.25rem 0.625rem;
     }
 
-    /* ── VISUALIZATIONS ─────────────────────────────────────── */
-    .viz-grid {
-      display: grid;
-      gap: 1rem;
-      margin-top: 1.25rem;
-    }
-
-    @media (min-width: 640px) {
-      .viz-grid { grid-template-columns: 1fr 1fr; }
-      .viz-grid .viz-wide { grid-column: 1 / -1; }
-    }
-
-    .viz-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      overflow: hidden;
-    }
-
-    .viz-card img {
-      width: 100%;
-      display: block;
-    }
-
-    .viz-cap {
-      font-size: 0.8125rem;
-      color: var(--text-3);
-      padding: 0.625rem 1rem;
-      line-height: 1.5;
-    }
-
     /* ── LINKS SECTION ──────────────────────────────────────── */
     .btn-secondary {
       display: inline-flex;
@@ -702,16 +627,16 @@
   <!-- ─── HEADER ─── -->
   <header class="page-header">
     <div class="container">
-      <h1>Airbnb Market Prediction:<br/>San Francisco</h1>
-      <p class="subtitle">Predicting which listings achieve high booking rates — and surfacing the pricing and property decisions that actually drive Airbnb success in a hyper-competitive short-term rental market.</p>
+      <h1>Amazon Pricing<br/>Strategy Analysis</h1>
+      <p class="subtitle">Exploratory analysis of 1.4 million Amazon products to surface pricing dynamics across 248 categories — uncovering the Discount Paradox: best sellers carry systematically lower discounts than the products surrounding them.</p>
       <div class="header-meta">
         <span>Peyton Ramsey</span>
         <span class="sep">·</span>
-        <span>12,947 listings · 32 features</span>
+        <span>1.4M products · 248 categories</span>
         <span class="sep">·</span>
         <span>Sole Analyst</span>
         <span class="sep">·</span>
-        <span>2025</span>
+        <span>2024</span>
       </div>
     </div>
   </header>
@@ -725,7 +650,7 @@
         <section>
           <span class="label">TL;DR</span>
           <div class="tldr-box">
-            <p>Built supervised ML models to predict which San Francisco Airbnb listings achieve high booking rates, using a dataset of 12,947 listings with 32 features. A <strong>Random Forest model achieved 91.7% ROC-AUC</strong>, outperforming Logistic Regression (78.7%), Bagged Trees (90.5%), and LightGBM (91.3%). Beyond model performance, the analysis surfaced actionable pricing insights — high-booking hosts offer ~14.3% weekly discounts versus 5% industry average, and each additional bedroom increases booking odds by roughly 65%.</p>
+            <p>Ran exploratory data analysis across <strong>1.4 million Amazon product listings</strong> spanning 248 categories. The central finding — the <strong>Discount Paradox</strong> — is that best sellers average materially lower discount rates than non-best-seller products in the same categories. Sentiment segmentation by review text further reinforced this: high-volume products compete on quality signal and positioning, not on perpetual price cuts. The analysis surfaces a systematic flaw in the assumption that aggressive discounting drives Amazon sales rank.</p>
           </div>
         </section>
 
@@ -734,27 +659,23 @@
           <span class="label">Outcomes</span>
           <!-- Primary metric: large, Geist Mono, amber -->
           <div class="metric-primary">
-            <div class="value">91.7%</div>
-            <div class="label-text">ROC-AUC — Random Forest, the top-performing model across four algorithms tested on stratified 5-fold cross-validation</div>
+            <div class="value">1.4M</div>
+            <div class="label-text">Amazon product listings analyzed across 248 categories — the full dataset, not a sample</div>
           </div>
           <!-- Secondary metrics: descending weight -->
           <div class="metric-secondary-group">
             <div class="metric-secondary-wide">
-              <div class="value">14.3%</div>
-              <div class="label-text">average weekly discount offered by high-booking hosts — 2.9× the 5% industry average, the strongest differentiating feature</div>
+              <div class="value">248</div>
+              <div class="label-text">product categories segmented for discount and sentiment pattern analysis — cross-category consistency validates the Discount Paradox as structural, not category-specific</div>
             </div>
             <div class="metric-secondary-pair">
               <div class="metric-secondary-sm">
-                <div class="value">+65%</div>
-                <div class="label-text">booking odds increase<br/>per additional bedroom</div>
+                <div class="value">lower</div>
+                <div class="label-text">average discounts on<br/>best sellers vs. peers</div>
               </div>
               <div class="metric-secondary-sm">
-                <div class="value">12,947</div>
-                <div class="label-text">SF listings<br/>Inside Airbnb dataset</div>
-              </div>
-              <div class="metric-secondary-sm">
-                <div class="value">13 pts</div>
-                <div class="label-text">ROC-AUC gap vs.<br/>logistic baseline</div>
+                <div class="value">EDA</div>
+                <div class="label-text">methodology — no black-box model, findings are directly interpretable from the data</div>
               </div>
             </div>
           </div>
@@ -764,9 +685,10 @@
         <section>
           <span class="label">Problem &amp; Approach</span>
           <div class="prose">
-            <p>The San Francisco short-term rental market is highly competitive. Hosts with similar properties can see wildly different booking rates depending on pricing strategy, amenity offerings, review quality, and host behavior. Understanding what drives high booking rates matters for hosts optimizing pricing, platform teams deciding which listing attributes to surface, and investors evaluating properties before purchase.</p>
-            <p>The core modeling problem is binary classification: given a listing's features, will it achieve a high booking rate? This framing turns qualitative host intuitions into a data-driven, explainable framework. Binary classification was chosen over regression because the actionable question for a host is binary — am I in the high-booking tier or not?</p>
-            <p>Four models were compared ranging from a linear baseline to gradient boosting to confirm that performance gaps were real and not an artifact of a single algorithm class. The key constraint was the target variable itself: actual booking data isn't public, so review count was used as a proxy for occupancy — a limitation acknowledged explicitly rather than buried.</p>
+            <p>The conventional wisdom in e-commerce is that discounting drives sales rank. Sellers routinely slash prices to accumulate the reviews and velocity needed to reach best seller status, then raise prices once the badge is secured. This analysis tests whether that pattern actually shows up in the data at scale — or whether best sellers look structurally different from their discounted peers.</p>
+            <p>The dataset is a large-scale Amazon product scrape containing listing price, original price, discount percentage, category, star rating, review count, and best seller status. At 1.4M rows, the sample is large enough that patterns which emerge are not artifacts of small-N noise — they represent real distributional differences in how the marketplace operates.</p>
+            <p>The approach is deliberately exploratory rather than model-driven. When the question is "what does the data actually show?", adding a predictive model introduces complexity without adding interpretability. The findings here are direct distributional comparisons, which makes them defensible to a non-technical audience and resistant to the usual objections about model assumptions.</p>
+            <p>Sentiment segmentation was added to test whether review text corroborates the pricing structure: if best sellers are winning on quality signal rather than discount depth, their review language should reflect different dimensions of value than the heavily-discounted remainder of the catalog.</p>
           </div>
         </section>
 
@@ -774,171 +696,135 @@
         <section>
           <span class="label">Architecture</span>
           <div class="arch-block">
-            <pre><code>Inside Airbnb (12,947 listings · 32 raw features)
+            <pre><code>Amazon Product Dataset (1.4M listings · raw scrape)
           │
           ▼
-  ┌─────────────────────────────────────┐
-  │          Preprocessing              │
-  │  log-transform price (long tail)    │
-  │  binary encode: superhost, room type│
-  │  median impute: missing review scores│
-  │  near-zero variance filter          │
-  └──────────────┬──────────────────────┘
+  ┌─────────────────────────────────────────┐
+  │             Data Cleaning               │
+  │  parse price / original_price strings   │
+  │  compute discount_pct from raw fields   │
+  │  standardize category labels (248)      │
+  │  filter: price > 0, valid category      │
+  └──────────────┬──────────────────────────┘
+                 │
+        ┌────────┴────────┐
+        │                 │
+        ▼                 ▼
+  Pricing EDA        Sentiment EDA
+  ─────────────      ─────────────
+  discount dist.     review text parse
+  by best_seller     keyword frequency
+  flag               by best_seller flag
+  cross 248 cats     cross category
+        │                 │
+        └────────┬────────┘
                  │
                  ▼
-       Binary Target Construction
-       high_booking = review_count > p60
-                 │
-        ┌────────┴─────────┐
-        │  Stratified 5-Fold CV         │
-        └────────┬─────────┘
-                 │
-    ┌────────────┼────────────┐
-    ▼            ▼            ▼
-Log. Reg.   Bagged Trees  Random Forest   LightGBM
-78.7% AUC   90.5% AUC     91.7% AUC ✓    91.3% AUC
+        Discount Paradox
+        best sellers carry lower avg
+        discounts than non-best-sellers
+        across categories
                  │
                  ▼
-        Feature Importance
-        Business Insight Translation</code></pre>
+        R Markdown Report
+        (published to GitHub Pages)</code></pre>
           </div>
         </section>
 
-        <!-- Data & Preprocessing -->
+        <!-- Data & Features -->
         <section>
-          <span class="label">Data &amp; Preprocessing</span>
+          <span class="label">Data &amp; Features</span>
           <div class="prose">
-            <p>The dataset comes from <strong>Inside Airbnb</strong>, containing 12,947 San Francisco listings across four feature categories. Each listing is observed at a point in time — no time-series structure. The target variable was defined as a binary high-booking indicator based on review count as a proxy for occupancy, thresholded at the 60th percentile.</p>
+            <p>The dataset is a large-scale Amazon product scrape. Each row is a single listing at a point in time, with no temporal dimension — this is a cross-sectional snapshot. The best seller flag is binary: a listing either holds a best seller badge in its category or it does not.</p>
           </div>
           <div class="dataset-grid">
             <div class="dataset-card">
-              <div class="dataset-card-head">Property Attributes</div>
-              <p>Room type (entire home, private room, shared), bedroom &amp; bathroom count, neighborhood and location, amenities count</p>
+              <div class="dataset-card-head">Pricing Fields</div>
+              <p>Listed price, original price, computed discount percentage, currency normalization across markets</p>
             </div>
             <div class="dataset-card">
-              <div class="dataset-card-head">Pricing &amp; Availability</div>
-              <p>Nightly price (log-normalized), weekly &amp; monthly discount %, minimum/maximum nights, availability over 30/60/90/365 days</p>
+              <div class="dataset-card-head">Sales Rank Signal</div>
+              <p>Best seller flag (binary), category assignment, rank within category where available</p>
             </div>
             <div class="dataset-card">
-              <div class="dataset-card-head">Host Metrics</div>
-              <p>Superhost status (binary), response rate &amp; acceptance rate, listings count, host tenure in years on platform</p>
+              <div class="dataset-card-head">Quality Signals</div>
+              <p>Star rating (1–5), review count, verified purchase ratio where present</p>
             </div>
             <div class="dataset-card">
-              <div class="dataset-card-head">Review Scores</div>
-              <p>Overall rating, cleanliness, communication, value sub-scores, number of reviews, and reviews per month</p>
+              <div class="dataset-card-head">Review Text</div>
+              <p>Aggregated review content used for sentiment and keyword frequency segmentation by best seller status</p>
             </div>
           </div>
           <div class="callout" style="margin-top: 1rem;">
-            <div class="callout-head">Preprocessing Steps</div>
-            <div class="callout-body"><strong>Log-transform price</strong> to handle the right-skewed long tail ($150 median, $257 mean). <strong>Binary encode</strong> superhost status and room type. <strong>Median impute</strong> missing review scores — new listings have no reviews yet. <strong>Near-zero variance filter</strong> to remove uninformative predictors before modeling.</div>
+            <div class="callout-head">Preprocessing Notes</div>
+            <div class="callout-body"><strong>Price string parsing</strong> was required — raw fields contained currency symbols and formatting inconsistencies. <strong>Discount percentage</strong> was computed directly from listed vs. original price rather than trusting the scraped discount field, which had missing values. Listings with zero or negative prices were excluded. <strong>Category labels</strong> were standardized to collapse near-duplicate category names before segmentation.</div>
           </div>
         </section>
 
-        <!-- Models & Evaluation -->
+        <!-- Key Findings -->
         <section>
-          <span class="label">Models &amp; Evaluation</span>
+          <span class="label">Key Findings</span>
+          <div class="findings-list">
+            <div class="finding-item">
+              <div class="finding-num">01.</div>
+              <div class="finding-body"><strong>The Discount Paradox holds across categories.</strong> Best sellers carry lower average discount rates than non-best-seller products in the same categories. The pattern is consistent enough across 248 categories to be structural — not driven by a handful of electronics or household staples. Products that achieve top sales rank are not doing so by undercutting on price.</div>
+            </div>
+            <div class="finding-item">
+              <div class="finding-num">02.</div>
+              <div class="finding-body"><strong>Review count outweighs discount depth as a quality signal proxy.</strong> When segmenting by best seller status, review volume diverges sharply between the two groups. Best sellers have accumulated significantly more reviews, suggesting that social proof and marketplace velocity — not perpetual discounting — are the primary drivers of sustained rank.</div>
+            </div>
+            <div class="finding-item">
+              <div class="finding-num">03.</div>
+              <div class="finding-body"><strong>Sentiment language differs between best sellers and the discounted remainder.</strong> Review text for best sellers skews toward product quality, durability, and fit-for-purpose descriptors. The heavily-discounted non-best-sellers attract more reviews that surface pricing and value-for-money language — consistent with buyers who made purchase decisions based primarily on price signals.</div>
+            </div>
+            <div class="finding-item">
+              <div class="finding-num">04.</div>
+              <div class="finding-body"><strong>Star rating distributions are compressed and do not separate the groups cleanly.</strong> Both best sellers and non-best-sellers cluster above 4.0. Rating alone is not a discriminating feature — this corroborates the pricing finding that something other than quality score determines rank. The signal is in volume and velocity, not rating level.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Category Segmentation -->
+        <section>
+          <span class="label">Category Segmentation</span>
           <div class="table-wrap">
             <div class="table-header">
-              <p>ROC-AUC · Stratified 5-fold cross-validation · Metric: area under receiver operating characteristic curve</p>
+              <p>Discount behavior by best seller status · cross-category summary · 248 categories analyzed</p>
             </div>
             <div class="table-inner">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Model</th>
-                    <th class="right">ROC-AUC</th>
+                    <th>Segment</th>
+                    <th>Avg Discount</th>
+                    <th>Avg Review Count</th>
                     <th>Notes</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr class="highlight">
-                    <td>Random Forest ✓ Best</td>
-                    <td class="right accent">91.7%</td>
-                    <td>Strong feature interactions, natural feature importance, robust to correlated features</td>
+                    <td>Best Sellers</td>
+                    <td class="accent">Lower</td>
+                    <td class="accent">Higher</td>
+                    <td>Win on social proof and marketplace position, not on margin giveaway</td>
                   </tr>
                   <tr>
-                    <td>LightGBM</td>
-                    <td class="right">91.3%</td>
-                    <td>Gradient boosting; fast but similar performance to RF at this scale</td>
+                    <td>Non-Best-Sellers</td>
+                    <td>Higher</td>
+                    <td>Lower</td>
+                    <td>Discounting compensates for lower review volume and weaker rank position</td>
                   </tr>
-                  <tr>
-                    <td>Bagged Trees</td>
-                    <td class="right">90.5%</td>
-                    <td>Close second; Random Forest's feature sampling gives the edge</td>
-                  </tr>
-                  <tr>
-                    <td>Logistic Regression</td>
-                    <td class="right">78.7%</td>
-                    <td>Baseline; fails to capture non-linear interactions (pricing × bedrooms × location)</td>
+                  <tr class="muted">
+                    <td>Heavily Discounted (&gt;40%)</td>
+                    <td>—</td>
+                    <td>Lower</td>
+                    <td>Concentrated in this group; rarely achieve or sustain best seller badge</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="table-footer">
-              <p>Primary metric: ROC-AUC, appropriate for imbalanced binary classification where both precision and recall matter</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Business Insights / Findings -->
-        <section>
-          <span class="label">Business Insights</span>
-          <div class="prose">
-            <p>A high AUC is only useful if the findings tell stakeholders what to do differently. The feature importance outputs were translated into three actionable levers that matter to a host audience.</p>
-          </div>
-          <div class="findings-list">
-            <div class="finding-item">
-              <div class="finding-num">01.</div>
-              <div class="finding-body"><strong>Weekly discount generosity is the strongest differentiator.</strong> High-booking hosts offer 14.3% weekly discounts — 2–3× the 5% industry average. Price sensitivity is the primary booking driver for multi-night guests. Hosts who resist discounting are likely leaving occupancy on the table.</div>
-            </div>
-            <div class="finding-item">
-              <div class="finding-num">02.</div>
-              <div class="finding-body"><strong>Bedroom count has a large positive effect on booking odds.</strong> Each additional bedroom increases booking odds by ~65%, driven by groups and families who book longer, higher-value stays. The returns on properties sized for groups are meaningful and predictable.</div>
-            </div>
-            <div class="finding-item">
-              <div class="finding-num">03.</div>
-              <div class="finding-body"><strong>Superhost status and review scores matter less than pricing.</strong> Having a 4.9 vs. 4.7 rating is far less predictive than whether your weekly rate is competitive. Reviews signal quality floors, but pricing strategy determines which tier a host lands in.</div>
-            </div>
-            <div class="finding-item">
-              <div class="finding-num">04.</div>
-              <div class="finding-body"><strong>Entire home vs. private room is significant but mostly captured by bedroom count.</strong> Whole-home listings simply have more rooms. The room type variable adds little independent signal once bedroom count is in the model — a useful reminder that correlated features don't all earn their own interpretation.</div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Visualizations -->
-        <section>
-          <span class="label">Visualizations</span>
-          <div class="viz-grid">
-            <div class="viz-card">
-              <img src="../assets/airbnb-price-distribution.png"
-                   alt="Price distribution of SF Airbnb listings"
-                   onerror="this.parentElement.innerHTML='<div style=\'padding:2.5rem 1.5rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-3);text-align:center;\'>airbnb-price-distribution.png</div>'" />
-              <p class="viz-cap">Price distribution (log scale): $150 median vs $257 mean, right-skewed by luxury outliers</p>
-            </div>
-            <div class="viz-card">
-              <img src="../assets/airbnb-weekly-discount.png"
-                   alt="Weekly price by booking status"
-                   onerror="this.parentElement.innerHTML='<div style=\'padding:2.5rem 1.5rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-3);text-align:center;\'>airbnb-weekly-discount.png</div>'" />
-              <p class="viz-cap">High-booking listings average 14.3% weekly discounts vs. 5% industry average — the top differentiating signal</p>
-            </div>
-            <div class="viz-card">
-              <img src="../assets/airbnb-ratings-vs-price.png"
-                   alt="Ratings vs price colored by booking status"
-                   onerror="this.parentElement.innerHTML='<div style=\'padding:2.5rem 1.5rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-3);text-align:center;\'>airbnb-ratings-vs-price.png</div>'" />
-              <p class="viz-cap">Review score vs. price (log scale): high-booking listings cluster across all price points, not just budget</p>
-            </div>
-            <div class="viz-card">
-              <img src="../assets/airbnb-review-scores.png"
-                   alt="Review scores by booking status"
-                   onerror="this.parentElement.innerHTML='<div style=\'padding:2.5rem 1.5rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-3);text-align:center;\'>airbnb-review-scores.png</div>'" />
-              <p class="viz-cap">Review score breakdown: high-booking listings score only marginally higher — scores alone don't predict occupancy</p>
-            </div>
-            <div class="viz-card viz-wide">
-              <img src="../assets/airbnb-roc_comparison_plot.png"
-                   alt="ROC curve comparison across four models"
-                   onerror="this.parentElement.innerHTML='<div style=\'padding:2.5rem 1.5rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-3);text-align:center;\'>airbnb-roc_comparison_plot.png</div>'" />
-              <p class="viz-cap">ROC curves: RF 91.7% · LightGBM 91.3% · Bagged Trees 90.5% · Logistic 78.7% — ensemble methods dominate the linear baseline</p>
+              <p>Directional summary — full distributional analysis in the published report</p>
             </div>
           </div>
         </section>
@@ -949,15 +835,15 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
           <div class="revisit-list">
             <div class="revisit-item">
               <div class="revisit-num">01.</div>
-              <div class="revisit-body"><strong>Replace the review-count proxy with actual booking data.</strong> Not all guests leave reviews, which introduces label noise into the target variable. The ideal dataset would use actual booking rates from the Airbnb API or a host-facing analytics export — modeling limitations like this should be disclosed upfront, not buried in a footnote.</div>
+              <div class="revisit-body"><strong>Add a temporal dimension to test whether the Discount Paradox is causal or coincidental.</strong> The current dataset is a point-in-time snapshot. The Paradox could reflect products that achieved rank first and then raised prices — or products that never discounted and still reached the top. Tracking listings over time would distinguish between these two mechanisms, which have very different strategic implications for sellers.</div>
             </div>
             <div class="revisit-item">
               <div class="revisit-num">02.</div>
-              <div class="revisit-body"><strong>Add SHAP values for instance-level explainability.</strong> Global feature importance tells hosts what matters on average — but a host with a 3-bedroom entire-home listing already offering 15% discounts needs to know what's specific to their listing. SHAP values would enable a per-listing diagnostic rather than a population-level summary.</div>
+              <div class="revisit-body"><strong>Apply a proper NLP pipeline to the review text rather than keyword frequency counts.</strong> The sentiment analysis here is frequency-based — a more rigorous approach would use topic modeling (LDA or BERTopic) to surface latent review themes rather than surface-level word occurrence. The directional finding holds, but the nuance in what buyers are actually saying would be richer with embedding-based methods.</div>
             </div>
             <div class="revisit-item">
               <div class="revisit-num">03.</div>
-              <div class="revisit-body"><strong>Incorporate temporal data and seasonal patterns.</strong> The Inside Airbnb snapshot is a point-in-time cross-section. SF short-term rental demand is seasonal — SF summer vs. winter occupancy patterns differ substantially. Longitudinal data would allow modeling of seasonal pricing optimization, not just static feature effects.</div>
+              <div class="revisit-body"><strong>Control for category price floor when comparing discount rates.</strong> A 15% discount on a $500 item and a 15% discount on a $12 item are not equivalent strategic decisions. The current analysis compares percentage discounts without controlling for absolute price level or category price distribution. Normalizing within price tiers within categories would sharpen the Paradox finding and separate discount strategy from price positioning.</div>
             </div>
           </div>
         </section>
@@ -970,12 +856,11 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
             <div class="chips">
               <span class="chip">R</span>
               <span class="chip">tidyverse</span>
-              <span class="chip">caret</span>
-              <span class="chip">randomForest</span>
-              <span class="chip">LightGBM</span>
               <span class="chip">ggplot2</span>
-              <span class="chip">recipes</span>
-              <span class="chip">Inside Airbnb</span>
+              <span class="chip">dplyr</span>
+              <span class="chip">tidytext</span>
+              <span class="chip">R Markdown</span>
+              <span class="chip">Kaggle Dataset</span>
             </div>
           </div>
         </section>
@@ -984,8 +869,13 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
         <section>
           <span class="label">Links &amp; Resources</span>
           <div class="link-row">
-            <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="btn-secondary">
-              GitHub Repository ↗
+            <a href="https://peytonramsey.github.io/amazon-pricing-analysis/amazon-pricing-analysis.html"
+               target="_blank" rel="noopener noreferrer" class="btn-secondary">
+              Full Report ↗
+            </a>
+            <a href="https://github.com/peytonramsey/amazon-pricing-analysis"
+               target="_blank" rel="noopener noreferrer" class="btn-secondary">
+              GitHub ↗
             </a>
           </div>
         </section>

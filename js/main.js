@@ -1,57 +1,41 @@
 // ─── Mobile nav toggle ───
 const menuToggle = document.getElementById('menu-toggle');
-const mobileNav = document.getElementById('mobile-nav');
-const menuIconOpen = document.getElementById('menu-icon-open');
-const menuIconClose = document.getElementById('menu-icon-close');
+const mobileNav  = document.getElementById('mobile-nav');
+const iconOpen   = document.getElementById('icon-open');
+const iconClose  = document.getElementById('icon-close');
 
 if (menuToggle) {
   menuToggle.addEventListener('click', () => {
-    const isOpen = !mobileNav.classList.contains('hidden');
-    mobileNav.classList.toggle('hidden');
-    menuIconOpen.classList.toggle('hidden', !isOpen);
-    menuIconClose.classList.toggle('hidden', isOpen);
+    const isOpen = mobileNav.classList.toggle('open');
+    iconOpen.style.display  = isOpen ? 'none' : '';
+    iconClose.style.display = isOpen ? ''     : 'none';
   });
 }
 
-// Close mobile nav when a link is clicked
-document.querySelectorAll('.mobile-nav-link').forEach(link => {
+document.querySelectorAll('#mobile-nav a').forEach(link => {
   link.addEventListener('click', () => {
-    mobileNav.classList.add('hidden');
-    menuIconOpen.classList.remove('hidden');
-    menuIconClose.classList.add('hidden');
+    mobileNav.classList.remove('open');
+    iconOpen.style.display  = '';
+    iconClose.style.display = 'none';
   });
 });
 
-// ─── Scroll spy for active nav link ───
+// ─── Scroll spy ───
 const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-link');
+const navLinks  = document.querySelectorAll('.nav-links a');
 
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         navLinks.forEach(link => {
-          link.classList.remove('active');
-          link.style.color = '#8b949e';
-          if (link.getAttribute('href') === `#${entry.target.id}`) {
-            link.classList.add('active');
-            link.style.color = '#2dd4bf';
-          }
+          const active = link.getAttribute('href') === `#${entry.target.id}`;
+          link.classList.toggle('active', active);
         });
       }
     });
   },
-  { threshold: 0.25, rootMargin: '-15% 0% -65% 0%' }
+  { threshold: 0.2, rootMargin: '-10% 0% -60% 0%' }
 );
 
 sections.forEach(section => observer.observe(section));
-
-// ─── Project card hover border effect ───
-document.querySelectorAll('.project-card').forEach(card => {
-  card.addEventListener('mouseenter', () => {
-    card.style.borderColor = 'rgba(45,212,191,0.4)';
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.borderColor = '#30363d';
-  });
-});

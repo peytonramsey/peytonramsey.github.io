@@ -3,420 +3,1093 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Dropout Prediction | Peyton Ramsey</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Student Dropout Classification | Peyton Ramsey</title>
+  <meta name="description" content="Comparing four classification models — Random Forest, SVM, KNN, Logistic Regression — to identify at-risk university students. Random Forest at threshold 0.3 achieves 89.79% recall on dropouts with 16.86% test error." />
+
+  <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500&f[]=cabinet-grotesk@700&display=swap" rel="stylesheet" />
+  <!-- Google Fonts: Geist Mono (metrics/data) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
-    * { font-family: 'Inter', sans-serif; }
-    body { background: #0d1117; color: #e6edf3; }
-    .section-label {
-      font-family: monospace;
-      font-size: 0.7rem;
+    /* ── DESIGN TOKENS ──────────────────────────────────────── */
+    :root {
+      --bg-base:     #0f0f0e;
+      --bg-surface:  #161614;
+      --bg-card:     #1c1b19;
+      --bg-elevated: #222120;
+
+      --text-1: #cdccca;
+      --text-2: #797876;
+      --text-3: #5a5957;
+      --accent:  #e8a035;
+      --border:  oklch(from #cdccca l c h / 0.10);
+
+      --font-body:    'Satoshi', system-ui, sans-serif;
+      --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
+      --font-mono:    'Geist Mono', monospace;
+
+      --radius-chip: 4px;
+      --radius-card: 10px;
+
+      --section-pad: clamp(3rem, 6vw, 6rem);
+      --container:   52rem;
+      --pad-x:       clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+    a  { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track  { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb  { background: var(--bg-elevated); border-radius: 3px; }
+
+    /* ── TYPOGRAPHY ─────────────────────────────────────────── */
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    /* Editorial section labels — Geist Mono, accent, uppercase */
+    .label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #2dd4bf;
-      margin-bottom: 0.5rem;
+      color: var(--accent);
       display: block;
+      margin-bottom: 0.75rem;
     }
-    .prose-content p {
-      color: rgba(230,237,243,0.80);
-      line-height: 1.75;
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    .container {
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--pad-x);
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 15, 14, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 3.75rem;
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-2);
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--text-1); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-icon {
+      color: var(--text-2);
+      padding: 0.25rem;
+      display: flex;
+      transition: color 0.15s;
+    }
+    .nav-icon:hover { color: var(--text-1); }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .page-header {
+      padding-block: clamp(3rem, 6vw, 5rem) clamp(2rem, 4vw, 3rem);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.875rem, 5vw, 3rem);
+      color: var(--text-1);
+      margin-bottom: 0.625rem;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.0625rem;
+      color: var(--text-2);
+      margin-bottom: 1.5rem;
+      max-width: 44rem;
+      line-height: 1.65;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      font-size: 0.875rem;
+      color: var(--text-2);
+      align-items: center;
+    }
+
+    .header-meta .sep { color: var(--text-3); }
+
+    /* ── CONTENT SECTIONS ───────────────────────────────────── */
+    .content {
+      padding-block: clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .content-stack {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(3rem, 6vw, 5rem);
+    }
+
+    /* ── TL;DR BOX — amber left border, 2px, never teal ─────── */
+    .tldr-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--accent);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+    }
+
+    .tldr-box p {
+      font-size: 0.9375rem;
+      line-height: 1.80;
+      color: rgba(205, 204, 202, 0.85);
+      margin: 0;
+    }
+
+    .tldr-box strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── METRICS — pure typographic hierarchy ───────────────── */
+    .metric-primary {
+      margin-bottom: 2rem;
+    }
+
+    .metric-primary .value {
+      font-family: var(--font-mono);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.375rem;
+    }
+
+    .metric-primary .label-text {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+    }
+
+    .metric-secondary-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .metric-secondary-wide {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .metric-secondary-wide .value {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .metric-secondary-wide .label-text {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    .metric-secondary-pair {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .metric-secondary-sm .value {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      color: var(--text-2);
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-secondary-sm .label-text {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+      line-height: 1.35;
+    }
+
+    /* ── PROSE ──────────────────────────────────────────────── */
+    .prose p {
+      font-size: 0.9375rem;
+      line-height: 1.8;
+      color: rgba(205, 204, 202, 0.80);
       margin-bottom: 1rem;
     }
-    .prose-content li {
-      color: rgba(230,237,243,0.80);
-      margin-bottom: 0.4rem;
+    .prose p:last-child { margin-bottom: 0; }
+
+    .prose h3 {
+      font-family: var(--font-heading);
+      font-size: 1.125rem;
+      color: var(--text-1);
+      margin-top: 2rem;
+      margin-bottom: 0.625rem;
     }
-    .metric-card {
-      background: #1c2333;
-      border: 1px solid #30363d;
-      border-radius: 0.75rem;
+
+    .prose-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .prose-list li {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.9375rem;
+      color: rgba(205, 204, 202, 0.80);
+      line-height: 1.65;
+    }
+
+    .prose-list li::before {
+      content: '▸';
+      color: var(--text-3);
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .prose-list li strong { color: var(--text-1); font-weight: 500; }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      color: var(--text-2);
+      background: var(--bg-elevated);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    /* ── DATA TABLE ─────────────────────────────────────────── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .data-table thead tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      text-align: left;
+      padding-bottom: 0.625rem;
+      padding-right: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      font-weight: 400;
+    }
+
+    .data-table th.right { text-align: right; padding-right: 0; }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid oklch(from #cdccca l c h / 0.05);
+    }
+
+    .data-table td {
+      padding: 0.625rem 1.5rem 0.625rem 0;
+      color: rgba(205, 204, 202, 0.75);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .data-table td.right {
+      text-align: right;
+      padding-right: 0;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+    }
+
+    .data-table td.accent {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+    }
+
+    .data-table tbody tr:last-child td { border-bottom: none; }
+
+    /* Highlighted row for selected model */
+    .data-table tbody tr.selected-row td {
+      color: var(--accent);
+    }
+    .data-table tbody tr.selected-row td:first-child {
+      font-weight: 500;
+    }
+
+    /* ── ARCHITECTURE — ASCII pre/code block ─────────────────── */
+    .arch-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow-x: auto;
+    }
+
+    .arch-block pre {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.9;
+      color: var(--text-2);
+      padding: 1.5rem 1.75rem;
+      margin: 0;
+      white-space: pre;
+    }
+
+    /* ── DATASET GRID ───────────────────────────────────────── */
+    .dataset-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    @media (min-width: 560px) {
+      .dataset-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .dataset-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
       padding: 1.25rem;
-      text-align: center;
     }
-    .tag {
-      font-size: 0.7rem;
-      padding: 0.2rem 0.6rem;
-      background-color: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 9999px;
-      color: #8b949e;
+
+    .dataset-card-head {
+      font-family: var(--font-heading);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 0.75rem;
     }
+
+    .dataset-card ul {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .dataset-card li {
+      font-size: 0.8125rem;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    /* ── EDA CALLOUT ────────────────────────────────────────── */
+    .callout {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.25rem;
+    }
+
+    .callout-head {
+      font-family: var(--font-heading);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 1rem;
+    }
+
+    .callout-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+
+    .callout-item {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    .callout-item::before {
+      content: '▸';
+      color: var(--text-3);
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .callout-item strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── MODEL CARDS ────────────────────────────────────────── */
+    .model-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .model-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.125rem 1.375rem;
+    }
+
+    .model-card-name {
+      font-family: var(--font-heading);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 0.375rem;
+    }
+
+    .model-card-name.selected { color: var(--accent); }
+
+    .model-card-desc {
+      font-size: 0.8125rem;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+
+    /* ── VARIABLE IMPORTANCE ────────────────────────────────── */
+    .var-importance {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+      margin-top: 1.25rem;
+    }
+
+    .var-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 0.875rem 1.125rem;
+    }
+
+    .var-rank {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-3);
+      width: 1.5rem;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .var-info { flex: 1; }
+
+    .var-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-1);
+      margin-bottom: 0.2rem;
+    }
+
+    .var-desc {
+      font-size: 0.75rem;
+      color: var(--text-2);
+    }
+
+    .var-bar-wrap {
+      width: 5rem;
+      flex-shrink: 0;
+    }
+
+    .var-bar {
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      opacity: 0.7;
+    }
+
+    /* ── REVISIT SECTION ────────────────────────────────────── */
+    .revisit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .revisit-item {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .revisit-num {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      padding-top: 0.1rem;
+    }
+
+    .revisit-body {
+      font-size: 0.9375rem;
+      line-height: 1.75;
+      color: rgba(205, 204, 202, 0.80);
+    }
+
+    .revisit-body strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── TECH STACK — chips appear ONCE on page, here only ──── */
+    .stack-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.25rem;
+    }
+
+    .stack-card-head {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.875rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-2);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-chip);
+      padding: 0.25rem 0.625rem;
+    }
+
+    /* ── LINKS SECTION ──────────────────────────────────────── */
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-1);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--text-2); }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    /* ── TABLE WRAPPER ──────────────────────────────────────── */
+    .table-wrap {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow-x: auto;
+      margin-top: 1.25rem;
+    }
+
+    .table-header {
+      padding: 0.875rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-header p {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+    }
+
+    .table-inner {
+      padding: 0 1.25rem 1.25rem;
+    }
+
+    .table-footer {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
+      border-radius: 0 0 var(--radius-card) var(--radius-card);
+    }
+
+    .table-footer p {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-block: 2rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+      color: var(--text-3);
+    }
+
+    .footer-back {
+      color: var(--text-3);
+      transition: color 0.15s;
+    }
+    .footer-back:hover { color: var(--text-2); }
   </style>
 </head>
 <body>
 
   <!-- ─── NAV ─── -->
-  <nav class="sticky top-0 z-50 px-6 py-4 flex items-center justify-between" style="background: rgba(13,17,23,0.95); border-bottom: 1px solid #30363d; backdrop-filter: blur(8px);">
-    <a href="../index.html#projects" class="text-sm transition-colors flex items-center gap-2" style="color: #8b949e;"
-       onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
-      ← Back to Portfolio
-    </a>
-    <a href="#" target="_blank" rel="noopener noreferrer"
-       class="inline-flex items-center gap-2 px-3 py-1.5 text-xs rounded-lg transition-colors"
-       style="border: 1px solid #30363d; color: #8b949e;"
-       onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
-       onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
-      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"/></svg>
-      GitHub
-    </a>
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-back">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Peyton Ramsey
+        </a>
+        <div class="nav-right">
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="nav-icon" aria-label="GitHub">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
   </nav>
 
-  <!-- ─── HERO ─── -->
-  <header class="py-16 px-6" style="border-bottom: 1px solid #30363d;">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex flex-wrap gap-2 mb-5">
-        <span class="tag">Classification</span>
-        <span class="tag">R</span>
-        <span class="tag">Random Forest</span>
-        <span class="tag">SVM</span>
-        <span class="tag">KNN</span>
-        <span class="tag">Logistic Regression</span>
-      </div>
-      <h1 class="text-3xl md:text-4xl font-extrabold mb-4 leading-tight" style="color: #e6edf3;">
-        Student Dropout Prediction
-      </h1>
-      <p class="text-base mb-6" style="color: #8b949e; max-width: 600px; line-height: 1.7;">
-        Comparing four classification models to identify at-risk university students before they drop out, framed around the real cost of missing a true dropout versus triggering a false alarm.
-      </p>
-      <div class="flex flex-wrap gap-5 text-sm" style="color: #8b949e;">
-        <span>4,424 students</span>
-        <span style="color: #30363d;">·</span>
-        <span>UCI ML Repository</span>
-        <span style="color: #30363d;">·</span>
-        <span>Spring 2026</span>
-        <span style="color: #30363d;">·</span>
+  <!-- ─── HEADER ─── -->
+  <header class="page-header">
+    <div class="container">
+      <h1>Student Dropout Classification</h1>
+      <p class="subtitle">Comparing four classification models to identify at-risk university students before they drop out, framed around the real cost of missing a true dropout versus triggering a false alarm.</p>
+      <div class="header-meta">
         <span>Peyton Ramsey</span>
+        <span class="sep">·</span>
+        <span>4,424 students · UCI ML Repository</span>
+        <span class="sep">·</span>
+        <span>Spring 2026</span>
       </div>
     </div>
   </header>
 
-  <!-- ─── MAIN CONTENT ─── -->
-  <main class="py-16 px-6">
-    <div class="max-w-4xl mx-auto space-y-16">
+  <!-- ─── CONTENT ─── -->
+  <main class="content">
+    <div class="container">
+      <div class="content-stack">
 
-      <!-- TL;DR -->
-      <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
-        <span class="section-label">TL;DR</span>
-        <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
-          Random Forest with a lowered classification threshold (0.3) correctly identifies <strong style="color: #e6edf3;">89.79% of true dropouts</strong>, roughly 9 out of 10 at-risk students, while achieving the lowest overall test error (16.86%) among all models tested. Second-semester academic performance and tuition fee status are the strongest predictors. A vanilla VAR or logistic model with 0.5 threshold misses too many real dropouts to be useful for intervention programs.
-        </p>
+        <!-- TL;DR -->
+        <section>
+          <span class="label">TL;DR</span>
+          <div class="tldr-box">
+            <p>Random Forest with a lowered classification threshold (0.3) correctly identifies <strong>89.79% of true dropouts</strong> — roughly 9 out of 10 at-risk students — while achieving the lowest overall test error (16.86%) among all models tested. Second-semester academic performance and tuition fee status are the strongest predictors. A vanilla model with a 0.5 threshold misses too many real dropouts to be useful for intervention programs.</p>
+          </div>
+        </section>
+
+        <!-- Outcomes -->
+        <section>
+          <span class="label">Outcomes</span>
+          <!-- Primary metric: thesis-level claim, Geist Mono, large, amber -->
+          <div class="metric-primary">
+            <div class="value">89.79%</div>
+            <div class="label-text">dropout recall — Random Forest at threshold 0.3, roughly 9 in 10 at-risk students correctly flagged</div>
+          </div>
+          <!-- Secondary metrics: descending weight -->
+          <div class="metric-secondary-group">
+            <div class="metric-secondary-wide">
+              <div class="value">16.86%</div>
+              <div class="label-text">test error rate — lowest among all four models at the 0.3 threshold</div>
+            </div>
+            <div class="metric-secondary-pair">
+              <div class="metric-secondary-sm">
+                <div class="value">4,424</div>
+                <div class="label-text">students<br/>UCI Dataset</div>
+              </div>
+              <div class="metric-secondary-sm">
+                <div class="value">4</div>
+                <div class="label-text">classification<br/>algorithms compared</div>
+              </div>
+              <div class="metric-secondary-sm">
+                <div class="value">2</div>
+                <div class="label-text">thresholds evaluated<br/>per model</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Problem & Approach -->
+        <section>
+          <span class="label">Problem &amp; Approach</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">The Cost of Waiting Until It's Too Late</h2>
+          <div class="prose">
+            <p>Student dropout is expensive on both sides. Universities lose tuition revenue and see funding tied to retention rates erode; students lose time, money, and momentum. The window for intervention — academic coaching, emergency financial aid, course load adjustment — only exists if you can identify risk early enough to act.</p>
+            <p>This project treats dropout prediction as a classification problem where <strong style="color: var(--text-1);">the cost of a false negative (missing a real dropout) significantly outweighs the cost of a false positive</strong> (flagging a student who would have been fine). That asymmetry shaped every modeling decision — most importantly the choice to evaluate all models at both the default 0.5 threshold and a more aggressive 0.3 threshold.</p>
+            <p>The deployment scenario: run the model at the end of each student's first semester, flag students above the risk threshold, and route them to targeted support before the second semester begins.</p>
+
+            <h3>Recall First, Then Model Selection</h3>
+            <p>Four algorithms were evaluated at two classification thresholds because the threshold is a business decision that shouldn't be separated from model selection. Moving from 0.5 to 0.3 changes which students get flagged, and that choice belongs to the institution, not the modeler. The primary constraint was interpretability: the best-performing model also needs to explain which features drove the flag so advisors can have an informed conversation, which is why SVM was eliminated despite its lower test error. Recall on the dropout class was chosen as the primary metric before any model was run, not selected post-hoc to favor a preferred result.</p>
+          </div>
+        </section>
+
+        <!-- Dataset -->
+        <section>
+          <span class="label">Dataset</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 0.75rem;">UCI Dropout &amp; Academic Success Dataset</h2>
+          <div class="prose" style="margin-bottom:0;">
+            <p>4,424 students from a Portuguese higher education institution across multiple academic years. The original three-class outcome (Dropout / Enrolled / Graduate) was collapsed into a binary target: Dropout vs. Not Dropout.</p>
+          </div>
+
+          <div class="dataset-grid">
+            <div class="dataset-card">
+              <div class="dataset-card-head">Academic Predictors</div>
+              <ul>
+                <li>1st &amp; 2nd semester units enrolled, approved, grade</li>
+                <li>Admission grade (0–200 scale)</li>
+                <li>Application mode &amp; order</li>
+                <li>Course type, daytime vs. evening attendance</li>
+              </ul>
+            </div>
+            <div class="dataset-card">
+              <div class="dataset-card-head">Financial &amp; Demographic</div>
+              <ul>
+                <li>Tuition fees up to date (binary)</li>
+                <li>Scholarship holder status</li>
+                <li>Debtor status</li>
+                <li>Age at enrollment, gender, nationality</li>
+                <li>Mother's &amp; father's qualification &amp; occupation</li>
+              </ul>
+            </div>
+            <div class="dataset-card">
+              <div class="dataset-card-head">Macroeconomic Context</div>
+              <ul>
+                <li>GDP at time of enrollment</li>
+                <li>Unemployment rate</li>
+                <li>Inflation rate</li>
+              </ul>
+            </div>
+            <div class="dataset-card">
+              <div class="dataset-card-head">Train / Test Split</div>
+              <ul>
+                <li>Stratified 80/20 split (seed = 31)</li>
+                <li>Training: 3,539 observations</li>
+                <li>Testing: 885 observations</li>
+                <li>No missing values in dataset</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="callout">
+            <div class="callout-head">Key EDA Findings</div>
+            <div class="callout-items">
+              <div class="callout-item"><strong>Bimodal grade distribution for dropouts.</strong> Dropout students show a sharp spike at zero grades in the first semester — many stopped showing up before completing any coursework.</div>
+              <div class="callout-item"><strong>Tuition fees are a strong binary signal.</strong> Students behind on tuition had an 85% dropout rate vs. 25% for students current on payments.</div>
+              <div class="callout-item"><strong>Scholarships significantly reduce dropout.</strong> Scholarship holders dropped out at 12.5% vs. 40% without scholarships.</div>
+              <div class="callout-item"><strong>Evening students at higher risk.</strong> 38.7% dropout rate vs. 31.2% for daytime students.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Architecture -->
+        <section>
+          <span class="label">Architecture</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Modeling Pipeline</h2>
+
+          <div class="arch-block">
+            <pre>Data Source
+  UCI Repository (4,424 students, no missing values)
+    │
+    └──► Preprocessing
+           │  Binary outcome collapse: Dropout vs. Not Dropout
+           │  Stratified 80/20 split (seed = 31)
+           │  Center + scale for KNN only
+           │
+           ├──► Logistic Regression
+           │      5 hand-selected predictors, p &lt; 0.01
+           │      threshold = 0.5 / 0.3
+           │
+           ├──► KNN (k=15, tuned via 10-fold CV)
+           │      Numeric predictors only
+           │      Excludes tuition status + scholarship holder
+           │
+           ├──► Random Forest  ◄── SELECTED MODEL
+           │      mtry=4, ntree=500 (OOB-tuned)
+           │      All predictors including categorical
+           │      threshold = 0.5 / 0.3
+           │      Feature importance via mean accuracy decrease
+           │
+           └──► SVM (Radial Kernel)
+                  cost=10, gamma=0.01 (10-fold CV)
+                  No feature importance output
+                  Eliminated: interpretability constraint</pre>
+          </div>
+        </section>
+
+        <!-- Model Selection -->
+        <section>
+          <span class="label">Model Selection</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 0.75rem;">Four Models, Two Thresholds</h2>
+          <div class="prose" style="margin-bottom:0;">
+            <p>All models were evaluated at both threshold=0.5 (default) and threshold=0.3 (aggressive, optimized for recall). The primary evaluation criteria were dropout-class recall and test error rate.</p>
+          </div>
+
+          <div class="model-stack">
+            <div class="model-card">
+              <div class="model-card-name">Logistic Regression</div>
+              <div class="model-card-desc">5 hand-selected predictors: tuition fees status, 1st semester grades, scholarship status, debtor status, admission grade. All significant at p &lt; 0.01. Interpretable but linear decision boundary caps recall.</div>
+            </div>
+            <div class="model-card">
+              <div class="model-card-name">K-Nearest Neighbors (k=15)</div>
+              <div class="model-card-desc">Tuned k via 10-fold repeated CV. Can only use numeric predictors, excluding tuition fees and scholarship status — two of the strongest signals. Center + scale preprocessing applied to normalize distances.</div>
+            </div>
+            <div class="model-card">
+              <div class="model-card-name selected">Random Forest — Selected Model</div>
+              <div class="model-card-desc">mtry=4, ntree=500, both tuned via OOB error. Uses all predictors including categorical variables. Captures non-linear interactions between financial and academic signals. Best recall at both thresholds.</div>
+            </div>
+            <div class="model-card">
+              <div class="model-card-name">Support Vector Machine (Radial Kernel)</div>
+              <div class="model-card-desc">cost=10, gamma=0.01, tuned via 10-fold CV. Competitive error rate but no feature importance output — eliminated because advisors need to understand why a student was flagged.</div>
+            </div>
+          </div>
+
+          <!-- Results table -->
+          <div class="table-wrap">
+            <div class="table-header">
+              <p>All models · threshold = 0.3 · optimized for recall</p>
+            </div>
+            <div class="table-inner">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Test Error</th>
+                    <th>Recall (Dropout)</th>
+                    <th class="right">Specificity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Baseline (Majority Class)</td>
+                    <td>32.13%</td>
+                    <td>0.00%</td>
+                    <td class="right">—</td>
+                  </tr>
+                  <tr>
+                    <td>Logistic Regression</td>
+                    <td>18.10%</td>
+                    <td>67.25%</td>
+                    <td class="right">88.83%</td>
+                  </tr>
+                  <tr>
+                    <td>KNN (k=15)</td>
+                    <td>18.21%</td>
+                    <td>76.06%</td>
+                    <td class="right">84.50%</td>
+                  </tr>
+                  <tr class="selected-row">
+                    <td>Random Forest ✓ Best</td>
+                    <td class="accent">16.86%</td>
+                    <td class="accent">89.79%</td>
+                    <td class="right accent">78.38%</td>
+                  </tr>
+                  <tr>
+                    <td>SVM (Radial)</td>
+                    <td>10.86%</td>
+                    <td>86.62%</td>
+                    <td class="right">90.33%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <p>SVM has lower test error but no feature importance; Random Forest selected for its recall and interpretability combination.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Variable Importance -->
+        <section>
+          <span class="label">Variable Importance</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 0.75rem;">What Actually Predicts Dropout</h2>
+          <div class="prose" style="margin-bottom: 0;">
+            <p>Random Forest variable importance ranked by mean decrease in accuracy when each variable is permuted out of the model:</p>
+          </div>
+          <div class="var-importance">
+            <div class="var-row">
+              <span class="var-rank">01</span>
+              <div class="var-info">
+                <div class="var-name">Curricular units 2nd semester (approved)</div>
+                <div class="var-desc">How many courses a student passed in their second semester — the strongest single predictor</div>
+              </div>
+              <div class="var-bar-wrap"><div class="var-bar" style="width: 100%;"></div></div>
+            </div>
+            <div class="var-row">
+              <span class="var-rank">02</span>
+              <div class="var-info">
+                <div class="var-name">Curricular units 2nd semester (grade)</div>
+                <div class="var-desc">Average grade on completed coursework, confirming academic engagement, not just enrollment</div>
+              </div>
+              <div class="var-bar-wrap"><div class="var-bar" style="width: 83%;"></div></div>
+            </div>
+            <div class="var-row">
+              <span class="var-rank">03</span>
+              <div class="var-info">
+                <div class="var-name">Tuition fees up to date</div>
+                <div class="var-desc">85% dropout rate when behind on fees — a strong financial distress signal</div>
+              </div>
+              <div class="var-bar-wrap"><div class="var-bar" style="width: 67%;"></div></div>
+            </div>
+            <div class="var-row">
+              <span class="var-rank">04</span>
+              <div class="var-info">
+                <div class="var-name">Scholarship holder status</div>
+                <div class="var-desc">Scholarship students retain at much higher rates — a protective financial signal</div>
+              </div>
+              <div class="var-bar-wrap"><div class="var-bar" style="width: 53%;"></div></div>
+            </div>
+            <div class="var-row">
+              <span class="var-rank">05</span>
+              <div class="var-info">
+                <div class="var-name">Debtor status</div>
+                <div class="var-desc">Outstanding debt compounds dropout risk on top of tuition delinquency</div>
+              </div>
+              <div class="var-bar-wrap"><div class="var-bar" style="width: 42%;"></div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Key Findings -->
+        <section>
+          <span class="label">Key Findings</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">What the Models Revealed</h2>
+          <div class="callout">
+            <div class="callout-items">
+              <div class="callout-item"><strong>Non-linear interactions matter.</strong> The reason Random Forest beats Logistic Regression isn't just more predictors — the interaction between academic and financial distress is non-linear. A student behind on tuition AND with zero 1st semester approvals is dramatically higher risk than either signal alone suggests.</div>
+              <div class="callout-item"><strong>KNN's categorical exclusion cost it the race.</strong> KNN can't handle categorical predictors without encoding hacks, which forced exclusion of tuition status and scholarship holder — the 3rd and 4th most important predictors. This is a fundamental algorithm limitation, not a hyperparameter problem.</div>
+              <div class="callout-item"><strong>Threshold tuning is a business decision, not just a modeling one.</strong> Moving from 0.5 to 0.3 increased Random Forest recall from 79.23% to 89.79% — an extra 10 out of 100 true dropouts correctly flagged, at the cost of more false alarms. Whether that trade-off is worth it depends on advisor bandwidth and intervention cost, not test accuracy.</div>
+              <div class="callout-item"><strong>Evening students are better identified.</strong> Segment analysis showed the model achieved 92.7% recall on evening students vs. 89.3% on daytime — likely because evening students have stronger, less ambiguous predictor signals (more pronounced financial stress patterns).</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- IF I WERE TO REVISIT IT -->
+        <section>
+          <span class="label">If I Were to Revisit It</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 0.75rem;">What I'd Do Differently</h2>
+          <div class="revisit-list">
+            <div class="revisit-item">
+              <span class="revisit-num">01.</span>
+              <div class="revisit-body"><strong>Frame the evaluation metric before picking a model.</strong> Starting from "maximize recall, subject to error rate below X%" makes model selection much cleaner than comparing a table of numbers post-hoc. The business objective should define the metric, not the other way around.</div>
+            </div>
+            <div class="revisit-item">
+              <span class="revisit-num">02.</span>
+              <div class="revisit-body"><strong>Interpretability is a real constraint.</strong> SVM had the lowest test error but was eliminated because advisors need to understand why a student was flagged. A model that can't explain itself won't get used, no matter how accurate.</div>
+            </div>
+            <div class="revisit-item">
+              <span class="revisit-num">03.</span>
+              <div class="revisit-body"><strong>Mid-semester updates would sharpen predictions.</strong> The model currently runs on end-of-first-semester data, but payment status and attendance could be observed in real time. A version that updates risk scores continuously throughout the semester would catch struggling students earlier.</div>
+            </div>
+            <div class="revisit-item">
+              <span class="revisit-num">04.</span>
+              <div class="revisit-body"><strong>Class imbalance deserves explicit treatment.</strong> We handled imbalance through stratified splitting and threshold tuning, but techniques like SMOTE or class-weighted loss could be worth testing — especially if the minority class shrinks in a smaller institution's dataset.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tech Stack — chips appear ONCE on page, here only -->
+        <section>
+          <span class="label">Tech Stack</span>
+          <div class="stack-card">
+            <div class="stack-card-head">Languages &amp; Libraries</div>
+            <div class="chips">
+              <span class="chip">R</span>
+              <span class="chip">caret</span>
+              <span class="chip">randomForest</span>
+              <span class="chip">e1071 (SVM)</span>
+              <span class="chip">class (KNN)</span>
+              <span class="chip">ggplot2</span>
+              <span class="chip">dplyr</span>
+              <span class="chip">kableExtra</span>
+              <span class="chip">Quarto</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Links -->
+        <section>
+          <span class="label">Links &amp; Resources</span>
+          <div class="link-row">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+              </svg>
+              GitHub Repository ↗
+            </a>
+            <a href="https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+              UCI Dataset ↗
+            </a>
+          </div>
+        </section>
+
       </div>
-
-      <!-- Problem & Context -->
-      <section class="prose-content">
-        <span class="section-label">Problem &amp; Context</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">The Cost of Waiting Until It's Too Late</h2>
-        <p>Student dropout is expensive on both sides. Universities lose tuition revenue and see funding tied to retention rates erode; students lose time, money, and momentum. The window for intervention (academic coaching, emergency financial aid, course load adjustment) only exists if you can identify risk early enough to act.</p>
-        <p>This project treats dropout prediction as a classification problem where <strong style="color: #e6edf3;">the cost of a false negative (missing a real dropout) significantly outweighs the cost of a false positive</strong> (sending an advisor to check in on a student who would have been fine). That asymmetry shaped every modeling decision, most importantly the choice to evaluate all models at both the default 0.5 threshold and a more aggressive 0.3 threshold.</p>
-        <p>The deployment scenario: run the model at the end of each student's first semester, flag students above the risk threshold, and route them to targeted support before the second semester begins.</p>
-      </section>
-
-      <!-- Dataset -->
-      <section>
-        <span class="section-label">Dataset</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">UCI Dropout &amp; Academic Success Dataset</h2>
-        <p class="text-sm leading-relaxed mb-5" style="color: rgba(230,237,243,0.80);">
-          4,424 students from a Portuguese higher education institution across multiple academic years. The original three-class outcome (Dropout / Enrolled / Graduate) was collapsed into a binary target: Dropout vs. Not Dropout.
-        </p>
-        <div class="grid md:grid-cols-2 gap-4 my-6">
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Academic Predictors</h4>
-            <ul class="text-xs space-y-1" style="color: #8b949e;">
-              <li>1st &amp; 2nd semester units enrolled, approved, grade</li>
-              <li>Admission grade (0–200 scale)</li>
-              <li>Application mode &amp; order</li>
-              <li>Course type, daytime vs. evening attendance</li>
-            </ul>
-          </div>
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Financial &amp; Demographic</h4>
-            <ul class="text-xs space-y-1" style="color: #8b949e;">
-              <li>Tuition fees up to date (binary)</li>
-              <li>Scholarship holder status</li>
-              <li>Debtor status</li>
-              <li>Age at enrollment, gender, nationality</li>
-              <li>Mother's &amp; father's qualification &amp; occupation</li>
-            </ul>
-          </div>
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Macroeconomic Context</h4>
-            <ul class="text-xs space-y-1" style="color: #8b949e;">
-              <li>GDP at time of enrollment</li>
-              <li>Unemployment rate</li>
-              <li>Inflation rate</li>
-            </ul>
-          </div>
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-2" style="color: #e6edf3;">Train / Test Split</h4>
-            <ul class="text-xs space-y-1" style="color: #8b949e;">
-              <li>Stratified 80/20 split (seed = 31)</li>
-              <li>Training: 3,539 observations</li>
-              <li>Testing: 885 observations</li>
-              <li>No missing values in dataset</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- EDA Callout -->
-        <div class="rounded-xl p-5 space-y-3 mt-4" style="background: #161b22; border: 1px solid #30363d;">
-          <h4 class="font-semibold" style="color: #e6edf3;">Key EDA Findings</h4>
-          <div class="text-sm space-y-2" style="color: #8b949e;">
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Bimodal grade distribution for dropouts.</strong> Dropout students show a sharp spike at zero grades in the first semester: many stopped showing up before completing any coursework.</span></div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Tuition fees are a strong binary signal.</strong> Students behind on tuition had an 85% dropout rate vs. 25% for students current on payments.</span></div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Scholarships significantly reduce dropout.</strong> Scholarship holders dropped out at 12.5% vs. 40% without scholarships.</span></div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Evening students at higher risk.</strong> 38.7% dropout rate vs. 31.2% for daytime students.</span></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- My Approach -->
-      <section class="prose-content">
-        <span class="section-label">My Approach</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Recall First, Then Model Selection</h2>
-        <p>
-          Four algorithms were evaluated at two classification thresholds because the threshold is a business decision that shouldn't be separated from model selection: moving from 0.5 to 0.3 changes which students get flagged, and that choice belongs to the institution, not the modeler. The primary constraint was interpretability; the best-performing model also needs to explain which features drove the flag so advisors can have an informed conversation, which is why SVM was eliminated despite its lower test error. Recall on the dropout class was chosen as the primary metric before any model was run, not selected post-hoc to favor a preferred result.
-        </p>
-      </section>
-
-      <!-- Model Comparison -->
-      <section class="prose-content">
-        <span class="section-label">Model Selection</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Four Models, Two Thresholds</h2>
-        <p>All models were evaluated at both threshold=0.5 (default) and threshold=0.3 (aggressive, optimized for recall). The primary evaluation criteria were <strong style="color: #e6edf3;">negative-class recall</strong> (did we catch the dropouts?) and <strong style="color: #e6edf3;">test error rate</strong>.</p>
-
-        <div class="space-y-4 mt-5">
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-1" style="color: #e6edf3;">Logistic Regression</h4>
-            <p class="text-xs" style="color: #8b949e;">5 hand-selected predictors: tuition fees status, 1st semester grades, scholarship status, debtor status, admission grade. All significant at p &lt; 0.01. Interpretable but linear decision boundary caps recall.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-1" style="color: #e6edf3;">K-Nearest Neighbors (k=15)</h4>
-            <p class="text-xs" style="color: #8b949e;">Tuned k via 10-fold repeated CV. Can only use numeric predictors, excluding tuition fees and scholarship status (two of the strongest signals). Center + scale preprocessing applied to normalize distances.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-1" style="color: #2dd4bf;">Random Forest: Selected Model</h4>
-            <p class="text-xs" style="color: #8b949e;">mtry=4, ntree=500, both tuned via OOB error. Uses all predictors including categorical variables. Captures non-linear interactions between financial and academic signals. Best recall at both thresholds.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-1" style="color: #e6edf3;">Support Vector Machine (Radial Kernel)</h4>
-            <p class="text-xs" style="color: #8b949e;">cost=10, gamma=0.01, tuned via 10-fold CV. Competitive error rate but no feature importance output, making it hard to explain to academic advisors or administrators.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Results -->
-      <section>
-        <span class="section-label">Results</span>
-        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Model Comparison</h2>
-
-        <!-- Metric Cards -->
-        <div class="grid md:grid-cols-3 gap-4 mb-8">
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">89.79%</p>
-            <p class="text-xs" style="color: #8b949e;">Random Forest recall<br/>on dropout class (threshold=0.3)</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">16.86%</p>
-            <p class="text-xs" style="color: #8b949e;">Test error rate<br/>Random Forest, threshold=0.3</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">4,424</p>
-            <p class="text-xs" style="color: #8b949e;">Students<br/>UCI Dataset</p>
-          </div>
-        </div>
-
-        <!-- Results Table -->
-        <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="px-5 py-3" style="border-bottom: 1px solid #30363d;">
-            <p class="text-xs font-medium" style="color: #8b949e;">Threshold = 0.3 (optimized for recall)</p>
-          </div>
-          <div class="px-5 pb-5 overflow-x-auto">
-            <table class="w-full text-sm mt-4">
-              <thead>
-                <tr style="border-bottom: 1px solid #30363d;">
-                  <th class="text-left pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Model</th>
-                  <th class="text-right pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Test Error</th>
-                  <th class="text-right pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Recall (Dropout)</th>
-                  <th class="text-right pb-2" style="color: #8b949e; font-weight: 500;">Specificity</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom: 1px solid #1c2333;">
-                  <td class="py-2.5 pr-6" style="color: #8b949e;">Baseline (Majority Class)</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">32.13%</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">0.00%</td>
-                  <td class="text-right py-2.5" style="color: #8b949e;">—</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1c2333;">
-                  <td class="py-2.5 pr-6" style="color: #8b949e;">Logistic Regression</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">18.10%</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">67.25%</td>
-                  <td class="text-right py-2.5" style="color: #8b949e;">88.83%</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1c2333;">
-                  <td class="py-2.5 pr-6" style="color: #8b949e;">KNN (k=15)</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">18.21%</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">76.06%</td>
-                  <td class="text-right py-2.5" style="color: #8b949e;">84.50%</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1c2333; background: rgba(45,212,191,0.05);">
-                  <td class="py-2.5 pr-6 font-medium" style="color: #2dd4bf;">Random Forest ✓ Best</td>
-                  <td class="text-right py-2.5 pr-6 font-bold" style="color: #2dd4bf;">16.86%</td>
-                  <td class="text-right py-2.5 pr-6 font-bold" style="color: #2dd4bf;">89.79%</td>
-                  <td class="text-right py-2.5" style="color: #2dd4bf;">78.38%</td>
-                </tr>
-                <tr>
-                  <td class="py-2.5 pr-6" style="color: #8b949e;">SVM (Radial)</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">10.86%</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">86.62%</td>
-                  <td class="text-right py-2.5" style="color: #8b949e;">90.33%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="px-5 py-3" style="border-top: 1px solid #30363d; background: #161b22;">
-            <p class="text-xs" style="color: #8b949e;">SVM has lower test error but no feature importance; Random Forest selected for its recall and interpretability combination.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Variable Importance -->
-      <section>
-        <span class="section-label">Variable Importance</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What Actually Predicts Dropout</h2>
-        <p class="text-sm leading-relaxed mb-5" style="color: rgba(230,237,243,0.80);">Random Forest variable importance ranked by mean decrease in accuracy when each variable is permuted out of the model:</p>
-
-        <div class="space-y-2">
-          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
-            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">01</span>
-            <div class="flex-1">
-              <p class="text-sm font-semibold" style="color: #e6edf3;">Curricular units 2nd semester (approved)</p>
-              <p class="text-xs" style="color: #8b949e;">How many courses a student passed in their second semester, the strongest single predictor</p>
-            </div>
-            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 90px;"></div>
-          </div>
-          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
-            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">02</span>
-            <div class="flex-1">
-              <p class="text-sm font-semibold" style="color: #e6edf3;">Curricular units 2nd semester (grade)</p>
-              <p class="text-xs" style="color: #8b949e;">Average grade on completed coursework, confirming academic engagement, not just enrollment</p>
-            </div>
-            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 75px;"></div>
-          </div>
-          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
-            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">03</span>
-            <div class="flex-1">
-              <p class="text-sm font-semibold" style="color: #e6edf3;">Tuition fees up to date</p>
-              <p class="text-xs" style="color: #8b949e;">85% dropout rate when behind on fees, a strong financial distress signal</p>
-            </div>
-            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 60px;"></div>
-          </div>
-          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
-            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">04</span>
-            <div class="flex-1">
-              <p class="text-sm font-semibold" style="color: #e6edf3;">Scholarship holder status</p>
-              <p class="text-xs" style="color: #8b949e;">Scholarship students retain at much higher rates, a protective financial signal</p>
-            </div>
-            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 48px;"></div>
-          </div>
-          <div class="flex items-center gap-4 rounded-lg px-4 py-3" style="background: #1c2333; border: 1px solid #30363d;">
-            <span class="text-xs font-mono font-bold w-6 text-right" style="color: #2dd4bf;">05</span>
-            <div class="flex-1">
-              <p class="text-sm font-semibold" style="color: #e6edf3;">Debtor status</p>
-              <p class="text-xs" style="color: #8b949e;">Outstanding debt compounds dropout risk on top of tuition delinquency</p>
-            </div>
-            <div class="h-2 rounded-full" style="background: #2dd4bf; width: 38px;"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Key Findings -->
-      <section>
-        <span class="section-label">Key Findings</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What the Models Revealed</h2>
-        <div class="rounded-xl p-5 space-y-3" style="background: #161b22; border: 1px solid #30363d;">
-          <div class="text-sm space-y-3" style="color: #8b949e;">
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Non-linear interactions matter.</strong> The reason Random Forest beats Logistic Regression isn't just more predictors; the interaction between academic and financial distress is non-linear. A student who's behind on tuition AND has zero 1st semester approvals is dramatically higher risk than either signal alone suggests.</span></div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">KNN's categorical exclusion cost it the race.</strong> KNN can't handle categorical predictors without encoding hacks, which forced exclusion of tuition status and scholarship holder — the 3rd and 4th most important predictors. This is a fundamental algorithm limitation, not a hyperparameter problem.</span></div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Threshold tuning is a business decision, not just a modeling one.</strong> Moving from 0.5 to 0.3 increased Random Forest recall from 79.23% to 89.79%, an extra 10 out of 100 true dropouts correctly flagged, at the cost of more false alarms. Whether that trade-off is worth it depends on advisor bandwidth and intervention cost, not test accuracy.</span></div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Evening students are better identified.</strong> Segment analysis showed the model achieved 92.7% recall on evening students vs. 89.3% on daytime, likely because evening students have stronger, less ambiguous predictor signals (more pronounced financial stress patterns).</span></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Limitations -->
-      <section class="prose-content">
-        <span class="section-label">Limitations &amp; What I'd Do Differently</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What I'd Do Differently</h2>
-        <ul class="list-none space-y-4">
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
-            <div><strong style="color: #e6edf3;">Frame the evaluation metric before picking a model.</strong> Starting from "maximize recall, subject to error rate below X%" makes model selection much cleaner than comparing a table of numbers post-hoc. The business objective should define the metric, not the other way around.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">02.</span>
-            <div><strong style="color: #e6edf3;">Interpretability is a real constraint.</strong> SVM had the lowest test error but was eliminated because advisors need to understand why a student was flagged. A model that can't explain itself won't get used, no matter how accurate.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">03.</span>
-            <div><strong style="color: #e6edf3;">Mid-semester updates would sharpen predictions.</strong> The model currently runs on end-of-first-semester data, but payment status and attendance could be observed in real time. A version that updates risk scores continuously throughout the semester would catch struggling students earlier.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">04.</span>
-            <div><strong style="color: #e6edf3;">Class imbalance deserves explicit treatment.</strong> We handled imbalance through stratified splitting and threshold tuning, but techniques like SMOTE or class-weighted loss could be worth testing, especially if the minority class shrinks in a smaller institution's dataset.</div>
-          </li>
-        </ul>
-      </section>
-
-      <!-- Tech Stack -->
-      <section>
-        <span class="section-label">Tech Stack</span>
-        <div class="flex flex-wrap gap-2">
-          <span class="tag">R</span>
-          <span class="tag">caret</span>
-          <span class="tag">randomForest</span>
-          <span class="tag">e1071 (SVM)</span>
-          <span class="tag">class (KNN)</span>
-          <span class="tag">ggplot2</span>
-          <span class="tag">dplyr</span>
-          <span class="tag">kableExtra</span>
-          <span class="tag">Quarto</span>
-        </div>
-      </section>
-
-      <!-- Links -->
-      <section>
-        <span class="section-label">Links &amp; Resources</span>
-        <div class="flex flex-wrap gap-4">
-          <a href="#" target="_blank" rel="noopener noreferrer"
-             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
-             style="border: 1px solid #30363d; color: #8b949e;"
-             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
-             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
-            GitHub Repository ↗
-          </a>
-          <a href="https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success" target="_blank" rel="noopener noreferrer"
-             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
-             style="border: 1px solid #30363d; color: #8b949e;"
-             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
-             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
-            UCI Dataset ↗
-          </a>
-        </div>
-      </section>
-
     </div>
   </main>
 
   <!-- ─── FOOTER ─── -->
-  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
-    <a href="../index.html#projects" class="text-sm transition-colors" style="color: #8b949e;"
-       onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#8b949e'">
-      ← Back to all projects
-    </a>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <a href="../index.html" class="footer-back">← Back to all projects</a>
+        <span>Peyton Ramsey</span>
+      </div>
+    </div>
   </footer>
 
 </body>

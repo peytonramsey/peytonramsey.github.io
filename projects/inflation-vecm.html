@@ -4,423 +4,1161 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>U.S. Inflation Dynamics: VECM Analysis | Peyton Ramsey</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="A Vector Error Correction Model on 33 years of monthly FRED data reveals how demand, supply, and labor shocks dynamically transmit to U.S. inflation — capturing long-run equilibrium relationships invisible to VAR on differences." />
+
+  <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500&f[]=cabinet-grotesk@700&display=swap" rel="stylesheet" />
+  <!-- Google Fonts: Geist Mono (metrics/data) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
-    * { font-family: 'Inter', sans-serif; }
-    body { background: #0d1117; color: #e6edf3; }
-    .section-label {
-      font-family: monospace;
-      font-size: 0.7rem;
+    /* ── DESIGN TOKENS ──────────────────────────────────────── */
+    :root {
+      --bg-base:     #0f0f0e;
+      --bg-surface:  #161614;
+      --bg-card:     #1c1b19;
+      --bg-elevated: #222120;
+
+      --text-1: #cdccca;
+      --text-2: #797876;
+      --text-3: #5a5957;
+      --accent:  #e8a035;
+      --border:  oklch(from #cdccca l c h / 0.10);
+
+      --font-body:    'Satoshi', system-ui, sans-serif;
+      --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
+      --font-mono:    'Geist Mono', monospace;
+
+      --radius-chip: 4px;
+      --radius-card: 10px;
+
+      --section-pad: clamp(3rem, 6vw, 6rem);
+      --container:   52rem;
+      --pad-x:       clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+    a  { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track  { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb  { background: var(--bg-elevated); border-radius: 3px; }
+
+    /* ── TYPOGRAPHY ─────────────────────────────────────────── */
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    /* Editorial section labels — Geist Mono, accent, uppercase */
+    .label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #2dd4bf;
-      margin-bottom: 0.5rem;
+      color: var(--accent);
       display: block;
+      margin-bottom: 0.75rem;
     }
-    .prose-content p {
-      color: rgba(230,237,243,0.80);
-      line-height: 1.75;
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    .container {
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--pad-x);
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 15, 14, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 3.75rem;
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-2);
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--text-1); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-icon {
+      color: var(--text-2);
+      padding: 0.25rem;
+      display: flex;
+      transition: color 0.15s;
+    }
+    .nav-icon:hover { color: var(--text-1); }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .page-header {
+      padding-block: clamp(3rem, 6vw, 5rem) clamp(2rem, 4vw, 3rem);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.875rem, 5vw, 3rem);
+      color: var(--text-1);
+      margin-bottom: 0.625rem;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.0625rem;
+      color: var(--text-2);
+      margin-bottom: 1.5rem;
+      max-width: 44rem;
+      line-height: 1.65;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      font-size: 0.875rem;
+      color: var(--text-2);
+      align-items: center;
+    }
+
+    .header-meta .sep { color: var(--text-3); }
+
+    /* ── CONTENT SECTIONS ───────────────────────────────────── */
+    .content {
+      padding-block: clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .content-stack {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(3rem, 6vw, 5rem);
+    }
+
+    /* ── TL;DR BOX — amber left border, 2px, never teal ─────── */
+    .tldr-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--accent);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+    }
+
+    .tldr-box p {
+      font-size: 0.9375rem;
+      line-height: 1.80;
+      color: rgba(205, 204, 202, 0.85);
+      margin: 0;
+    }
+
+    .tldr-box strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── METRICS — pure typographic hierarchy ───────────────── */
+    .metric-primary {
+      margin-bottom: 2rem;
+    }
+
+    .metric-primary .value {
+      font-family: var(--font-mono);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.375rem;
+    }
+
+    .metric-primary .label-text {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+    }
+
+    .metric-secondary-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .metric-secondary-wide {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .metric-secondary-wide .value {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .metric-secondary-wide .label-text {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    .metric-secondary-pair {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .metric-secondary-sm .value {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      color: var(--text-2);
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-secondary-sm .label-text {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+      line-height: 1.35;
+    }
+
+    /* ── PROSE ──────────────────────────────────────────────── */
+    .prose p {
+      font-size: 0.9375rem;
+      line-height: 1.8;
+      color: rgba(205, 204, 202, 0.80);
       margin-bottom: 1rem;
     }
-    .prose-content li {
-      color: rgba(230,237,243,0.80);
-      margin-bottom: 0.4rem;
+    .prose p:last-child { margin-bottom: 0; }
+
+    .prose h3 {
+      font-family: var(--font-heading);
+      font-size: 1.125rem;
+      color: var(--text-1);
+      margin-top: 2rem;
+      margin-bottom: 0.625rem;
     }
-    .metric-card {
-      background: #1c2333;
-      border: 1px solid #30363d;
-      border-radius: 0.75rem;
+
+    .prose-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .prose-list li {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.9375rem;
+      color: rgba(205, 204, 202, 0.80);
+      line-height: 1.65;
+    }
+
+    .prose-list li::before {
+      content: '▸';
+      color: var(--text-3);
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .prose-list li strong { color: var(--text-1); font-weight: 500; }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      color: var(--text-2);
+      background: var(--bg-elevated);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    /* ── DATA TABLE ─────────────────────────────────────────── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .data-table thead tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      text-align: left;
+      padding-bottom: 0.625rem;
+      padding-right: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      font-weight: 400;
+    }
+
+    .data-table th.right { text-align: right; padding-right: 0; }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid oklch(from #cdccca l c h / 0.05);
+    }
+
+    .data-table td {
+      padding: 0.625rem 1.5rem 0.625rem 0;
+      color: rgba(205, 204, 202, 0.75);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .data-table td.right {
+      text-align: right;
+      padding-right: 0;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+    }
+
+    .data-table td.accent {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+    }
+
+    .data-table tbody tr:last-child td { border-bottom: none; }
+
+    .data-table tbody tr.highlight td { color: var(--accent); }
+    .data-table tbody tr.highlight td:first-child { font-weight: 500; }
+    .data-table tbody tr.muted td { color: var(--text-3); }
+
+    /* ── ARCHITECTURE — ASCII pre/code block ─────────────────── */
+    .arch-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow-x: auto;
+    }
+
+    .arch-block pre {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.9;
+      color: var(--text-2);
+      padding: 1.5rem 1.75rem;
+      margin: 0;
+      white-space: pre;
+    }
+
+    /* ── DATASET GRID ───────────────────────────────────────── */
+    .dataset-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    @media (min-width: 560px) {
+      .dataset-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .dataset-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
       padding: 1.25rem;
-      text-align: center;
     }
-    .tag {
-      font-size: 0.7rem;
-      padding: 0.2rem 0.6rem;
-      background-color: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 9999px;
-      color: #8b949e;
+
+    .dataset-card-head {
+      font-family: var(--font-heading);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 0.5rem;
     }
+
+    .dataset-card p {
+      font-size: 0.8125rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    /* ── STEP CARDS ─────────────────────────────────────────── */
+    .step-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.125rem 1.375rem;
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      padding-top: 0.1rem;
+    }
+
+    .step-body { display: flex; flex-direction: column; }
+
+    .step-body h4 {
+      font-family: var(--font-heading);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 0.375rem;
+    }
+
+    .step-body p {
+      font-size: 0.8125rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .step-body p strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── CALLOUT ────────────────────────────────────────────── */
+    .callout {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.25rem;
+    }
+
+    .callout-head {
+      font-family: var(--font-heading);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 0.875rem;
+    }
+
+    .callout-body {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    .callout-body strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── FEVD BARS ──────────────────────────────────────────── */
+    .fevd-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    .fevd-row { margin-bottom: 0.5rem; }
+
+    .fevd-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.375rem;
+    }
+
+    .fevd-name {
+      font-size: 0.8125rem;
+      color: var(--text-1);
+    }
+
+    .fevd-pct {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--text-2);
+    }
+
+    .fevd-track {
+      height: 6px;
+      background: var(--bg-elevated);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .fevd-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .fevd-fill.primary  { background: var(--accent); }
+    .fevd-fill.secondary { background: var(--text-2); opacity: 0.5; }
+    .fevd-fill.tertiary  { background: var(--text-3); opacity: 0.4; }
+
+    /* ── IRF CARDS ──────────────────────────────────────────── */
+    .irf-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .irf-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.125rem 1.375rem;
+    }
+
+    .irf-card h4 {
+      font-family: var(--font-heading);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 0.375rem;
+    }
+
+    .irf-card p {
+      font-size: 0.8125rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ── FINDINGS LIST ──────────────────────────────────────── */
+    .findings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .finding-item {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .finding-num {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      padding-top: 0.1rem;
+    }
+
+    .finding-body {
+      font-size: 0.9375rem;
+      line-height: 1.75;
+      color: rgba(205, 204, 202, 0.80);
+    }
+
+    .finding-body strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── REVISIT — IF I WERE TO REVISIT IT ─────────────────── */
+    .revisit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .revisit-item {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .revisit-num {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      padding-top: 0.1rem;
+    }
+
+    .revisit-body {
+      font-size: 0.9375rem;
+      line-height: 1.75;
+      color: rgba(205, 204, 202, 0.80);
+    }
+
+    .revisit-body strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── TECH STACK — chips appear ONCE on page, here only ──── */
+    .stack-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.25rem;
+    }
+
+    .stack-card-head {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.875rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-2);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-chip);
+      padding: 0.25rem 0.625rem;
+    }
+
+    /* ── LINKS SECTION ──────────────────────────────────────── */
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-1);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--text-2); }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    /* ── TABLE WRAPPER ──────────────────────────────────────── */
+    .table-wrap {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow-x: auto;
+      margin-top: 1.25rem;
+    }
+
+    .table-header {
+      padding: 0.875rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-header p {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+    }
+
+    .table-inner {
+      padding: 0 1.25rem 1.25rem;
+    }
+
+    .table-footer {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
+      border-radius: 0 0 var(--radius-card) var(--radius-card);
+    }
+
+    .table-footer p {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-block: 2rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+      color: var(--text-3);
+    }
+
+    .footer-back {
+      color: var(--text-3);
+      transition: color 0.15s;
+    }
+    .footer-back:hover { color: var(--text-2); }
   </style>
 </head>
 <body>
 
   <!-- ─── NAV ─── -->
-  <nav class="sticky top-0 z-50 px-6 py-4 flex items-center justify-between" style="background: rgba(13,17,23,0.95); border-bottom: 1px solid #30363d; backdrop-filter: blur(8px);">
-    <a href="../index.html#projects" class="text-sm transition-colors flex items-center gap-2" style="color: #8b949e;"
-       onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
-      ← Back to Portfolio
-    </a>
-    <a href="#" target="_blank" rel="noopener noreferrer"
-       class="inline-flex items-center gap-2 px-3 py-1.5 text-xs rounded-lg transition-colors"
-       style="border: 1px solid #30363d; color: #8b949e;"
-       onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
-       onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
-      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"/></svg>
-      GitHub
-    </a>
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-back">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Peyton Ramsey
+        </a>
+        <div class="nav-right">
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="nav-icon" aria-label="GitHub">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
   </nav>
 
-  <!-- ─── HERO ─── -->
-  <header class="py-16 px-6" style="border-bottom: 1px solid #30363d;">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex flex-wrap gap-2 mb-5">
-        <span class="tag">Time Series</span>
-        <span class="tag">R</span>
-        <span class="tag">VECM</span>
-        <span class="tag">Cointegration</span>
-        <span class="tag">IRF</span>
-        <span class="tag">FEVD</span>
-        <span class="tag">Macroeconomics</span>
-      </div>
-      <h1 class="text-3xl md:text-4xl font-extrabold mb-4 leading-tight" style="color: #e6edf3;">
-        U.S. Inflation Dynamics:<br/>A Vector Error Correction Model Analysis
-      </h1>
-      <p class="text-base mb-6" style="color: #8b949e; max-width: 620px; line-height: 1.7;">
-        Modeling how demand, supply, and labor shocks dynamically transmit to U.S. inflation, revealing long-run equilibrium relationships that univariate models and VAR on differences cannot detect.
-      </p>
-      <div class="flex flex-wrap gap-5 text-sm" style="color: #8b949e;">
-        <span>407 monthly observations</span>
-        <span style="color: #30363d;">·</span>
-        <span>FRED Database</span>
-        <span style="color: #30363d;">·</span>
+  <!-- ─── HEADER ─── -->
+  <header class="page-header">
+    <div class="container">
+      <h1>U.S. Inflation Dynamics:<br/>A Vector Error Correction Model Analysis</h1>
+      <p class="subtitle">Modeling how demand, supply, and labor shocks dynamically transmit to U.S. inflation — revealing long-run equilibrium relationships that univariate models and VAR on differences cannot detect.</p>
+      <div class="header-meta">
+        <span>Peyton Ramsey</span>
+        <span class="sep">·</span>
+        <span>407 monthly observations · FRED Database</span>
+        <span class="sep">·</span>
         <span>Jan 1992 – Oct 2024</span>
-        <span style="color: #30363d;">·</span>
+        <span class="sep">·</span>
         <span>Spring 2026 · DS 809</span>
       </div>
     </div>
   </header>
 
-  <!-- ─── MAIN CONTENT ─── -->
-  <main class="py-16 px-6">
-    <div class="max-w-4xl mx-auto space-y-16">
+  <!-- ─── CONTENT ─── -->
+  <main class="content">
+    <div class="container">
+      <div class="content-stack">
 
-      <!-- TL;DR -->
-      <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
-        <span class="section-label">TL;DR</span>
-        <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
-          A Vector Error Correction Model on 33 years of monthly FRED data reveals that <strong style="color: #e6edf3;">demand (retail sales, 35.5%) and inflation inertia (own-shock, 38.4%) dominate long-run CPI variance</strong>, while labor market effects work through cointegrating equilibrium channels rather than short-run dynamics. A VAR on differences, the naive alternative, attributed 95.68% of CPI variance to its own shocks, missing 61.6% of the external transmission the VECM captures.
-        </p>
+        <!-- TL;DR -->
+        <section>
+          <span class="label">TL;DR</span>
+          <div class="tldr-box">
+            <p>A Vector Error Correction Model on 33 years of monthly FRED data reveals that <strong>demand (retail sales, 35.5%) and inflation inertia (own-shock, 38.4%) dominate long-run CPI variance</strong>, while labor market effects work through cointegrating equilibrium channels rather than short-run dynamics. A VAR on differences — the naive alternative — attributed 95.68% of CPI variance to its own shocks, missing 61.6% of the external transmission the VECM captures.</p>
+          </div>
+        </section>
+
+        <!-- Outcomes -->
+        <section>
+          <span class="label">Outcomes</span>
+          <!-- Primary metric: thesis-level claim, Geist Mono, large, amber -->
+          <div class="metric-primary">
+            <div class="value">35.5%</div>
+            <div class="label-text">of long-run CPI variance explained by retail sales demand shocks — the dominant external transmission channel at a 20-month horizon</div>
+          </div>
+          <!-- Secondary metrics: descending weight -->
+          <div class="metric-secondary-group">
+            <div class="metric-secondary-wide">
+              <div class="value">38.4%</div>
+              <div class="label-text">own-shock (inflation inertia) — the largest single share, confirming strong persistence alongside external drivers</div>
+            </div>
+            <div class="metric-secondary-pair">
+              <div class="metric-secondary-sm">
+                <div class="value">3</div>
+                <div class="label-text">cointegrating<br/>vectors confirmed</div>
+              </div>
+              <div class="metric-secondary-sm">
+                <div class="value">33 yrs</div>
+                <div class="label-text">monthly FRED data<br/>Jan 1992 – Oct 2024</div>
+              </div>
+              <div class="metric-secondary-sm">
+                <div class="value">58.7%</div>
+                <div class="label-text">R² in CPI<br/>equation</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Problem & Approach -->
+        <section>
+          <span class="label">Problem &amp; Approach</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Why Standard Models Miss Inflation Dynamics</h2>
+          <div class="prose">
+            <p>Inflation is not just an autoregressive process. It's the output of interacting macroeconomic forces: consumer demand driving prices up, industrial production expanding supply, labor market slack moderating wage growth — all operating across different time horizons simultaneously.</p>
+            <p>A univariate model (ARIMA on CPI alone) captures inflation's persistence but attributes everything to its own past values. A VAR on differenced data respects stationarity but destroys the long-run relationships between variables in the process. The right tool when series are non-stationary but move together over time is a <strong style="color: var(--text-1);">Vector Error Correction Model</strong>, which models both short-run dynamics and the long-run equilibria that tie the variables together.</p>
+            <p>The core research question: <em style="color: var(--text-1);">How do demand, supply, and labor market shocks dynamically affect U.S. inflation, and through what channels?</em></p>
+
+            <h3>Model Selection by Elimination</h3>
+            <p>The VECM specification was arrived at by ruling out simpler alternatives in sequence — not chosen upfront. ARIMA on CPI alone captures persistence but attributes everything to its own past values. VAR on differences preserves stationarity but destroys the long-run relationships. Only after ADF tests confirmed I(1) behavior across all four series and Johansen's trace test confirmed three cointegrating vectors was VECM the correct model. The key constraint throughout was the 2020–2022 COVID period — a structural break that sits outside the equilibrium estimated on 1992–2019 data and complicates formal inference on the residuals.</p>
+          </div>
+        </section>
+
+        <!-- Dataset -->
+        <section>
+          <span class="label">Dataset</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 0.75rem;">Four FRED Series, 33 Years of Monthly Data</h2>
+          <div class="prose" style="margin-bottom: 0;">
+            <p>All series sourced from the Federal Reserve Bank of St. Louis FRED database, seasonally adjusted, January 1992 – October 2024.</p>
+          </div>
+          <div class="dataset-grid">
+            <div class="dataset-card">
+              <div class="dataset-card-head">CPI (CPIAUCSL)</div>
+              <p>Consumer Price Index for All Urban Consumers — the primary outcome variable measuring inflation. Non-stationary in levels, stationary after first differencing (I(1)).</p>
+            </div>
+            <div class="dataset-card">
+              <div class="dataset-card-head">Industrial Production (INDPRO)</div>
+              <p>Supply-side proxy. Represents the economy's productive capacity; expansions should dampen price pressure. Only 5.6% of long-run CPI variance at 20 months.</p>
+            </div>
+            <div class="dataset-card">
+              <div class="dataset-card-head">Advance Retail Sales (RSXFS)</div>
+              <p>Demand-side proxy. Consumer spending drives demand-pull inflation — the dominant transmission channel found in this analysis at 35.5% of long-run CPI variance.</p>
+            </div>
+            <div class="dataset-card">
+              <div class="dataset-card-head">Unemployment Rate (UNRATE)</div>
+              <p>Labor market slack indicator. Insignificant in short-run dynamics but accounts for 20.5% of long-run variance through error correction channels.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Architecture -->
+        <section>
+          <span class="label">Architecture</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">The Two-Step Path to VECM</h2>
+          <div class="arch-block">
+<pre>
+  FRED API (4 series, Jan 1992 – Oct 2024)
+        │
+        ▼
+  ┌─────────────────────────────────────────────┐
+  │  Preprocessing                              │
+  │  Log-transform · Seasonal adjustment check  │
+  └────────────────┬────────────────────────────┘
+                   │
+                   ▼
+  ┌─────────────────────────────────────────────┐
+  │  Step 1: Unit Root Testing                  │
+  │  ADF tests on all 4 series                  │
+  │  Result: All I(1) → cointegration possible  │
+  └────────────────┬────────────────────────────┘
+                   │
+                   ▼
+  ┌─────────────────────────────────────────────┐
+  │  Step 2: Cointegration Testing              │
+  │  Johansen trace test                        │
+  │  Result: r = 3 cointegrating vectors        │
+  │  → VAR on differences ruled out             │
+  └────────────────┬────────────────────────────┘
+                   │
+                   ▼
+  ┌─────────────────────────────────────────────┐
+  │  VECM Estimation (lag order by BIC)         │
+  │  Error correction terms (ECT)               │
+  │  Short-run dynamics                         │
+  └───────┬──────────────────┬──────────────────┘
+          │                  │
+          ▼                  ▼
+  ┌───────────────┐  ┌─────────────────────────┐
+  │  IRF Analysis │  │  FEVD at 20-month horizon│
+  │  Cholesky     │  │  CPI own: 38.4%          │
+  │  orthogonal.  │  │  Retail Sales: 35.5%     │
+  │  100 bootstrap│  │  Unemployment: 20.5%    │
+  │  runs         │  │  Ind. Production: 5.6%   │
+  └───────────────┘  └─────────────────────────┘
+</pre>
+          </div>
+
+          <div class="step-stack">
+            <div class="step-card">
+              <div class="step-num">01</div>
+              <div class="step-body">
+                <h4>ADF Tests: Stationarity</h4>
+                <p>Augmented Dickey-Fuller tests on all four series. Result: all four are <strong>I(1)</strong> — non-stationary in levels and stationary after first differencing. This rules out VAR in levels (spurious regression) and confirms cointegration is possible.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">02</div>
+              <div class="step-body">
+                <h4>Johansen Trace Test: Cointegration</h4>
+                <p>Tests whether linear combinations of non-stationary series are themselves stationary — whether variables share a long-run equilibrium. Result: <strong>r = 3 cointegrating relationships</strong> among the four variables. This rules out VAR on differences, which discards the long-run information, justifying VECM.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">03</div>
+              <div class="step-body">
+                <h4>VECM Estimation</h4>
+                <p>The model decomposes each variable's movement into: (a) <strong>error correction terms</strong> measuring how fast it returns toward long-run equilibrium when displaced, and (b) <strong>short-run dynamics</strong> capturing how transitory shocks propagate. Lag order selected by BIC.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout">
+            <div class="callout-head">Intuition: What an Error Correction Term Does</div>
+            <div class="callout-body">If CPI drifts too far above its long-run equilibrium with retail sales and unemployment, the ECT coefficient (−0.0305) says CPI will fall back by ~3% of that gap each month. This is the mechanism that prevents the variables from wandering apart indefinitely — and it's <strong>invisible in a VAR on differences</strong>.</div>
+          </div>
+        </section>
+
+        <!-- Results -->
+        <section>
+          <span class="label">Results</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">CPI Equation &amp; Variance Decomposition</h2>
+
+          <div class="table-wrap">
+            <div class="table-header">
+              <p>VECM — CPI Equation Key Coefficients</p>
+            </div>
+            <div class="table-inner">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Term</th>
+                    <th>Coefficient</th>
+                    <th>Interpretation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="highlight">
+                    <td>ect1 (Error Correction)</td>
+                    <td class="accent">−0.0305 ***</td>
+                    <td>CPI corrects ~3% per month toward long-run equilibrium when displaced</td>
+                  </tr>
+                  <tr>
+                    <td>cpi.dl1 (Lagged CPI)</td>
+                    <td class="accent">0.317 ***</td>
+                    <td>Strong short-run inflation momentum — past inflation predicts near-term inflation</td>
+                  </tr>
+                  <tr>
+                    <td>retail_sales.dl1</td>
+                    <td class="accent">2.18e−05 ***</td>
+                    <td>Demand shocks transmit to CPI within one month</td>
+                  </tr>
+                  <tr class="muted">
+                    <td>ind_pro.dl1</td>
+                    <td>Not significant</td>
+                    <td>Supply effects operate at longer horizons, not contemporaneously</td>
+                  </tr>
+                  <tr class="muted">
+                    <td>unemp_rate.dl1</td>
+                    <td>Not significant</td>
+                    <td>Labor market effects flow through long-run ECT channel, not short-run dynamics</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- FEVD -->
+          <h3 style="font-family: var(--font-heading); font-size: 1rem; color: var(--text-2); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">Forecast Error Variance Decomposition — CPI at 20-Month Horizon</h3>
+          <div class="fevd-stack">
+            <div class="fevd-row">
+              <div class="fevd-labels">
+                <span class="fevd-name">CPI Own-Shock (inertia)</span>
+                <span class="fevd-pct">38.4%</span>
+              </div>
+              <div class="fevd-track">
+                <div class="fevd-fill primary" style="width: 38.4%;"></div>
+              </div>
+            </div>
+            <div class="fevd-row">
+              <div class="fevd-labels">
+                <span class="fevd-name">Retail Sales (demand-pull)</span>
+                <span class="fevd-pct">35.5%</span>
+              </div>
+              <div class="fevd-track">
+                <div class="fevd-fill primary" style="width: 35.5%; opacity: 0.7;"></div>
+              </div>
+            </div>
+            <div class="fevd-row">
+              <div class="fevd-labels">
+                <span class="fevd-name">Unemployment (labor market)</span>
+                <span class="fevd-pct">20.5%</span>
+              </div>
+              <div class="fevd-track">
+                <div class="fevd-fill secondary" style="width: 20.5%;"></div>
+              </div>
+            </div>
+            <div class="fevd-row">
+              <div class="fevd-labels">
+                <span class="fevd-name">Industrial Production (supply)</span>
+                <span class="fevd-pct">5.6%</span>
+              </div>
+              <div class="fevd-track">
+                <div class="fevd-fill tertiary" style="width: 5.6%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout" style="margin-top: 1.25rem;">
+            <div class="callout-body"><strong>VAR on differences baseline:</strong> attributed 95.68% of CPI variance to own-shocks — appearing to confirm inflation is purely self-perpetuating. VECM reveals this is an artifact of discarding long-run information; the cointegrating structure is the mechanism through which macroeconomic forces actually operate.</div>
+          </div>
+        </section>
+
+        <!-- Impulse Response Analysis -->
+        <section>
+          <span class="label">Impulse Response Analysis</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 0.75rem;">How Shocks Propagate to Inflation</h2>
+          <div class="prose" style="margin-bottom: 0;">
+            <p>Cholesky orthogonalized IRFs, 20-month horizon, 100 bootstrap runs for confidence intervals.</p>
+          </div>
+          <div class="irf-stack">
+            <div class="irf-card">
+              <h4>Retail Sales Shock → CPI</h4>
+              <p>Near-linear increase in CPI over the full 20-month horizon: demand shocks don't dissipate quickly — they compound. This is the clearest evidence of demand-pull inflation dynamics in the data. IRFs remain non-zero at 20 months versus VAR convergence by 8–10 months.</p>
+            </div>
+            <div class="irf-card">
+              <h4>Unemployment Shock → CPI</h4>
+              <p>Insignificant in the short-run CPI equation but explains 20.5% of long-run variance. The signal lives in the error correction terms — labor market slack moderates inflation gradually through wage-price dynamics and equilibrium adjustment, not immediate transmission.</p>
+            </div>
+            <div class="irf-card">
+              <h4>Industrial Production Shock → CPI</h4>
+              <p>Mild dampening effect: supply expansions apply modest downward pressure on prices, consistent with cost-side inflation theory. Only 5.6% of long-run CPI variance suggests supply constraints are less binding than demand conditions over this period.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Diagnostic Challenges -->
+        <section>
+          <span class="label">Diagnostic Challenges</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">The COVID-19 Structural Break Problem</h2>
+          <div class="callout">
+            <div class="callout-body">All three standard residual diagnostics reject their null hypotheses: Portmanteau (serial correlation), ARCH-LM (heteroscedasticity), and Jarque-Bera (normality). The root cause is the 2020–2022 COVID-19 period — an extreme structural shock that sits outside the equilibrium relationships estimated on 1992–2019 data.</div>
+          </div>
+
+          <div class="step-stack" style="margin-top: 1rem;">
+            <div class="step-card">
+              <div class="step-num">▸</div>
+              <div class="step-body">
+                <h4>Why the model is still valid</h4>
+                <p>These violations affect inference precision but not the cointegrating structure itself. The 3 cointegrating vectors and ECT coefficients reflect genuine long-run relationships that hold outside the COVID shock window.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">▸</div>
+              <div class="step-body">
+                <h4>Mitigation</h4>
+                <p>100 bootstrap runs for IRF confidence intervals provide robust inference that doesn't rely on normality or homoscedasticity assumptions.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Key Findings -->
+        <section>
+          <span class="label">Key Findings</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">What the VECM Reveals</h2>
+          <div class="findings-list">
+            <div class="finding-item">
+              <div class="finding-num">01</div>
+              <div class="finding-body"><strong>Demand-pull inflation dominates long-run dynamics.</strong> Retail sales explains 35.5% of CPI variance at a 20-month horizon and produces a near-linear IRF. Consumer spending is the primary external driver of sustained inflation — more so than labor market conditions or supply capacity.</div>
+            </div>
+            <div class="finding-item">
+              <div class="finding-num">02</div>
+              <div class="finding-body"><strong>Labor market effects are real but operate through equilibrium, not short-run dynamics.</strong> Unemployment is insignificant in the CPI short-run equation but accounts for 20.5% of long-run variance through error correction terms. The Phillips Curve is not dead — it works through cointegrating relationships over longer horizons.</div>
+            </div>
+            <div class="finding-item">
+              <div class="finding-num">03</div>
+              <div class="finding-body"><strong>Supply-side effects are secondary over this period.</strong> Industrial production explains only 5.6% of long-run CPI variance. Supply constraints matter during specific episodes (COVID supply chain disruption) but are not the dominant inflation driver across the full 1992–2024 sample.</div>
+            </div>
+            <div class="finding-item">
+              <div class="finding-num">04</div>
+              <div class="finding-body"><strong>Model selection matters enormously.</strong> The VAR on differences attributed 95.68% of CPI variance to own-shocks — appearing to confirm inflation is purely self-perpetuating. VECM reveals this is an artifact of discarding long-run information; the cointegrating structure is the mechanism through which macroeconomic forces actually operate.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- IF I WERE TO REVISIT IT -->
+        <section>
+          <span class="label">If I Were to Revisit It</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">What Scales, What Doesn't</h2>
+          <div class="revisit-list">
+            <div class="revisit-item">
+              <div class="revisit-num">01</div>
+              <div class="revisit-body"><strong>Add a structural break dummy for 2020–2022.</strong> The COVID period drives all three diagnostic failures. A dummy variable for that window — or a Markov-switching VECM allowing ECT coefficients to vary across regimes — would produce cleaner residuals and tighter inference without sacrificing the pre-COVID cointegrating structure.</div>
+            </div>
+            <div class="revisit-item">
+              <div class="revisit-num">02</div>
+              <div class="revisit-body"><strong>Extend to a larger variable set.</strong> Money supply (M2), Federal Funds Rate, and commodity prices are conspicuously absent. The monetary transmission mechanism — the channel most central bankers care about — is invisible in this specification. Adding it would require retesting for cointegration rank and potentially re-specifying the ECT structure.</div>
+            </div>
+            <div class="revisit-item">
+              <div class="revisit-num">03</div>
+              <div class="revisit-body"><strong>Test ordering sensitivity of the Cholesky decomposition.</strong> Cholesky identification imposes a specific causal ordering. The current ordering (production → retail → unemployment → CPI) reflects one theory of transmission, but the IRF results likely depend on it. A structural VAR with sign restrictions would give more credible identification without committing to a single ordering.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tech Stack -->
+        <section>
+          <span class="label">Tech Stack</span>
+          <div class="stack-card">
+            <div class="stack-card-head">Libraries &amp; Tools</div>
+            <div class="chips">
+              <span class="chip">R</span>
+              <span class="chip">vars</span>
+              <span class="chip">urca</span>
+              <span class="chip">tseries</span>
+              <span class="chip">ggplot2</span>
+              <span class="chip">dplyr</span>
+              <span class="chip">lubridate</span>
+              <span class="chip">gridExtra</span>
+              <span class="chip">kableExtra</span>
+              <span class="chip">Quarto</span>
+              <span class="chip">FRED API</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Links -->
+        <section>
+          <span class="label">Links &amp; Resources</span>
+          <div class="link-row">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="vecm-github-link">
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+              </svg>
+              GitHub Repository ↗
+            </a>
+            <a href="https://fred.stlouisfed.org" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="vecm-fred-link">
+              FRED Database ↗
+            </a>
+          </div>
+        </section>
+
       </div>
-
-      <!-- Problem & Context -->
-      <section class="prose-content">
-        <span class="section-label">Problem &amp; Context</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Why Standard Models Miss Inflation Dynamics</h2>
-        <p>Inflation is not just an autoregressive process. It's the output of interacting macroeconomic forces: consumer demand driving prices up, industrial production expanding supply, labor market slack moderating wage growth, all operating across different time horizons simultaneously.</p>
-        <p>A univariate model (ARIMA on CPI alone) captures inflation's persistence but attributes everything to its own past values. A VAR on differenced data respects stationarity but destroys the long-run relationships between variables in the process. The right tool when series are non-stationary but move together over time is a <strong style="color: #e6edf3;">Vector Error Correction Model</strong>, which models both short-run dynamics and the long-run equilibria that tie the variables together.</p>
-        <p>The core research question: <em style="color: #e6edf3;">How do demand, supply, and labor market shocks dynamically affect U.S. inflation, and through what channels?</em></p>
-      </section>
-
-      <!-- My Approach -->
-      <section class="prose-content">
-        <span class="section-label">My Approach</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Model Selection by Elimination</h2>
-        <p>
-          The VECM specification was arrived at by ruling out simpler alternatives in sequence, not chosen upfront. ARIMA on CPI alone captures persistence but attributes everything to its own past values. VAR on differences preserves stationarity but destroys the long-run relationships between variables in the process. Only after ADF tests confirmed I(1) behavior across all four series and Johansen's trace test confirmed three cointegrating vectors was VECM the correct model. The key constraint throughout was the 2020 to 2022 COVID period, a structural break that sits outside the equilibrium estimated on 1992 to 2019 data and complicates formal inference on the residuals.
-        </p>
-      </section>
-
-      <!-- Dataset -->
-      <section>
-        <span class="section-label">Dataset</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Four FRED Series, 33 Years of Monthly Data</h2>
-        <p class="text-sm leading-relaxed mb-5" style="color: rgba(230,237,243,0.80);">
-          All series sourced from the Federal Reserve Bank of St. Louis FRED database, seasonally adjusted, January 1992 – October 2024.
-        </p>
-        <div class="grid md:grid-cols-2 gap-4">
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #2dd4bf;">
-            <h4 class="text-sm font-semibold mb-1" style="color: #2dd4bf;">CPI (CPIAUCSL)</h4>
-            <p class="text-xs" style="color: #8b949e;">Consumer Price Index for All Urban Consumers, the primary outcome variable measuring inflation.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-1" style="color: #e6edf3;">Industrial Production (INDPRO)</h4>
-            <p class="text-xs" style="color: #8b949e;">Supply-side proxy. Represents the economy's productive capacity; expansions should dampen price pressure.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-1" style="color: #e6edf3;">Advance Retail Sales (RSXFS)</h4>
-            <p class="text-xs" style="color: #8b949e;">Demand-side proxy. Consumer spending drives demand-pull inflation, the dominant transmission channel found in this analysis.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="text-sm font-semibold mb-1" style="color: #e6edf3;">Unemployment Rate (UNRATE)</h4>
-            <p class="text-xs" style="color: #8b949e;">Labor market slack indicator. Higher unemployment should moderate wage growth and inflation, but operates through long-run equilibrium, not short-run dynamics.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Methodology -->
-      <section class="prose-content">
-        <span class="section-label">Methodology</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">The Two-Step Path to VECM</h2>
-        <p>Model selection followed a principled two-step process, each test ruling out a simpler approach before committing to VECM.</p>
-
-        <div class="space-y-3 mt-5">
-          <div class="rounded-xl p-5" style="background: #1c2333; border: 1px solid #30363d;">
-            <div class="flex items-start gap-4">
-              <span class="text-lg font-extrabold mt-0.5" style="color: #2dd4bf; flex-shrink: 0;">1</span>
-              <div>
-                <h4 class="font-semibold mb-1" style="color: #e6edf3;">ADF Tests: Stationarity</h4>
-                <p class="text-sm" style="color: #8b949e; margin: 0;">Augmented Dickey-Fuller tests on all four series. Result: all four are <strong style="color: #e6edf3;">I(1)</strong>, non-stationary in levels and stationary after first differencing. This rules out VAR in levels (would be spurious) and suggests cointegration is possible.</p>
-              </div>
-            </div>
-          </div>
-          <div class="rounded-xl p-5" style="background: #1c2333; border: 1px solid #30363d;">
-            <div class="flex items-start gap-4">
-              <span class="text-lg font-extrabold mt-0.5" style="color: #2dd4bf; flex-shrink: 0;">2</span>
-              <div>
-                <h4 class="font-semibold mb-1" style="color: #e6edf3;">Johansen Trace Test: Cointegration</h4>
-                <p class="text-sm" style="color: #8b949e; margin: 0;">Tests whether linear combinations of the non-stationary series are themselves stationary, i.e., whether the variables share a long-run equilibrium. Result: <strong style="color: #e6edf3;">r = 3 cointegrating relationships</strong> among the four variables. This rules out VAR on differences (which discards the long-run information), justifying VECM.</p>
-              </div>
-            </div>
-          </div>
-          <div class="rounded-xl p-5" style="background: rgba(45,212,191,0.05); border: 1px solid #2dd4bf;">
-            <div class="flex items-start gap-4">
-              <span class="text-lg font-extrabold mt-0.5" style="color: #2dd4bf; flex-shrink: 0;">3</span>
-              <div>
-                <h4 class="font-semibold mb-1" style="color: #e6edf3;">VECM Estimation</h4>
-                <p class="text-sm" style="color: #8b949e; margin: 0;">The VECM decomposes each variable's movement into: (a) <strong style="color: #e6edf3;">error correction terms</strong>, measuring how fast it corrects back toward long-run equilibrium when displaced, and (b) <strong style="color: #e6edf3;">short-run dynamics</strong>, capturing how transitory shocks in other variables propagate. Lag order selected by BIC.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ECT intuition callout -->
-        <div class="rounded-xl p-5 mt-5" style="background: #161b22; border: 1px solid #30363d;">
-          <h4 class="font-semibold mb-2" style="color: #e6edf3;">Intuition: What an Error Correction Term Does</h4>
-          <p class="text-sm" style="color: #8b949e; margin: 0;">If CPI drifts too far above its long-run equilibrium with retail sales and unemployment, the ECT coefficient (-0.0305) says CPI will fall back by 3% of that gap each month. This is the mechanism that prevents the variables from wandering apart indefinitely, and it's invisible in a VAR on differences.</p>
-        </div>
-      </section>
-
-      <!-- Results -->
-      <section>
-        <span class="section-label">Results</span>
-        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">CPI Equation &amp; Variance Decomposition</h2>
-
-        <!-- Metric Cards -->
-        <div class="grid md:grid-cols-3 gap-4 mb-8">
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">58.7%</p>
-            <p class="text-xs" style="color: #8b949e;">R² in CPI equation<br/>monthly variation explained</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">3</p>
-            <p class="text-xs" style="color: #8b949e;">Cointegrating vectors<br/>long-run equilibrium relationships</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">33 yrs</p>
-            <p class="text-xs" style="color: #8b949e;">Monthly FRED data<br/>Jan 1992 – Oct 2024</p>
-          </div>
-        </div>
-
-        <!-- VECM CPI Equation -->
-        <div class="rounded-xl overflow-hidden mb-6" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="px-5 py-3" style="border-bottom: 1px solid #30363d;">
-            <p class="text-xs font-medium" style="color: #8b949e;">VECM: CPI Equation Key Coefficients</p>
-          </div>
-          <div class="px-5 pb-5 overflow-x-auto">
-            <table class="w-full text-sm mt-4">
-              <thead>
-                <tr style="border-bottom: 1px solid #30363d;">
-                  <th class="text-left pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Term</th>
-                  <th class="text-right pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Coefficient</th>
-                  <th class="text-left pb-2" style="color: #8b949e; font-weight: 500;">Interpretation</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom: 1px solid #1c2333; background: rgba(45,212,191,0.05);">
-                  <td class="py-2.5 pr-6 font-medium" style="color: #2dd4bf;">ect1 (Error Correction)</td>
-                  <td class="text-right py-2.5 pr-6 font-bold" style="color: #2dd4bf;">−0.0305***</td>
-                  <td class="py-2.5 text-xs" style="color: #8b949e;">CPI corrects ~3% per month toward long-run equilibrium when displaced</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1c2333;">
-                  <td class="py-2.5 pr-6" style="color: #e6edf3;">cpi.dl1 (Lagged CPI)</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #e6edf3;">0.317***</td>
-                  <td class="py-2.5 text-xs" style="color: #8b949e;">Strong short-run inflation momentum: past inflation predicts near-term inflation</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1c2333;">
-                  <td class="py-2.5 pr-6" style="color: #e6edf3;">retail_sales.dl1</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #e6edf3;">2.18e−05***</td>
-                  <td class="py-2.5 text-xs" style="color: #8b949e;">Demand shocks transmit to CPI within one month</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1c2333;">
-                  <td class="py-2.5 pr-6" style="color: #8b949e;">ind_pro.dl1</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">Not significant</td>
-                  <td class="py-2.5 text-xs" style="color: #8b949e;">Supply effects operate at longer horizons, not contemporaneously</td>
-                </tr>
-                <tr>
-                  <td class="py-2.5 pr-6" style="color: #8b949e;">unemp_rate.dl1</td>
-                  <td class="text-right py-2.5 pr-6" style="color: #8b949e;">Not significant</td>
-                  <td class="py-2.5 text-xs" style="color: #8b949e;">Labor market effects flow through long-run ECT channel, not short-run dynamics</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- FEVD -->
-        <div class="rounded-xl overflow-hidden" style="background: #1c2333; border: 1px solid #30363d;">
-          <div class="px-5 py-3" style="border-bottom: 1px solid #30363d;">
-            <p class="text-xs font-medium" style="color: #8b949e;">Forecast Error Variance Decomposition: CPI at 20-Month Horizon</p>
-          </div>
-          <div class="px-5 py-5">
-            <div class="space-y-3">
-              <div>
-                <div class="flex justify-between text-xs mb-1">
-                  <span style="color: #e6edf3;">CPI Own-Shock (inertia)</span>
-                  <span style="color: #8b949e;">38.4%</span>
-                </div>
-                <div class="rounded-full overflow-hidden" style="background: #0d1117; height: 8px;">
-                  <div class="h-full rounded-full" style="background: #2dd4bf; width: 38.4%;"></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between text-xs mb-1">
-                  <span style="color: #e6edf3;">Retail Sales (demand-pull)</span>
-                  <span style="color: #8b949e;">35.5%</span>
-                </div>
-                <div class="rounded-full overflow-hidden" style="background: #0d1117; height: 8px;">
-                  <div class="h-full rounded-full" style="background: #e8a045; width: 35.5%;"></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between text-xs mb-1">
-                  <span style="color: #e6edf3;">Unemployment (labor market)</span>
-                  <span style="color: #8b949e;">20.5%</span>
-                </div>
-                <div class="rounded-full overflow-hidden" style="background: #0d1117; height: 8px;">
-                  <div class="h-full rounded-full" style="background: #8b949e; width: 20.5%;"></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between text-xs mb-1">
-                  <span style="color: #e6edf3;">Industrial Production (supply)</span>
-                  <span style="color: #8b949e;">5.6%</span>
-                </div>
-                <div class="rounded-full overflow-hidden" style="background: #0d1117; height: 8px;">
-                  <div class="h-full rounded-full" style="background: #30363d; width: 5.6%;"></div>
-                </div>
-              </div>
-            </div>
-            <div class="mt-4 pt-4" style="border-top: 1px solid #30363d;">
-              <p class="text-xs" style="color: #8b949e;">
-                <strong style="color: #e6edf3;">VAR on differences baseline:</strong> attributed 95.68% of CPI variance to own-shocks, missing 61.6% of the external transmission captured by VECM.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- IRF Findings -->
-      <section>
-        <span class="section-label">Impulse Response Analysis</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">How Shocks Propagate to Inflation</h2>
-        <p class="text-sm leading-relaxed mb-5" style="color: rgba(230,237,243,0.80);">Cholesky orthogonalized IRFs, 20-month horizon, 100 bootstrap runs for confidence intervals.</p>
-
-        <div class="space-y-4">
-          <div class="rounded-xl p-5" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="font-semibold mb-2" style="color: #e6edf3;">Retail Sales Shock → CPI</h4>
-            <p class="text-sm" style="color: #8b949e;">Near-linear increase in CPI over the full 20-month horizon: demand shocks don't dissipate quickly, they compound. This is the clearest evidence of demand-pull inflation dynamics in the data. IRFs remain non-zero at 20 months (vs. VAR convergence by 8-10 months).</p>
-          </div>
-          <div class="rounded-xl p-5" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="font-semibold mb-2" style="color: #e6edf3;">Unemployment Shock → CPI</h4>
-            <p class="text-sm" style="color: #8b949e;">Insignificant in the short-run CPI equation but explains 20.5% of long-run variance. The signal lives in the error correction terms; labor market slack moderates inflation gradually through wage-price dynamics and equilibrium adjustment, not through immediate transmission.</p>
-          </div>
-          <div class="rounded-xl p-5" style="background: #1c2333; border: 1px solid #30363d;">
-            <h4 class="font-semibold mb-2" style="color: #e6edf3;">Industrial Production Shock → CPI</h4>
-            <p class="text-sm" style="color: #8b949e;">Mild dampening effect: supply expansions apply modest downward pressure on prices, consistent with cost-side inflation theory. Only 5.6% of long-run CPI variance suggests supply constraints are less binding than demand conditions over this period.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Diagnostic Challenges -->
-      <section>
-        <span class="section-label">Diagnostic Challenges</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">The COVID-19 Structural Break Problem</h2>
-        <div class="rounded-xl p-5 space-y-3" style="background: #161b22; border: 1px solid #30363d;">
-          <p class="text-sm" style="color: rgba(230,237,243,0.80);">All three standard residual diagnostics reject their null hypotheses: Portmanteau (serial correlation), ARCH-LM (heteroscedasticity), and Jarque-Bera (normality). The root cause is the 2020–2022 COVID-19 period, an extreme structural shock that sits outside the equilibrium relationships estimated on 1992–2019 data.</p>
-          <div class="text-sm space-y-2 mt-2" style="color: #8b949e;">
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Why the model is still valid:</strong> These violations affect inference precision but not the cointegrating structure itself. The 3 cointegrating vectors and ECT coefficients reflect genuine long-run relationships that hold outside the COVID shock window.</span></div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Mitigation:</strong> 100 bootstrap runs for IRF confidence intervals provide robust inference that doesn't rely on normality or homoscedasticity assumptions.</span></div>
-            <div class="flex gap-2"><span style="color: #2dd4bf;">▸</span><span><strong style="color: #e6edf3;">Proposed extension:</strong> Structural break dummy for 2020–2022, or a regime-switching VECM that allows the ECT coefficients to vary across calm vs. shock periods.</span></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Key Findings -->
-      <section class="prose-content">
-        <span class="section-label">Key Findings</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">What the VECM Reveals</h2>
-        <ul class="list-none space-y-4">
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
-            <div><strong style="color: #e6edf3;">Demand-pull inflation dominates long-run dynamics.</strong> Retail sales explains 35.5% of CPI variance at a 20-month horizon and produces a near-linear IRF. Consumer spending is the primary external driver of sustained inflation, more so than labor market conditions or supply capacity.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">02.</span>
-            <div><strong style="color: #e6edf3;">Labor market effects are real but operate through equilibrium, not short-run dynamics.</strong> Unemployment is insignificant in the CPI short-run equation but accounts for 20.5% of long-run variance through error correction terms. The Phillips Curve is not dead; it works through cointegrating relationships over longer horizons.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">03.</span>
-            <div><strong style="color: #e6edf3;">Supply-side effects are secondary over this period.</strong> Industrial production explains only 5.6% of long-run CPI variance. Supply constraints matter during specific episodes (COVID supply chain disruption) but are not the dominant inflation driver across the full 1992–2024 sample.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">04.</span>
-            <div><strong style="color: #e6edf3;">Model selection matters enormously.</strong> The VAR on differences attributed 95.68% of CPI variance to own-shocks — appearing to confirm inflation is purely self-perpetuating. VECM reveals this is an artifact of discarding long-run information; the cointegrating structure is the mechanism through which macroeconomic forces actually operate.</div>
-          </li>
-        </ul>
-      </section>
-
-      <!-- Tech Stack -->
-      <section>
-        <span class="section-label">Tech Stack</span>
-        <div class="flex flex-wrap gap-2">
-          <span class="tag">R</span>
-          <span class="tag">vars</span>
-          <span class="tag">urca</span>
-          <span class="tag">tseries</span>
-          <span class="tag">ggplot2</span>
-          <span class="tag">dplyr</span>
-          <span class="tag">lubridate</span>
-          <span class="tag">gridExtra</span>
-          <span class="tag">kableExtra</span>
-          <span class="tag">Quarto</span>
-          <span class="tag">FRED API</span>
-        </div>
-      </section>
-
-      <!-- Links -->
-      <section>
-        <span class="section-label">Links &amp; Resources</span>
-        <div class="flex flex-wrap gap-4">
-          <a href="#" target="_blank" rel="noopener noreferrer"
-             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
-             style="border: 1px solid #30363d; color: #8b949e;"
-             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
-             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
-            GitHub Repository ↗
-          </a>
-          <a href="https://fred.stlouisfed.org" target="_blank" rel="noopener noreferrer"
-             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
-             style="border: 1px solid #30363d; color: #8b949e;"
-             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
-             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
-            FRED Database ↗
-          </a>
-        </div>
-      </section>
-
     </div>
   </main>
 
   <!-- ─── FOOTER ─── -->
-  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
-    <a href="../index.html#projects" class="text-sm transition-colors" style="color: #8b949e;"
-       onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#8b949e'">
-      ← Back to all projects
-    </a>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <a href="../index.html#projects" class="footer-back">← Back to all projects</a>
+        <span>Peyton Ramsey</span>
+      </div>
+    </div>
   </footer>
 
 </body>

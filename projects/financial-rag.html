@@ -1,357 +1,881 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Financial News RAG Analyst,Peyton Ramsey</title>
-  <meta name="description" content="Production RAG system enabling natural-language queries across 500+ financial articles with 92% retrieval precision and FinBERT sentiment analysis." />
+  <title>Financial News RAG Analyst — Peyton Ramsey</title>
+  <meta name="description" content="Self-deployed RAG system enabling natural-language queries across 500+ financial articles with 92% retrieval precision and FinBERT sentiment analysis. Live on Hugging Face Spaces." />
+
+  <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500&f[]=cabinet-grotesk@700&display=swap" rel="stylesheet" />
+  <!-- Google Fonts: Geist Mono (metrics/data) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
-    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', system-ui, sans-serif; }
+    /* ── DESIGN TOKENS ──────────────────────────────────────── */
+    :root {
+      --bg-base:     #0f0f0e;
+      --bg-surface:  #161614;
+      --bg-card:     #1c1b19;
+      --bg-elevated: #222120;
+
+      --text-1: #cdccca;
+      --text-2: #797876;
+      --text-3: #5a5957;
+      --accent:  #e8a035;
+      --border:  oklch(from #cdccca l c h / 0.10);
+
+      --font-body:    'Satoshi', system-ui, sans-serif;
+      --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
+      --font-mono:    'Geist Mono', monospace;
+
+      --radius-chip: 4px;
+      --radius-card: 10px;
+
+      --section-pad: clamp(3rem, 6vw, 6rem);
+      --container:   52rem;
+      --pad-x:       clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+    a  { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0d1117; }
-    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
-    .tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background-color: #161b22; border: 1px solid #30363d; border-radius: 9999px; color: #8b949e; }
-    .section-label { font-family: monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #2dd4bf; margin-bottom: 0.5rem; display: block; }
-    .prose-content p { color: rgba(230,237,243,0.80); line-height: 1.75; margin-bottom: 1rem; }
-    .prose-content ul { color: rgba(230,237,243,0.80); margin-bottom: 1rem; }
-    .prose-content li { margin-bottom: 0.4rem; padding-left: 0.25rem; }
-    .metric-card { background: #1c2333; border: 1px solid #30363d; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
-    .arch-flow { font-family: monospace; font-size: 0.8rem; color: #8b949e; background: #161b22; border: 1px solid #30363d; border-radius: 0.5rem; padding: 1.25rem 1.5rem; line-height: 2; }
-    .arch-flow span { color: #2dd4bf; }
-    .arch-flow .arrow { color: #30363d; }
+    ::-webkit-scrollbar-track  { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb  { background: var(--bg-elevated); border-radius: 3px; }
+
+    /* ── TYPOGRAPHY ─────────────────────────────────────────── */
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    /* Editorial section labels — Geist Mono, accent, uppercase */
+    .label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    .container {
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--pad-x);
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 15, 14, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 3.75rem;
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-2);
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--text-1); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-icon {
+      color: var(--text-2);
+      padding: 0.25rem;
+      display: flex;
+      transition: color 0.15s;
+    }
+    .nav-icon:hover { color: var(--text-1); }
+
+    /* Live Demo CTA — amber, not teal */
+    .btn-demo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.875rem;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+      color: var(--bg-base);
+      background: var(--accent);
+      border-radius: var(--radius-chip);
+      transition: opacity 0.15s;
+    }
+    .btn-demo:hover { opacity: 0.88; }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .page-header {
+      padding-block: clamp(3rem, 6vw, 5rem) clamp(2rem, 4vw, 3rem);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.875rem, 5vw, 3rem);
+      color: var(--text-1);
+      margin-bottom: 0.625rem;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.0625rem;
+      color: var(--text-2);
+      margin-bottom: 1.5rem;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      font-size: 0.875rem;
+      color: var(--text-2);
+      align-items: center;
+    }
+
+    .header-meta .sep { color: var(--text-3); }
+
+    /* amber badge — never teal */
+    .badge-deployed {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      border: 1px solid oklch(from #e8a035 l c h / 0.30);
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+    }
+
+    /* ── CONTENT SECTIONS ───────────────────────────────────── */
+    .content {
+      padding-block: clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .content-stack {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(3rem, 6vw, 5rem);
+    }
+
+    /* ── TL;DR BOX — amber left border, never teal ──────────── */
+    .tldr-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--accent);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+    }
+
+    .tldr-box p {
+      font-size: 0.9375rem;
+      line-height: 1.75;
+      color: rgba(205, 204, 202, 0.85);
+      margin: 0;
+    }
+
+    .tldr-box strong { color: var(--text-1); font-weight: 500; }
+
+    /* ── METRICS — pure typographic hierarchy ───────────────── */
+    /* Primary: thesis-level claim — Geist Mono, large, amber */
+    .metric-primary {
+      margin-bottom: 2rem;
+    }
+
+    .metric-primary .value {
+      font-family: var(--font-mono);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.375rem;
+    }
+
+    .metric-primary .label-text {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+    }
+
+    /* Secondary: smaller, amber, inline value + label */
+    .metric-secondary-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .metric-secondary-wide {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .metric-secondary-wide .value {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .metric-secondary-wide .label-text {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    /* Tertiary pair — muted, smallest */
+    .metric-secondary-pair {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .metric-secondary-sm .value {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      color: var(--text-2);
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-secondary-sm .label-text {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+      line-height: 1.35;
+    }
+
+    /* ── PROSE ──────────────────────────────────────────────── */
+    .prose p {
+      font-size: 0.9375rem;
+      line-height: 1.8;
+      color: rgba(205, 204, 202, 0.80);
+      margin-bottom: 1rem;
+    }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .prose h3 {
+      font-size: 1.125rem;
+      color: var(--text-1);
+      margin-top: 2rem;
+      margin-bottom: 0.625rem;
+    }
+
+    .prose-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .prose-list li {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.9375rem;
+      color: rgba(205, 204, 202, 0.80);
+      line-height: 1.65;
+    }
+
+    .prose-list li::before {
+      content: '▸';
+      color: var(--text-3);
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .prose-list li strong { color: var(--text-1); font-weight: 500; }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      color: var(--text-2);
+      background: var(--bg-elevated);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    /* ── DATA TABLE ─────────────────────────────────────────── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .data-table thead tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      text-align: left;
+      padding-bottom: 0.625rem;
+      padding-right: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      font-weight: 400;
+    }
+
+    .data-table th:last-child { text-align: right; padding-right: 0; }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid oklch(from #cdccca l c h / 0.05);
+    }
+
+    .data-table td {
+      padding: 0.625rem 1.5rem 0.625rem 0;
+      color: rgba(205, 204, 202, 0.75);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .data-table td:last-child {
+      text-align: right;
+      padding-right: 0;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--text-2);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+      color: var(--text-1);
+    }
+
+    .data-table tbody tr:last-child td:last-child {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── ARCHITECTURE — ASCII pre/code, never SVG or Mermaid ── */
+    .arch-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow-x: auto;
+    }
+
+    .arch-block pre {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.9;
+      color: var(--text-2);
+      padding: 1.5rem 1.75rem;
+      margin: 0;
+      white-space: pre;
+    }
+
+    /* Two-column arch layout for pipeline phases */
+    .arch-cols {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 640px) {
+      .arch-cols { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── REVISIT SECTION ────────────────────────────────────── */
+    .revisit-intro {
+      margin-bottom: 1.75rem;
+    }
+
+    .revisit-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .revisit-col-head {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-2);
+      margin-bottom: 1rem;
+    }
+
+    /* ── TECH STACK — chips appear ONCE on page, here only ──── */
+    .stack-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 480px) {
+      .stack-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .stack-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.25rem;
+    }
+
+    .stack-card-head {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.875rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-2);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-chip);
+      padding: 0.25rem 0.625rem;
+    }
+
+    /* ── LINKS SECTION ──────────────────────────────────────── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5625rem 1.125rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--bg-base);
+      background: var(--accent);
+      border-radius: 6px;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.87; }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-1);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--text-2); }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-block: 2rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+      color: var(--text-3);
+    }
+
+    .footer-back {
+      color: var(--text-3);
+      transition: color 0.15s;
+    }
+    .footer-back:hover { color: var(--text-2); }
   </style>
 </head>
-<body class="antialiased">
+<body>
 
   <!-- ─── NAV ─── -->
-  <nav class="sticky top-0 z-50 border-b" style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-color: #30363d;">
-    <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
-      <a href="../index.html" class="flex items-center gap-2 text-sm transition-colors" style="color: #8b949e;"
-         onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        Peyton Ramsey
-      </a>
-      <div class="flex items-center gap-3">
-        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
-           class="transition-colors" style="color: #8b949e;" onmouseover="this.style.color='#e6edf3'" onmouseout="this.style.color='#8b949e'" aria-label="GitHub">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-back">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Peyton Ramsey
         </a>
-        <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank" rel="noopener noreferrer"
-           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
-           style="background: #2dd4bf; color: #0d1117;">
-          Live Demo ↗
-        </a>
+        <div class="nav-right">
+          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="nav-icon" aria-label="GitHub">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+            </svg>
+          </a>
+          <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank" rel="noopener noreferrer" class="btn-demo">
+            Live Demo ↗
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- ─── HERO ─── -->
-  <header class="px-6 pt-16 pb-12" style="border-bottom: 1px solid #30363d;">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex flex-wrap gap-2 mb-5">
-        <span class="tag">Python</span>
-        <span class="tag">LangChain</span>
-        <span class="tag">ChromaDB</span>
-        <span class="tag">FinBERT</span>
-        <span class="tag">sentence-transformers</span>
-        <span class="tag">Docker</span>
-        <span class="tag">Hugging Face</span>
-        <span class="tag">Gradio</span>
-      </div>
-      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 leading-tight" style="color: #e6edf3;">
-        Financial News RAG Analyst
-      </h1>
-      <p class="text-lg mb-6" style="color: #8b949e;">
-        An intelligent information retrieval system for financial markets
-      </p>
-      <div class="flex flex-wrap gap-4 text-sm" style="color: #8b949e;">
-        <span>Role: Sole Developer</span>
-        <span style="color: #30363d;">·</span>
+  <!-- ─── HEADER ─── -->
+  <header class="page-header">
+    <div class="container">
+      <h1>Financial News RAG Analyst</h1>
+      <p class="subtitle">Natural-language querying across live financial news with FinBERT sentiment analysis</p>
+      <div class="header-meta">
+        <span>Sole Developer</span>
+        <span class="sep">·</span>
         <span>January 2026</span>
-        <span style="color: #30363d;">·</span>
-        <span style="color: #2dd4bf;">Production · Deployed</span>
+        <span class="sep">·</span>
+        <span class="badge-deployed">Self-Deployed · Live</span>
       </div>
     </div>
   </header>
 
   <!-- ─── CONTENT ─── -->
-  <main class="px-6 py-16">
-    <div class="max-w-4xl mx-auto space-y-16">
+  <main class="content">
+    <div class="container">
+      <div class="content-stack">
 
-      <!-- TL;DR -->
-      <section>
-        <div class="rounded-xl p-6" style="background: #161b22; border: 1px solid #2dd4bf; border-left-width: 4px;">
-          <span class="section-label">TL;DR</span>
-          <p style="color: rgba(230,237,243,0.85); line-height: 1.75; margin: 0;">
-            Built a production RAG system that enables natural-language queries across 500+ financial articles, reducing research time from 30+ minutes to under 5 seconds. The system achieves <strong style="color: #e6edf3;">92% retrieval precision</strong> and <strong style="color: #e6edf3;">90% answer accuracy</strong> across 30 test queries, with FinBERT-powered sentiment analysis enriching every response. Deployed on Hugging Face Spaces via Docker with end-to-end latency of 2.5–4.5 seconds.
-          </p>
-        </div>
-      </section>
+        <!-- TL;DR -->
+        <section>
+          <span class="label">TL;DR</span>
+          <div class="tldr-box">
+            <p>Built a production RAG system that enables natural-language queries across 500+ financial articles, reducing research time from 30+ minutes to under 5 seconds. The system achieves <strong>92% retrieval precision</strong> and <strong>90% answer accuracy</strong> across 30 test queries, with FinBERT-powered sentiment analysis enriching every response. Deployed on Hugging Face Spaces via Docker with end-to-end latency of 2.5–4.5 seconds.</p>
+          </div>
+        </section>
 
-      <!-- Problem & Context -->
-      <section class="prose-content">
-        <span class="section-label">Problem &amp; Context</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">The Problem with Financial News</h2>
-        <p>
-          Financial markets generate approximately 10,000+ news articles daily across outlets like Bloomberg, Reuters, the Wall Street Journal, and MarketWatch. Analysts, portfolio managers, and traders need to rapidly synthesize this information to answer questions like "What are the current risks to tech stocks?" or "How is the Fed addressing inflation?"
-        </p>
-        <p>
-          Traditional approaches are broken: manual research takes 30+ minutes per query, keyword search requires knowing exactly what to look for (5–10 minutes), and professional terminals like Bloomberg or FactSet cost thousands per seat. Generic LLMs hallucinate financial facts and have knowledge cutoffs. News aggregators can surface articles but can't synthesize or reason across them.
-        </p>
-        <p>
-          The goal was to bridge this gap,combining the semantic understanding of LLMs with real, grounded news content to deliver fast, accurate, cited answers to financial questions.
-        </p>
-      </section>
+        <!-- Outcomes -->
+        <section>
+          <span class="label">Outcomes</span>
+          <!-- Primary metric: thesis-level claim, typeset large in Geist Mono, amber -->
+          <div class="metric-primary">
+            <div class="value">92%</div>
+            <div class="label-text">retrieval precision — top-5 results, 20–query evaluation</div>
+          </div>
+          <!-- Secondary metrics: descending weight, no cards, no borders -->
+          <div class="metric-secondary-group">
+            <div class="metric-secondary-wide">
+              <div class="value">90%</div>
+              <div class="label-text">answer accuracy across 30 factual test queries</div>
+            </div>
+            <div class="metric-secondary-pair">
+              <div class="metric-secondary-sm">
+                <div class="value">&lt;5s</div>
+                <div class="label-text">end-to-end latency<br/>(2.5–4.5s avg)</div>
+              </div>
+              <div class="metric-secondary-sm">
+                <div class="value">86%</div>
+                <div class="label-text">FinBERT sentiment<br/>accuracy</div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      <!-- My Approach -->
-      <section class="prose-content">
-        <span class="section-label">My Approach</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">RAG Over Fine-Tuning</h2>
-        <p>
-          RAG was chosen over fine-tuning an LLM on financial data: fine-tuning requires expensive compute and goes stale within days as news changes, while RAG grounds every answer in a live, attributed knowledge base that can be updated without retraining. The simpler alternative, keyword search, surfaces articles but can't synthesize or reason across them. The key constraint shaping every decision was latency: a system that takes 30 seconds isn't useful in fast-moving markets, which drove the choice of a lightweight embedding model (MiniLM over larger alternatives), a curated 50-article corpus over an open-ended index, and a cloud-hosted inference API over a locally-quantized model.
-        </p>
-      </section>
+        <!-- Problem & Approach -->
+        <section>
+          <span class="label">Problem &amp; Approach</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Information Overload in Financial Markets</h2>
+          <div class="prose">
+            <p>Financial markets generate approximately 10,000+ news articles daily across outlets like Bloomberg, Reuters, the Wall Street Journal, and MarketWatch. Analysts, portfolio managers, and traders need to rapidly synthesize this information to answer questions like "What are the current risks to tech stocks?" or "How is the Fed addressing inflation?"</p>
+            <p>Traditional approaches are broken: manual research takes 30+ minutes per query, keyword search requires knowing exactly what to look for (5–10 minutes), and professional terminals like Bloomberg or FactSet cost thousands per seat. Generic LLMs hallucinate financial facts and have knowledge cutoffs. News aggregators can surface articles but can't synthesize or reason across them.</p>
+            <p>RAG was chosen over fine-tuning an LLM on financial data: fine-tuning requires expensive compute and goes stale within days as news changes, while RAG grounds every answer in a live, attributed knowledge base that can be updated without retraining. The key constraint shaping every decision was latency — a system that takes 30 seconds isn't useful in fast-moving markets, which drove the choice of a lightweight embedding model (MiniLM over larger alternatives), a curated 50-article corpus over an open-ended index, and a cloud-hosted inference API over a locally-quantized model.</p>
+          </div>
+        </section>
 
-      <!-- Data & Indexing -->
-      <section class="prose-content">
-        <span class="section-label">Data &amp; Indexing</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Building the Knowledge Base</h2>
-        <p>
-          Financial news is sourced from the <strong style="color: #e6edf3;">Finnhub API</strong>, covering general market news and company-specific articles for 50 priority tickers across 6 sectors:
-        </p>
-        <ul class="list-none space-y-1 mb-4 pl-0">
-          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Technology 25% (AAPL, MSFT, NVDA, META, GOOGL)</li>
-          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Financial 25% (JPM, BAC, GS, V, MA)</li>
-          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>General Market 20% (SPY, Fed policy, macro news)</li>
-          <li class="flex gap-2"><span style="color: #2dd4bf;">▸</span>Healthcare 12%, Consumer 10%, Energy 8%</li>
-        </ul>
-        <p>
-          Raw articles go through a <strong style="color: #e6edf3;">5-stage filtering pipeline</strong> that reduces 500+ raw articles down to 50 high-quality, diverse articles (90% noise reduction):
-        </p>
+        <!-- Architecture -->
+        <section>
+          <span class="label">Architecture</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">System Design</h2>
 
-        <div class="overflow-x-auto mt-4 mb-6">
-          <table class="w-full text-sm">
+          <div class="arch-cols" style="margin-bottom: 2rem;">
+            <div class="arch-block">
+              <pre>Phase 1 — Offline Pipeline
+
+Finnhub API
+  │
+  └──► 5-Stage Filter
+         │  quality · relevance · dedup
+         │  scoring · diversity
+         │
+         └──► FinBERT Sentiment
+                │  per-article labels + scores
+                │
+                └──► Text Chunking
+                       │  1,000 char / 100 overlap
+                       │
+                       └──► MiniLM Embedding
+                              │  384-dim vectors
+                              │
+                              └──► ChromaDB
+                                     ~120 chunks · ~15 MB</pre>
+            </div>
+            <div class="arch-block">
+              <pre>Phase 2 — Online Query
+
+User Query
+  │
+  └──► Query Embedding
+         │  MiniLM · ~10ms
+         │
+         └──► Cosine Search (K=5)
+                │  ChromaDB · ~30-50ms
+                │
+                └──► Context Assembly
+                       │  chunks + sentiment metadata
+                       │
+                       └──► LLM Generation
+                              │  Llama-3.1-8B · 2–4s
+                              │
+                              └──► Cited Answer
+                                     title · source · URL</pre>
+            </div>
+          </div>
+
+          <div class="prose">
+            <h3>Key Component Decisions</h3>
+            <ul class="prose-list">
+              <li><strong>all-MiniLM-L6-v2</strong> for embeddings — fast CPU inference (~10ms/chunk) with strong semantic similarity at only 384 dimensions. Larger models added latency without meaningful precision gains at this corpus size.</li>
+              <li><strong>ChromaDB</strong> for vector storage — persistent, local, supports cosine similarity with metadata filtering. ~15 MB index for 120 chunks; no external dependency required.</li>
+              <li><strong>FinBERT (ProsusAI)</strong> for sentiment — domain-specific model trained on financial texts. 86% accuracy vs ~70% for generic BERT; "beat expectations" and similar financial language requires domain-aware signals.</li>
+              <li><strong>Dual LLM backends</strong> — Llama-3.1-8B-Instruct via HuggingFace Inference API (2–4s) for production; Phi-3 Mini via Ollama (5–10s) for local dev. Switching is a single environment variable.</li>
+              <li><strong>LangChain orchestration</strong> — structured prompt templates, context assembly, source attribution, and streaming token output. Reduced boilerplate for prompt construction and chain composition.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Data & Indexing -->
+        <section>
+          <span class="label">Data &amp; Indexing</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Building the Knowledge Base</h2>
+          <div class="prose">
+            <p>Financial news is sourced from the Finnhub API, covering general market news and company-specific articles for 50 priority tickers across 6 sectors: Technology 25% (AAPL, MSFT, NVDA, META, GOOGL), Financial 25% (JPM, BAC, GS, V, MA), General Market 20% (SPY, Fed policy, macro news), Healthcare 12%, Consumer 10%, Energy 8%.</p>
+            <p>Raw articles go through a 5-stage filtering pipeline that reduces 500+ raw articles down to 50 high-quality, diverse articles (90% noise reduction):</p>
+          </div>
+
+          <table class="data-table">
             <thead>
-              <tr style="border-bottom: 1px solid #30363d;">
-                <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">Stage</th>
-                <th class="text-left pb-2 pr-4" style="color: #8b949e; font-weight: 500;">What It Does</th>
-                <th class="text-right pb-2" style="color: #8b949e; font-weight: 500;">Remaining</th>
+              <tr>
+                <th>Stage</th>
+                <th>Filter Logic</th>
+                <th>Remaining</th>
               </tr>
             </thead>
-            <tbody style="color: rgba(230,237,243,0.75);">
-              <tr style="border-bottom: 1px solid #1c2333;">
-                <td class="py-2 pr-4">1. Quality</td>
-                <td class="py-2 pr-4">Min 100-char content, 15-char title; blocks PR wires &amp; spam keywords</td>
-                <td class="text-right py-2">~287</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #1c2333;">
-                <td class="py-2 pr-4">2. Relevance</td>
-                <td class="py-2 pr-4">Retains articles mentioning priority tickers or macro topics</td>
-                <td class="text-right py-2">~156</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #1c2333;">
-                <td class="py-2 pr-4">3. Deduplication</td>
-                <td class="py-2 pr-4">Removes exact &amp; fuzzy duplicates (SequenceMatcher, threshold=0.75)</td>
-                <td class="text-right py-2">~98</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #1c2333;">
-                <td class="py-2 pr-4">4. Quality Score</td>
-                <td class="py-2 pr-4">Ranks by recency, length, source tier; premium sources +30 pts</td>
-                <td class="text-right py-2">~98</td>
+            <tbody>
+              <tr>
+                <td>1. Quality</td>
+                <td>Min 100-char content, 15-char title; blocks PR wires &amp; spam keywords</td>
+                <td>~287</td>
               </tr>
               <tr>
-                <td class="py-2 pr-4">5. Diversity</td>
-                <td class="py-2 pr-4">Sector quotas enforced (e.g., max 25 Technology articles)</td>
-                <td class="text-right py-2">50</td>
+                <td>2. Relevance</td>
+                <td>Retains articles mentioning priority tickers or macro topics</td>
+                <td>~156</td>
+              </tr>
+              <tr>
+                <td>3. Deduplication</td>
+                <td>Removes exact &amp; fuzzy duplicates (<code>SequenceMatcher</code>, threshold=0.75)</td>
+                <td>~98</td>
+              </tr>
+              <tr>
+                <td>4. Quality Score</td>
+                <td>Ranks by recency, length, source tier; premium sources +30 pts</td>
+                <td>~98</td>
+              </tr>
+              <tr>
+                <td>5. Diversity</td>
+                <td>Sector quotas enforced (e.g., max 25 Technology articles)</td>
+                <td>50</td>
               </tr>
             </tbody>
           </table>
-        </div>
 
-        <p>
-          Each article is then embedded using <strong style="color: #e6edf3;">all-MiniLM-L6-v2</strong> (384-dimensional), split into chunks of 1,000 characters with 100-character overlap via <code style="color: #2dd4bf; font-size: 0.85em;">RecursiveCharacterTextSplitter</code>, yielding ~120 chunks. Each chunk retains metadata: title, source, date, URL, FinBERT sentiment label/score, and sector. The index is stored in ChromaDB (~15 MB).
-        </p>
-      </section>
-
-      <!-- Architecture -->
-      <section>
-        <span class="section-label">Architecture</span>
-        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">System Architecture</h2>
-
-        <div class="grid md:grid-cols-2 gap-6 mb-8">
-          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
-            <h4 class="font-semibold mb-3" style="color: #e6edf3;">Phase 1,Offline Pipeline</h4>
-            <div class="arch-flow">
-              <span>Finnhub API</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>5-Stage Filter</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>FinBERT Sentiment</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>Text Chunking</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>Embedding (MiniLM)</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>ChromaDB Storage</span>
-            </div>
+          <div class="prose">
+            <p>Each article is embedded using all-MiniLM-L6-v2 (384-dimensional), split into chunks of 1,000 characters with 100-character overlap via <code>RecursiveCharacterTextSplitter</code>, yielding ~120 chunks. Each chunk retains metadata: title, source, date, URL, FinBERT sentiment label/score, and sector. The index is stored in ChromaDB (~15 MB).</p>
           </div>
-          <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
-            <h4 class="font-semibold mb-3" style="color: #e6edf3;">Phase 2,Online Query</h4>
-            <div class="arch-flow">
-              <span>User Query</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>Query Embedding</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>Cosine Search (K=5)</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>Context + Sentiment</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>LLM Generation</span><br/>
-              <span class="arrow">  ↓</span><br/>
-              <span>Cited Answer + Sources</span>
-            </div>
-          </div>
-        </div>
+        </section>
 
-        <div class="rounded-xl p-5 prose-content" style="background: #161b22; border: 1px solid #30363d;">
-          <h4 class="font-semibold mb-3" style="color: #e6edf3;">Key Component Decisions</h4>
-          <ul class="list-none space-y-2 mb-0">
-            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">all-MiniLM-L6-v2</strong> for embeddings,fast CPU inference (~10ms/chunk) with strong semantic similarity at only 384 dimensions</li>
-            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">ChromaDB</strong> for vector storage,persistent, local, supports cosine similarity with metadata filtering, ~15MB index for 120 chunks</li>
-            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">FinBERT (ProsusAI)</strong> for sentiment,domain-specific model trained on financial texts; 86% accuracy vs ~70% for generic BERT</li>
-            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">Dual LLM backends</strong>,Llama-3.1-8B-Instruct via HuggingFace Inference API (2–4s) for production; Phi-3 Mini via Ollama (5–10s) for local dev</li>
-            <li class="flex gap-2"><span style="color: #2dd4bf; flex-shrink: 0;">▸</span><strong style="color: #e6edf3;">LangChain orchestration</strong>,structured prompt templates, context assembly, source attribution, streaming token output</li>
-          </ul>
-        </div>
-      </section>
+        <!-- Evaluation -->
+        <section>
+          <span class="label">Evaluation</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Measuring What Matters</h2>
+          <div class="prose">
+            <p>Rather than relying on subjective evaluation, the system was tested rigorously across retrieval quality, generation quality, and latency. An A/B test on article window size (25, 50, 75, 100 articles) showed that 50 articles provided the optimal balance — below 25, precision dropped for niche sector queries; above 50, retrieval precision degraded as irrelevant chunks diluted results.</p>
 
-      <!-- A/B Testing & Evaluation -->
-      <section class="prose-content">
-        <span class="section-label">Evaluation &amp; A/B Testing</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Measuring What Matters</h2>
-        <p>
-          Rather than relying on "it feels good" evaluation, the system was tested rigorously across retrieval quality, generation quality, and latency.
-        </p>
-        <p>
-          <strong style="color: #e6edf3;">A/B test on article window size:</strong> tested 25, 50, 75, and 100 articles in the index. The 100-article window provided the optimal balance,more coverage without significantly increasing latency or degrading retrieval precision from irrelevant chunks diluting results. Below 50 articles, precision dropped for niche sector queries.
-        </p>
-        <p>
-          <strong style="color: #e6edf3;">Retrieval evaluation:</strong> 20 diverse queries manually evaluated. Top-5 results contained a relevant article 92% of the time; highly relevant 78% of the time.
-        </p>
-        <p>
-          <strong style="color: #e6edf3;">Sentiment validation:</strong> 50 articles manually labeled by human annotators. FinBERT achieved 86% overall agreement, 88% positive/negative precision, 82% neutral recall. Neutral class is hardest,financial news often has mixed signals.
-        </p>
-      </section>
+            <h3>Latency Breakdown</h3>
+          </div>
 
-      <!-- Results -->
-      <section>
-        <span class="section-label">Results &amp; Impact</span>
-        <h2 class="text-2xl font-bold mb-6" style="color: #e6edf3;">Performance Metrics</h2>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">92%</p>
-            <p class="text-xs" style="color: #8b949e;">Retrieval precision<br/>(top-5 relevant)</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">90%</p>
-            <p class="text-xs" style="color: #8b949e;">Answer accuracy<br/>(factual, 30 queries)</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">86%</p>
-            <p class="text-xs" style="color: #8b949e;">Sentiment accuracy<br/>(FinBERT)</p>
-          </div>
-          <div class="metric-card">
-            <p class="text-3xl font-extrabold mb-1" style="color: #2dd4bf;">&lt;5s</p>
-            <p class="text-xs" style="color: #8b949e;">End-to-end latency<br/>(2.5–4.5s avg)</p>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto mb-6">
-          <table class="w-full text-sm">
+          <table class="data-table">
             <thead>
-              <tr style="border-bottom: 1px solid #30363d;">
-                <th class="text-left pb-2 pr-6" style="color: #8b949e; font-weight: 500;">Operation</th>
-                <th class="text-right pb-2" style="color: #8b949e; font-weight: 500;">Latency</th>
+              <tr>
+                <th>Operation</th>
+                <th>Latency</th>
               </tr>
             </thead>
-            <tbody style="color: rgba(230,237,243,0.75);">
-              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-2 pr-6">Query embedding</td><td class="text-right py-2">10–20 ms</td></tr>
-              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-2 pr-6">Vector search (K=5)</td><td class="text-right py-2">30–50 ms</td></tr>
-              <tr style="border-bottom: 1px solid #1c2333;"><td class="py-2 pr-6">LLM generation (500 tokens)</td><td class="text-right py-2">2–4 sec</td></tr>
-              <tr><td class="py-2 pr-6 font-medium" style="color: #e6edf3;">Total end-to-end</td><td class="text-right py-2 font-medium" style="color: #2dd4bf;">2.5–4.5 sec</td></tr>
+            <tbody>
+              <tr>
+                <td>Query embedding (MiniLM)</td>
+                <td>10–20 ms</td>
+              </tr>
+              <tr>
+                <td>Vector search (K=5, ChromaDB)</td>
+                <td>30–50 ms</td>
+              </tr>
+              <tr>
+                <td>LLM generation (500 tokens, Llama-3.1-8B)</td>
+                <td>2–4 sec</td>
+              </tr>
+              <tr>
+                <td>Total end-to-end</td>
+                <td>2.5–4.5 sec</td>
+              </tr>
             </tbody>
           </table>
-        </div>
 
-        <div class="rounded-xl p-5" style="background: #161b22; border: 1px solid #30363d;">
-          <p class="text-sm" style="color: #8b949e;">
-            Compared to manual research (30+ min) or Google Search (5–10 min), the system reduces query time by <strong style="color: #2dd4bf;">95%+</strong>. The live demo is publicly accessible on Hugging Face Spaces, allowing analysts and researchers to run real queries against current financial news.
-          </p>
-        </div>
-      </section>
+          <div class="prose">
+            <p>Sentiment validation: 50 articles manually labeled by human annotators. FinBERT achieved 86% overall agreement, 88% positive/negative precision, 82% neutral recall. Neutral class is hardest — financial news often has mixed signals, and article-level sentiment labels don't always reflect query-specific sentiment.</p>
+            <p>Compared to manual research (30+ min) or Google Search (5–10 min), the system reduces query time by 95%+. The live demo is publicly accessible on Hugging Face Spaces.</p>
+          </div>
+        </section>
 
-      <!-- Limitations -->
-      <section class="prose-content">
-        <span class="section-label">Limitations &amp; What I'd Do Differently</span>
-        <h2 class="text-2xl font-bold mb-4" style="color: #e6edf3;">Constraints and Next Steps</h2>
-        <ul class="list-none space-y-3">
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">01.</span>
-            <div><strong style="color: #e6edf3;">Multi-stage filtering is critical.</strong> Raw financial APIs are full of press releases, duplicates, and low-quality aggregator content. The 90% noise reduction from 500+ to 50 articles dramatically improved answer quality,more isn't always better in RAG.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">02.</span>
-            <div><strong style="color: #e6edf3;">Domain-specific models matter.</strong> FinBERT's 86% accuracy vs ~70% for generic BERT isn't just a number,financial language has domain-specific signals ("beat expectations" = positive) that generic models miss entirely.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">03.</span>
-            <div><strong style="color: #e6edf3;">Evaluation discipline prevents overconfidence.</strong> Manual evaluation on 20–50 samples instead of "it feels good" revealed that neutral sentiment recall (82%) was the weak point,sentiment is often mixed in financial news and article-level labels don't always reflect query-specific sentiment.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">04.</span>
-            <div><strong style="color: #e6edf3;">Dual backend flexibility has real value.</strong> Supporting Ollama locally (no API cost) and HuggingFace cloud (production) via a single environment variable meant fast iteration during development without burning API credits.</div>
-          </li>
-          <li class="flex gap-3">
-            <span style="color: #2dd4bf; flex-shrink: 0; font-weight: 600;">05.</span>
-            <div><strong style="color: #e6edf3;">Static knowledge base is a real limitation.</strong> The system requires periodic re-ingestion for fresh news. Real-time updates would require webhook integration or a continuous ingestion pipeline,a natural next step.</div>
-          </li>
-        </ul>
-      </section>
+        <!-- IF I WERE TO REVISIT IT — editorial label, verbatim -->
+        <section>
+          <span class="label">IF I WERE TO REVISIT IT</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1rem;">What Scales, What Doesn't</h2>
+          <div class="prose revisit-intro">
+            <p>The core architecture holds up well for a single-user research tool. The main limitations stem from the static knowledge base and the 50-article corpus ceiling — both defensible given the latency constraints, but real bottlenecks if the use case scales to multi-user or real-time requirements.</p>
+          </div>
+          <div class="revisit-grid">
+            <div>
+              <p class="revisit-col-head">What scales well</p>
+              <ul class="prose-list">
+                <li><strong>Multi-stage filtering:</strong> the 90% noise reduction from 500+ to 50 articles was the single highest-leverage decision. More isn't better in RAG — a curated, high-quality corpus consistently outperforms a large noisy one at this scale.</li>
+                <li><strong>Domain-specific sentiment model:</strong> FinBERT's 86% vs ~70% for generic BERT isn't marginal — financial language has domain-specific signals ("beat expectations" = positive, "missed guidance" = negative) that generic models misclassify systematically.</li>
+                <li><strong>Dual LLM backends:</strong> supporting Ollama locally and HuggingFace cloud via a single environment variable meant fast iteration during development without burning API credits. The pattern generalizes well.</li>
+                <li><strong>Lightweight embedding model:</strong> MiniLM at 384 dimensions was the right call at this corpus size. Larger embedding models added 5–10× inference time for negligible precision gain on a 120-chunk index.</li>
+              </ul>
+            </div>
+            <div>
+              <p class="revisit-col-head">What doesn't</p>
+              <ul class="prose-list">
+                <li><strong>Static knowledge base:</strong> the system requires periodic re-ingestion for fresh news. Real-time updates would require webhook integration or a continuous ingestion pipeline — a natural next step that would make the tool genuinely useful for time-sensitive queries.</li>
+                <li><strong>Manual evaluation ceiling:</strong> 20–50 manually labeled samples is enough to identify weak points (neutral recall) but not enough to detect rare failure modes. A larger automated evaluation harness with ground-truth QA pairs would harden confidence in the 90% accuracy claim.</li>
+                <li><strong>Neutral sentiment recall:</strong> 82% recall on neutral sentiment is the known weak point. Article-level FinBERT labels don't always reflect query-specific sentiment — a chunk-level sentiment approach would be more precise.</li>
+                <li><strong>Single-tenant Spaces deployment:</strong> Hugging Face Spaces works well for a public demo; at production load it would need a proper API backend with request queuing and rate limiting.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
 
-      <!-- Links -->
-      <section>
-        <span class="section-label">Links &amp; Resources</span>
-        <div class="flex flex-wrap gap-4">
-          <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank" rel="noopener noreferrer"
-             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
-             style="background: #2dd4bf; color: #0d1117;"
-             onmouseover="this.style.background='#14b8a6'" onmouseout="this.style.background='#2dd4bf'">
-            Live Demo on Hugging Face ↗
-          </a>
-          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
-             class="inline-flex items-center gap-2 px-4 py-2.5 font-medium text-sm rounded-lg transition-colors"
-             style="border: 1px solid #30363d; color: #8b949e;"
-             onmouseover="this.style.borderColor='#8b949e'; this.style.color='#e6edf3'"
-             onmouseout="this.style.borderColor='#30363d'; this.style.color='#8b949e'">
-            GitHub Repository ↗
-          </a>
-        </div>
-      </section>
+        <!-- Tech Stack — chips appear ONCE on this page, here only -->
+        <section>
+          <span class="label">Tech Stack</span>
+          <div class="stack-grid">
+            <div class="stack-card">
+              <p class="stack-card-head">Retrieval &amp; Embeddings</p>
+              <div class="chips">
+                <span class="chip">Python</span>
+                <span class="chip">LangChain</span>
+                <span class="chip">ChromaDB</span>
+                <span class="chip">sentence-transformers</span>
+                <span class="chip">all-MiniLM-L6-v2</span>
+              </div>
+            </div>
+            <div class="stack-card">
+              <p class="stack-card-head">Models &amp; Inference</p>
+              <div class="chips">
+                <span class="chip">FinBERT</span>
+                <span class="chip">Llama-3.1-8B-Instruct</span>
+                <span class="chip">Phi-3 Mini</span>
+                <span class="chip">Ollama</span>
+                <span class="chip">HuggingFace Inference API</span>
+              </div>
+            </div>
+            <div class="stack-card">
+              <p class="stack-card-head">Data &amp; APIs</p>
+              <div class="chips">
+                <span class="chip">Finnhub API</span>
+                <span class="chip">RecursiveCharacterTextSplitter</span>
+                <span class="chip">SequenceMatcher</span>
+              </div>
+            </div>
+            <div class="stack-card">
+              <p class="stack-card-head">Deployment</p>
+              <div class="chips">
+                <span class="chip">Docker</span>
+                <span class="chip">Hugging Face Spaces</span>
+                <span class="chip">Gradio</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
+        <!-- Links -->
+        <section>
+          <span class="label">Links</span>
+          <div class="link-row">
+            <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank" rel="noopener noreferrer" class="btn-primary">
+              Live Demo on Hugging Face ↗
+            </a>
+            <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+              </svg>
+              GitHub Repository ↗
+            </a>
+          </div>
+        </section>
+
+      </div>
     </div>
   </main>
 
   <!-- ─── FOOTER ─── -->
-  <footer class="py-8 px-6 border-t text-center" style="border-color: #30363d;">
-    <a href="../index.html#projects" class="text-sm transition-colors" style="color: #8b949e;"
-       onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#8b949e'">
-      ← Back to all projects
-    </a>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <a href="../index.html" class="footer-back">← Back to Portfolio</a>
+        <span>Peyton Ramsey</span>
+      </div>
+    </div>
   </footer>
 
 </body>
