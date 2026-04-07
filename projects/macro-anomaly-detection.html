@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Macroeconomic Anomaly Detection — Peyton Ramsey</title>
+  <title>Macroeconomic Anomaly Detection, Peyton Ramsey</title>
   <meta name="description" content="Deployed LSTM Autoencoder that ingests 7 FRED macroeconomic indicators, flags structural breaks by reconstruction error, and generates plain-English explanations via Llama-3.1-8B. 3/3 target crises identified." />
 
   <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
@@ -588,13 +588,13 @@
           <!-- Primary metric: thesis-level claim, typeset large in Geist Mono, amber -->
           <div class="metric-primary">
             <div class="value">3/3</div>
-            <div class="label-text">target crises correctly identified — GFC, COVID-19, 2022 Fed shock</div>
+            <div class="label-text">target crises correctly identified, GFC, COVID-19, 2022 Fed shock</div>
           </div>
           <!-- Secondary metrics: descending weight, no cards, no borders -->
           <div class="metric-secondary-group">
             <div class="metric-secondary-wide">
               <div class="value">0.0203</div>
-              <div class="label-text">anomaly threshold — calibrated on pre-2007 calm baseline (mean + 2 std)</div>
+              <div class="label-text">anomaly threshold, calibrated on pre-2007 calm baseline (mean + 2 std)</div>
             </div>
             <div class="metric-secondary-pair">
               <div class="metric-secondary-sm">
@@ -901,16 +901,16 @@ In 2-3 sentences, explain what macroeconomic events likely caused these anomalie
           <span class="label">IF I WERE TO REVISIT IT</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1rem;">What Scales, What Doesn't</h2>
           <div class="prose revisit-intro">
-            <p>The architecture is clean and the results are defensible. The main constraints are the static threshold and the monthly granularity ceiling — both by design, but real limits if the use case grows toward higher-frequency monitoring or multi-user production.</p>
+            <p>The architecture is clean and the results are defensible. The main constraints are the static threshold and the monthly granularity ceiling, both by design, but real limits if the use case grows toward higher-frequency monitoring or multi-user production.</p>
           </div>
           <div class="revisit-grid">
             <div>
               <p class="revisit-col-head">What scales well</p>
               <ul class="prose-list">
                 <li><strong>Pre-2007 baseline calibration:</strong> the calm-period threshold approach is principled and generalizes naturally to any domain where known event periods distort the full distribution. It's a reusable pattern.</li>
-                <li><strong>Multivariate joint model:</strong> the VECM-justified decision to model 7 series jointly instead of 7 independent models held up. The co-movement signal across transmissions channels is what makes the 2022 shock detectable at all — it wasn't a single-series event.</li>
+                <li><strong>Multivariate joint model:</strong> the VECM-justified decision to model 7 series jointly instead of 7 independent models held up. The co-movement signal across transmissions channels is what makes the 2022 shock detectable at all, it wasn't a single-series event.</li>
                 <li><strong>Autoencoder over forecasting:</strong> reconstruction error as the anomaly score is more stable than prediction error for macro data. The threshold stays interpretable across model retraining and time windows.</li>
-                <li><strong>MLflow experiment tracking:</strong> with only one model in production, tracking matters less. But the logged configs and artifacts meant reproducing any prior run was a single command during development — a habit worth keeping at any scale.</li>
+                <li><strong>MLflow experiment tracking:</strong> with only one model in production, tracking matters less. But the logged configs and artifacts meant reproducing any prior run was a single command during development, a habit worth keeping at any scale.</li>
               </ul>
             </div>
             <div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Financial News RAG Analyst — Peyton Ramsey</title>
+  <title>Financial News RAG Analyst, Peyton Ramsey</title>
   <meta name="description" content="Self-deployed RAG system enabling natural-language queries across 500+ financial articles with 92% retrieval precision and FinBERT sentiment analysis. Live on Hugging Face Spaces." />
 
   <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
@@ -589,7 +589,7 @@
           <!-- Primary metric: thesis-level claim, typeset large in Geist Mono, amber -->
           <div class="metric-primary">
             <div class="value">92%</div>
-            <div class="label-text">retrieval precision — top-5 results, 20–query evaluation</div>
+            <div class="label-text">retrieval precision, top-5 results, 20–query evaluation</div>
           </div>
           <!-- Secondary metrics: descending weight, no cards, no borders -->
           <div class="metric-secondary-group">
@@ -617,7 +617,7 @@
           <div class="prose">
             <p>Financial markets generate approximately 10,000+ news articles daily across outlets like Bloomberg, Reuters, the Wall Street Journal, and MarketWatch. Analysts, portfolio managers, and traders need to rapidly synthesize this information to answer questions like "What are the current risks to tech stocks?" or "How is the Fed addressing inflation?"</p>
             <p>Traditional approaches are broken: manual research takes 30+ minutes per query, keyword search requires knowing exactly what to look for (5–10 minutes), and professional terminals like Bloomberg or FactSet cost thousands per seat. Generic LLMs hallucinate financial facts and have knowledge cutoffs. News aggregators can surface articles but can't synthesize or reason across them.</p>
-            <p>RAG was chosen over fine-tuning an LLM on financial data: fine-tuning requires expensive compute and goes stale within days as news changes, while RAG grounds every answer in a live, attributed knowledge base that can be updated without retraining. The key constraint shaping every decision was latency — a system that takes 30 seconds isn't useful in fast-moving markets, which drove the choice of a lightweight embedding model (MiniLM over larger alternatives), a curated 50-article corpus over an open-ended index, and a cloud-hosted inference API over a locally-quantized model.</p>
+            <p>RAG was chosen over fine-tuning an LLM on financial data: fine-tuning requires expensive compute and goes stale within days as news changes, while RAG grounds every answer in a live, attributed knowledge base that can be updated without retraining. The key constraint shaping every decision was latency, a system that takes 30 seconds isn't useful in fast-moving markets, which drove the choice of a lightweight embedding model (MiniLM over larger alternatives), a curated 50-article corpus over an open-ended index, and a cloud-hosted inference API over a locally-quantized model.</p>
           </div>
         </section>
 
@@ -673,11 +673,11 @@ User Query
           <div class="prose">
             <h3>Key Component Decisions</h3>
             <ul class="prose-list">
-              <li><strong>all-MiniLM-L6-v2</strong> for embeddings — fast CPU inference (~10ms/chunk) with strong semantic similarity at only 384 dimensions. Larger models added latency without meaningful precision gains at this corpus size.</li>
-              <li><strong>ChromaDB</strong> for vector storage — persistent, local, supports cosine similarity with metadata filtering. ~15 MB index for 120 chunks; no external dependency required.</li>
-              <li><strong>FinBERT (ProsusAI)</strong> for sentiment — domain-specific model trained on financial texts. 86% accuracy vs ~70% for generic BERT; "beat expectations" and similar financial language requires domain-aware signals.</li>
-              <li><strong>Dual LLM backends</strong> — Llama-3.1-8B-Instruct via HuggingFace Inference API (2–4s) for production; Phi-3 Mini via Ollama (5–10s) for local dev. Switching is a single environment variable.</li>
-              <li><strong>LangChain orchestration</strong> — structured prompt templates, context assembly, source attribution, and streaming token output. Reduced boilerplate for prompt construction and chain composition.</li>
+              <li><strong>all-MiniLM-L6-v2</strong> for embeddings, fast CPU inference (~10ms/chunk) with strong semantic similarity at only 384 dimensions. Larger models added latency without meaningful precision gains at this corpus size.</li>
+              <li><strong>ChromaDB</strong> for vector storage, persistent, local, supports cosine similarity with metadata filtering. ~15 MB index for 120 chunks; no external dependency required.</li>
+              <li><strong>FinBERT (ProsusAI)</strong> for sentiment, domain-specific model trained on financial texts. 86% accuracy vs ~70% for generic BERT; "beat expectations" and similar financial language requires domain-aware signals.</li>
+              <li><strong>Dual LLM backends</strong>, Llama-3.1-8B-Instruct via HuggingFace Inference API (2–4s) for production; Phi-3 Mini via Ollama (5–10s) for local dev. Switching is a single environment variable.</li>
+              <li><strong>LangChain orchestration</strong>, structured prompt templates, context assembly, source attribution, and streaming token output. Reduced boilerplate for prompt construction and chain composition.</li>
             </ul>
           </div>
         </section>
@@ -738,7 +738,7 @@ User Query
           <span class="label">Evaluation</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Measuring What Matters</h2>
           <div class="prose">
-            <p>Rather than relying on subjective evaluation, the system was tested rigorously across retrieval quality, generation quality, and latency. An A/B test on article window size (25, 50, 75, 100 articles) showed that 50 articles provided the optimal balance — below 25, precision dropped for niche sector queries; above 50, retrieval precision degraded as irrelevant chunks diluted results.</p>
+            <p>Rather than relying on subjective evaluation, the system was tested rigorously across retrieval quality, generation quality, and latency. An A/B test on article window size (25, 50, 75, 100 articles) showed that 50 articles provided the optimal balance, below 25, precision dropped for niche sector queries; above 50, retrieval precision degraded as irrelevant chunks diluted results.</p>
 
             <h3>Latency Breakdown</h3>
           </div>
@@ -771,7 +771,7 @@ User Query
           </table>
 
           <div class="prose">
-            <p>Sentiment validation: 50 articles manually labeled by human annotators. FinBERT achieved 86% overall agreement, 88% positive/negative precision, 82% neutral recall. Neutral class is hardest — financial news often has mixed signals, and article-level sentiment labels don't always reflect query-specific sentiment.</p>
+            <p>Sentiment validation: 50 articles manually labeled by human annotators. FinBERT achieved 86% overall agreement, 88% positive/negative precision, 82% neutral recall. Neutral class is hardest, financial news often has mixed signals, and article-level sentiment labels don't always reflect query-specific sentiment.</p>
             <p>Compared to manual research (30+ min) or Google Search (5–10 min), the system reduces query time by 95%+. The live demo is publicly accessible on Hugging Face Spaces.</p>
           </div>
         </section>
@@ -781,14 +781,14 @@ User Query
           <span class="label">IF I WERE TO REVISIT IT</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1rem;">What Scales, What Doesn't</h2>
           <div class="prose revisit-intro">
-            <p>The core architecture holds up well for a single-user research tool. The main limitations stem from the static knowledge base and the 50-article corpus ceiling — both defensible given the latency constraints, but real bottlenecks if the use case scales to multi-user or real-time requirements.</p>
+            <p>The core architecture holds up well for a single-user research tool. The main limitations stem from the static knowledge base and the 50-article corpus ceiling, both defensible given the latency constraints, but real bottlenecks if the use case scales to multi-user or real-time requirements.</p>
           </div>
           <div class="revisit-grid">
             <div>
               <p class="revisit-col-head">What scales well</p>
               <ul class="prose-list">
-                <li><strong>Multi-stage filtering:</strong> the 90% noise reduction from 500+ to 50 articles was the single highest-leverage decision. More isn't better in RAG — a curated, high-quality corpus consistently outperforms a large noisy one at this scale.</li>
-                <li><strong>Domain-specific sentiment model:</strong> FinBERT's 86% vs ~70% for generic BERT isn't marginal — financial language has domain-specific signals ("beat expectations" = positive, "missed guidance" = negative) that generic models misclassify systematically.</li>
+                <li><strong>Multi-stage filtering:</strong> the 90% noise reduction from 500+ to 50 articles was the single highest-leverage decision. More isn't better in RAG, a curated, high-quality corpus consistently outperforms a large noisy one at this scale.</li>
+                <li><strong>Domain-specific sentiment model:</strong> FinBERT's 86% vs ~70% for generic BERT isn't marginal, financial language has domain-specific signals ("beat expectations" = positive, "missed guidance" = negative) that generic models misclassify systematically.</li>
                 <li><strong>Dual LLM backends:</strong> supporting Ollama locally and HuggingFace cloud via a single environment variable meant fast iteration during development without burning API credits. The pattern generalizes well.</li>
                 <li><strong>Lightweight embedding model:</strong> MiniLM at 384 dimensions was the right call at this corpus size. Larger embedding models added 5–10× inference time for negligible precision gain on a 120-chunk index.</li>
               </ul>
@@ -796,9 +796,9 @@ User Query
             <div>
               <p class="revisit-col-head">What doesn't</p>
               <ul class="prose-list">
-                <li><strong>Static knowledge base:</strong> the system requires periodic re-ingestion for fresh news. Real-time updates would require webhook integration or a continuous ingestion pipeline — a natural next step that would make the tool genuinely useful for time-sensitive queries.</li>
+                <li><strong>Static knowledge base:</strong> the system requires periodic re-ingestion for fresh news. Real-time updates would require webhook integration or a continuous ingestion pipeline, a natural next step that would make the tool genuinely useful for time-sensitive queries.</li>
                 <li><strong>Manual evaluation ceiling:</strong> 20–50 manually labeled samples is enough to identify weak points (neutral recall) but not enough to detect rare failure modes. A larger automated evaluation harness with ground-truth QA pairs would harden confidence in the 90% accuracy claim.</li>
-                <li><strong>Neutral sentiment recall:</strong> 82% recall on neutral sentiment is the known weak point. Article-level FinBERT labels don't always reflect query-specific sentiment — a chunk-level sentiment approach would be more precise.</li>
+                <li><strong>Neutral sentiment recall:</strong> 82% recall on neutral sentiment is the known weak point. Article-level FinBERT labels don't always reflect query-specific sentiment, a chunk-level sentiment approach would be more precise.</li>
                 <li><strong>Single-tenant Spaces deployment:</strong> Hugging Face Spaces works well for a public demo; at production load it would need a proper API backend with request queuing and rate limiting.</li>
               </ul>
             </div>

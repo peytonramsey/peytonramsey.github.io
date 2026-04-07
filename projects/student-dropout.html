@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Student Dropout Classification | Peyton Ramsey</title>
-  <meta name="description" content="Comparing four classification models — Random Forest, SVM, KNN, Logistic Regression — to identify at-risk university students. Random Forest at threshold 0.3 achieves 89.79% recall on dropouts with 16.86% test error." />
+  <meta name="description" content="Comparing four classification models, Random Forest, SVM, KNN, Logistic Regression, to identify at-risk university students. Random Forest at threshold 0.3 achieves 89.79% recall on dropouts with 16.86% test error." />
 
   <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
   <link rel="preconnect" href="https://api.fontshare.com" />
@@ -730,7 +730,7 @@
         <section>
           <span class="label">TL;DR</span>
           <div class="tldr-box">
-            <p>Random Forest with a lowered classification threshold (0.3) correctly identifies <strong>89.79% of true dropouts</strong> — roughly 9 out of 10 at-risk students — while achieving the lowest overall test error (16.86%) among all models tested. Second-semester academic performance and tuition fee status are the strongest predictors. A vanilla model with a 0.5 threshold misses too many real dropouts to be useful for intervention programs.</p>
+            <p>Random Forest with a lowered classification threshold (0.3) correctly identifies <strong>89.79% of true dropouts</strong>, roughly 9 out of 10 at-risk students, while achieving the lowest overall test error (16.86%) among all models tested. Second-semester academic performance and tuition fee status are the strongest predictors. A vanilla model with a 0.5 threshold misses too many real dropouts to be useful for intervention programs.</p>
           </div>
         </section>
 
@@ -740,13 +740,13 @@
           <!-- Primary metric: thesis-level claim, Geist Mono, large, amber -->
           <div class="metric-primary">
             <div class="value">89.79%</div>
-            <div class="label-text">dropout recall — Random Forest at threshold 0.3, roughly 9 in 10 at-risk students correctly flagged</div>
+            <div class="label-text">dropout recall, Random Forest at threshold 0.3, roughly 9 in 10 at-risk students correctly flagged</div>
           </div>
           <!-- Secondary metrics: descending weight -->
           <div class="metric-secondary-group">
             <div class="metric-secondary-wide">
               <div class="value">16.86%</div>
-              <div class="label-text">test error rate — lowest among all four models at the 0.3 threshold</div>
+              <div class="label-text">test error rate, lowest among all four models at the 0.3 threshold</div>
             </div>
             <div class="metric-secondary-pair">
               <div class="metric-secondary-sm">
@@ -770,8 +770,8 @@
           <span class="label">Problem &amp; Approach</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">The Cost of Waiting Until It's Too Late</h2>
           <div class="prose">
-            <p>Student dropout is expensive on both sides. Universities lose tuition revenue and see funding tied to retention rates erode; students lose time, money, and momentum. The window for intervention — academic coaching, emergency financial aid, course load adjustment — only exists if you can identify risk early enough to act.</p>
-            <p>This project treats dropout prediction as a classification problem where <strong style="color: var(--text-1);">the cost of a false negative (missing a real dropout) significantly outweighs the cost of a false positive</strong> (flagging a student who would have been fine). That asymmetry shaped every modeling decision — most importantly the choice to evaluate all models at both the default 0.5 threshold and a more aggressive 0.3 threshold.</p>
+            <p>Student dropout is expensive on both sides. Universities lose tuition revenue and see funding tied to retention rates erode; students lose time, money, and momentum. The window for intervention, academic coaching, emergency financial aid, course load adjustment, only exists if you can identify risk early enough to act.</p>
+            <p>This project treats dropout prediction as a classification problem where <strong style="color: var(--text-1);">the cost of a false negative (missing a real dropout) significantly outweighs the cost of a false positive</strong> (flagging a student who would have been fine). That asymmetry shaped every modeling decision, most importantly the choice to evaluate all models at both the default 0.5 threshold and a more aggressive 0.3 threshold.</p>
             <p>The deployment scenario: run the model at the end of each student's first semester, flag students above the risk threshold, and route them to targeted support before the second semester begins.</p>
 
             <h3>Recall First, Then Model Selection</h3>
@@ -829,7 +829,7 @@
           <div class="callout">
             <div class="callout-head">Key EDA Findings</div>
             <div class="callout-items">
-              <div class="callout-item"><strong>Bimodal grade distribution for dropouts.</strong> Dropout students show a sharp spike at zero grades in the first semester — many stopped showing up before completing any coursework.</div>
+              <div class="callout-item"><strong>Bimodal grade distribution for dropouts.</strong> Dropout students show a sharp spike at zero grades in the first semester, many stopped showing up before completing any coursework.</div>
               <div class="callout-item"><strong>Tuition fees are a strong binary signal.</strong> Students behind on tuition had an 85% dropout rate vs. 25% for students current on payments.</div>
               <div class="callout-item"><strong>Scholarships significantly reduce dropout.</strong> Scholarship holders dropped out at 12.5% vs. 40% without scholarships.</div>
               <div class="callout-item"><strong>Evening students at higher risk.</strong> 38.7% dropout rate vs. 31.2% for daytime students.</div>
@@ -887,15 +887,15 @@
             </div>
             <div class="model-card">
               <div class="model-card-name">K-Nearest Neighbors (k=15)</div>
-              <div class="model-card-desc">Tuned k via 10-fold repeated CV. Can only use numeric predictors, excluding tuition fees and scholarship status — two of the strongest signals. Center + scale preprocessing applied to normalize distances.</div>
+              <div class="model-card-desc">Tuned k via 10-fold repeated CV. Can only use numeric predictors, excluding tuition fees and scholarship status, two of the strongest signals. Center + scale preprocessing applied to normalize distances.</div>
             </div>
             <div class="model-card">
-              <div class="model-card-name selected">Random Forest — Selected Model</div>
+              <div class="model-card-name selected">Random Forest, Selected Model</div>
               <div class="model-card-desc">mtry=4, ntree=500, both tuned via OOB error. Uses all predictors including categorical variables. Captures non-linear interactions between financial and academic signals. Best recall at both thresholds.</div>
             </div>
             <div class="model-card">
               <div class="model-card-name">Support Vector Machine (Radial Kernel)</div>
-              <div class="model-card-desc">cost=10, gamma=0.01, tuned via 10-fold CV. Competitive error rate but no feature importance output — eliminated because advisors need to understand why a student was flagged.</div>
+              <div class="model-card-desc">cost=10, gamma=0.01, tuned via 10-fold CV. Competitive error rate but no feature importance output, eliminated because advisors need to understand why a student was flagged.</div>
             </div>
           </div>
 
@@ -966,7 +966,7 @@
               <span class="var-rank">01</span>
               <div class="var-info">
                 <div class="var-name">Curricular units 2nd semester (approved)</div>
-                <div class="var-desc">How many courses a student passed in their second semester — the strongest single predictor</div>
+                <div class="var-desc">How many courses a student passed in their second semester, the strongest single predictor</div>
               </div>
               <div class="var-bar-wrap"><div class="var-bar" style="width: 100%;"></div></div>
             </div>
@@ -982,7 +982,7 @@
               <span class="var-rank">03</span>
               <div class="var-info">
                 <div class="var-name">Tuition fees up to date</div>
-                <div class="var-desc">85% dropout rate when behind on fees — a strong financial distress signal</div>
+                <div class="var-desc">85% dropout rate when behind on fees, a strong financial distress signal</div>
               </div>
               <div class="var-bar-wrap"><div class="var-bar" style="width: 67%;"></div></div>
             </div>
@@ -990,7 +990,7 @@
               <span class="var-rank">04</span>
               <div class="var-info">
                 <div class="var-name">Scholarship holder status</div>
-                <div class="var-desc">Scholarship students retain at much higher rates — a protective financial signal</div>
+                <div class="var-desc">Scholarship students retain at much higher rates, a protective financial signal</div>
               </div>
               <div class="var-bar-wrap"><div class="var-bar" style="width: 53%;"></div></div>
             </div>
@@ -1011,10 +1011,10 @@
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">What the Models Revealed</h2>
           <div class="callout">
             <div class="callout-items">
-              <div class="callout-item"><strong>Non-linear interactions matter.</strong> The reason Random Forest beats Logistic Regression isn't just more predictors — the interaction between academic and financial distress is non-linear. A student behind on tuition AND with zero 1st semester approvals is dramatically higher risk than either signal alone suggests.</div>
-              <div class="callout-item"><strong>KNN's categorical exclusion cost it the race.</strong> KNN can't handle categorical predictors without encoding hacks, which forced exclusion of tuition status and scholarship holder — the 3rd and 4th most important predictors. This is a fundamental algorithm limitation, not a hyperparameter problem.</div>
-              <div class="callout-item"><strong>Threshold tuning is a business decision, not just a modeling one.</strong> Moving from 0.5 to 0.3 increased Random Forest recall from 79.23% to 89.79% — an extra 10 out of 100 true dropouts correctly flagged, at the cost of more false alarms. Whether that trade-off is worth it depends on advisor bandwidth and intervention cost, not test accuracy.</div>
-              <div class="callout-item"><strong>Evening students are better identified.</strong> Segment analysis showed the model achieved 92.7% recall on evening students vs. 89.3% on daytime — likely because evening students have stronger, less ambiguous predictor signals (more pronounced financial stress patterns).</div>
+              <div class="callout-item"><strong>Non-linear interactions matter.</strong> The reason Random Forest beats Logistic Regression isn't just more predictors, the interaction between academic and financial distress is non-linear. A student behind on tuition AND with zero 1st semester approvals is dramatically higher risk than either signal alone suggests.</div>
+              <div class="callout-item"><strong>KNN's categorical exclusion cost it the race.</strong> KNN can't handle categorical predictors without encoding hacks, which forced exclusion of tuition status and scholarship holder, the 3rd and 4th most important predictors. This is a fundamental algorithm limitation, not a hyperparameter problem.</div>
+              <div class="callout-item"><strong>Threshold tuning is a business decision, not just a modeling one.</strong> Moving from 0.5 to 0.3 increased Random Forest recall from 79.23% to 89.79%, an extra 10 out of 100 true dropouts correctly flagged, at the cost of more false alarms. Whether that trade-off is worth it depends on advisor bandwidth and intervention cost, not test accuracy.</div>
+              <div class="callout-item"><strong>Evening students are better identified.</strong> Segment analysis showed the model achieved 92.7% recall on evening students vs. 89.3% on daytime, likely because evening students have stronger, less ambiguous predictor signals (more pronounced financial stress patterns).</div>
             </div>
           </div>
         </section>
@@ -1038,7 +1038,7 @@
             </div>
             <div class="revisit-item">
               <span class="revisit-num">04.</span>
-              <div class="revisit-body"><strong>Class imbalance deserves explicit treatment.</strong> We handled imbalance through stratified splitting and threshold tuning, but techniques like SMOTE or class-weighted loss could be worth testing — especially if the minority class shrinks in a smaller institution's dataset.</div>
+              <div class="revisit-body"><strong>Class imbalance deserves explicit treatment.</strong> We handled imbalance through stratified splitting and threshold tuning, but techniques like SMOTE or class-weighted loss could be worth testing, especially if the minority class shrinks in a smaller institution's dataset.</div>
             </div>
           </div>
         </section>

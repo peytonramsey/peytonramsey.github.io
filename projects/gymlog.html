@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GymLog — Full-Stack Fitness App — Peyton Ramsey</title>
+  <title>GymLog, Full-Stack Fitness App, Peyton Ramsey</title>
   <meta name="description" content="Production-ready full-stack fitness tracking web app built with Python Flask, PostgreSQL, and a Gradient Boosting Regressor for progressive overload predictions. 11,500+ lines of code, 40+ REST endpoints, 12 database models." />
 
   <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
@@ -558,7 +558,7 @@
   <header class="page-header">
     <div class="container">
       <h1>GymLog</h1>
-      <p class="subtitle">A production-quality full-stack fitness tracking application built from scratch — workout logging, ML-powered progressive overload, and dual-API nutrition search</p>
+      <p class="subtitle">A production-quality full-stack fitness tracking application built from scratch, workout logging, ML-powered progressive overload, and dual-API nutrition search</p>
       <div class="header-meta">
         <span>Sole Developer</span>
         <span class="sep">·</span>
@@ -578,7 +578,7 @@
         <section>
           <span class="label">TL;DR</span>
           <div class="tldr-box">
-            <p>GymLog is a production-ready full-stack fitness tracking web application built with Python Flask and PostgreSQL — <strong>11,500+ lines of code</strong>, 40+ REST endpoints, 12 database models, and 6 Alembic migration versions. Features include workout logging with draft auto-save, a Gradient Boosting Regressor for progressive overload predictions, dual-API nutrition search with custom relevance scoring, barcode food scanning, and a Chart.js visualization layer. Deployed live with Gunicorn on cloud infrastructure.</p>
+            <p>GymLog is a production-ready full-stack fitness tracking web application built with Python Flask and PostgreSQL, <strong>11,500+ lines of code</strong>, 40+ REST endpoints, 12 database models, and 6 Alembic migration versions. Features include workout logging with draft auto-save, a Gradient Boosting Regressor for progressive overload predictions, dual-API nutrition search with custom relevance scoring, barcode food scanning, and a Chart.js visualization layer. Deployed live with Gunicorn on cloud infrastructure.</p>
           </div>
         </section>
 
@@ -619,9 +619,9 @@
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Real Application, Not a Demo</h2>
           <div class="prose">
             <p>Fitness tracking apps either give you a bloated, subscription-locked experience (MyFitnessPal, Whoop) or a barebones spreadsheet. Neither integrates the three core pillars of training in one place: workout execution, nutrition logging, and progressive overload guidance informed by your actual history.</p>
-            <p>GymLog was built as both a personal tool and a full-stack engineering project — the goal was to build something production-quality with a real ML integration, not a demo. This meant handling real data entry patterns (inconsistent exercise names, missing fields, browser crashes mid-workout), designing a normalized schema that could evolve, and deploying a system that non-technical users could actually use.</p>
+            <p>GymLog was built as both a personal tool and a full-stack engineering project, the goal was to build something production-quality with a real ML integration, not a demo. This meant handling real data entry patterns (inconsistent exercise names, missing fields, browser crashes mid-workout), designing a normalized schema that could evolve, and deploying a system that non-technical users could actually use.</p>
             <h3>Why Flask Over Django</h3>
-            <p>Flask was chosen because the project required full control over API design — 40+ endpoints built exactly to spec — and didn't need Django's built-in admin or form-handling machinery. The ML component was scoped to Gradient Boosting Regression rather than a neural network because user-specific training history is sparse: most users have 10 to 50 workouts per exercise, making a network's generalization advantage irrelevant while GBR's explicit 12-feature structure handles sparse histories reliably. Deployment on Gunicorn with PostgreSQL in production (SQLite in development) was a deliberate choice to treat this as a real application from day one.</p>
+            <p>Flask was chosen because the project required full control over API design, 40+ endpoints built exactly to spec, and didn't need Django's built-in admin or form-handling machinery. The ML component was scoped to Gradient Boosting Regression rather than a neural network because user-specific training history is sparse: most users have 10 to 50 workouts per exercise, making a network's generalization advantage irrelevant while GBR's explicit 12-feature structure handles sparse histories reliably. Deployment on Gunicorn with PostgreSQL in production (SQLite in development) was a deliberate choice to treat this as a real application from day one.</p>
           </div>
         </section>
 
@@ -676,7 +676,7 @@ Nutrition Search
           </div>
 
           <div class="prose">
-            <h3>Database Schema — 12 Models</h3>
+            <h3>Database Schema, 12 Models</h3>
           </div>
 
           <table class="data-table" style="margin-top: 0.75rem;">
@@ -727,7 +727,7 @@ Nutrition Search
               <li><strong>GBR over neural network:</strong> user training histories are sparse (10–50 workouts per exercise); GBR's 12-feature explicit structure handles sparsity with no generalization cost</li>
               <li><strong>Pickle model persistence:</strong> one model file per exercise-user pair; lightweight, retrainable on demand without a versioned model registry at this scale</li>
               <li><strong>Dual-API fallback chain:</strong> OpenFoodFacts has excellent US packaged food coverage but gaps in international products; USDA FoodData Central fills those gaps with a custom relevance scorer resolving conflicts</li>
-              <li><strong>Draft auto-save as first-class feature:</strong> <code>is_draft=True</code> on every keystroke, excluded from history views, converted to completed record on "Finish Workout" — 100% data retention with no UX complexity</li>
+              <li><strong>Draft auto-save as first-class feature:</strong> <code>is_draft=True</code> on every keystroke, excluded from history views, converted to completed record on "Finish Workout", 100% data retention with no UX complexity</li>
               <li><strong>PostgreSQL/SQLite parity:</strong> production uses PostgreSQL via DATABASE_URL env var, development uses SQLite; same ORM layer, zero code changes between environments</li>
             </ul>
           </div>
@@ -746,7 +746,7 @@ Nutrition Search
             <p>Single-API nutrition data is insufficient. The system implements an intelligent fallback chain: primary OpenFoodFacts (15+ results), fallback to USDA FoodData Central. A custom relevance algorithm ranks results by: exact phrase matching (+50 pts), complete word presence (+30 pts), word boundary detection, and length penalization. Result: 40%+ improvement in food search relevance over single-API approach.</p>
 
             <h3>3. Exercise Name Normalization System <code>utils.py</code></h3>
-            <p>Users enter exercise names inconsistently — "DB bench", "dumbbell bench press", "bench DB" — causing fragmented ML training data. A multi-stage normalization pipeline uses regex pattern matching, 40+ abbreviation expansions (DB→Dumbbell, RDL→Romanian Deadlift), word reordering, and special case handling to standardize 100+ exercise variations. Includes a preview-before-apply UI so users can confirm changes without silent correction.</p>
+            <p>Users enter exercise names inconsistently, "DB bench", "dumbbell bench press", "bench DB", causing fragmented ML training data. A multi-stage normalization pipeline uses regex pattern matching, 40+ abbreviation expansions (DB→Dumbbell, RDL→Romanian Deadlift), word reordering, and special case handling to standardize 100+ exercise variations. Includes a preview-before-apply UI so users can confirm changes without silent correction.</p>
 
             <h3>4. Draft Workout Auto-Save System <code>app.py</code></h3>
             <p>Browser crashes and accidental navigation were causing workout data loss. The solution: every edit auto-saves to <code>is_draft=True</code>. Drafts are excluded from history views but visible in the active session. A 24-hour cleanup task removes stale drafts. On "Finish Workout", the draft is converted to a completed record. Result: 100% data retention with no user-facing complexity.</p>
@@ -813,8 +813,8 @@ Nutrition Search
             <div>
               <p class="revisit-col-head">What scales well</p>
               <ul class="prose-list">
-                <li><strong>GBR feature engineering:</strong> the 12-feature structure for progressive overload generalizes naturally — adding new features is additive, not architectural. The explicit feature set also makes the model's predictions debuggable in a way that a neural network would not be.</li>
-                <li><strong>Dual-API fallback with custom scoring:</strong> the relevance algorithm is content-agnostic. The same pattern — primary source, scored fallback, explicit tie-breaking — applies to any domain where two data sources have complementary strengths.</li>
+                <li><strong>GBR feature engineering:</strong> the 12-feature structure for progressive overload generalizes naturally, adding new features is additive, not architectural. The explicit feature set also makes the model's predictions debuggable in a way that a neural network would not be.</li>
+                <li><strong>Dual-API fallback with custom scoring:</strong> the relevance algorithm is content-agnostic. The same pattern, primary source, scored fallback, explicit tie-breaking, applies to any domain where two data sources have complementary strengths.</li>
                 <li><strong>Draft auto-save as data integrity system:</strong> treating every user action as provisional until confirmed is the right abstraction for any data-entry application. The <code>is_draft</code> pattern is reusable.</li>
                 <li><strong>Backwards-compatible schema migration:</strong> keeping the deprecated <code>day_of_week</code> field alongside the new <code>TemplateSchedule</code> table while accepting both formats in the API is the right way to handle breaking schema changes in a live system.</li>
               </ul>
@@ -822,9 +822,9 @@ Nutrition Search
             <div>
               <p class="revisit-col-head">What doesn't</p>
               <ul class="prose-list">
-                <li><strong>Schema design decisions compound:</strong> adding multi-day template support after launch required careful backwards compatibility work. Designing for extensibility upfront — even when it feels like over-engineering — saves painful migrations. The initial one-day-per-template constraint was not revisited early enough.</li>
-                <li><strong>User data consistency requires automation:</strong> asking users to normalize exercise names themselves doesn't work — they won't. Automated normalization with a preview step (not silent correction) was the right balance, but it should have been designed in from the start, not added reactively after training data fragmentation emerged.</li>
-                <li><strong>Single-file monolith:</strong> <code>app.py</code> at 1,844 lines is the classic Flask monolith that works until it doesn't. At team scale, splitting by blueprint (auth, workouts, nutrition, ML) would be the first refactor — it's mechanical work that becomes load-bearing when multiple developers touch the same file.</li>
+                <li><strong>Schema design decisions compound:</strong> adding multi-day template support after launch required careful backwards compatibility work. Designing for extensibility upfront, even when it feels like over-engineering, saves painful migrations. The initial one-day-per-template constraint was not revisited early enough.</li>
+                <li><strong>User data consistency requires automation:</strong> asking users to normalize exercise names themselves doesn't work, they won't. Automated normalization with a preview step (not silent correction) was the right balance, but it should have been designed in from the start, not added reactively after training data fragmentation emerged.</li>
+                <li><strong>Single-file monolith:</strong> <code>app.py</code> at 1,844 lines is the classic Flask monolith that works until it doesn't. At team scale, splitting by blueprint (auth, workouts, nutrition, ML) would be the first refactor, it's mechanical work that becomes load-bearing when multiple developers touch the same file.</li>
                 <li><strong>No auto-save was a mistake:</strong> the first version had no auto-save. After losing a long workout once, building a proper draft system became the highest priority feature. Every data-entry application should have this from day one.</li>
               </ul>
             </div>

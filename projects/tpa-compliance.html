@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TPA Compliance Review System — Peyton Ramsey</title>
+  <title>TPA Compliance Review System, Peyton Ramsey</title>
   <meta name="description" content="End-to-end third-party administrator oversight platform built at Nassau Financial Group. ETL pipelines, weighted compliance scoring, and a self-serve R Shiny dashboard managing 120K+ policies." />
 
   <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
@@ -509,7 +509,7 @@
           <div class="prose">
             <p>Nassau manages 120K+ insurance policies through third-party administrators responsible for transactions, claims, disbursements, and valuations. Compliance review was fully manual: analysts pulled reports from disparate systems, reconciled entity mismatches by hand, and scored quality inconsistently across 8 activity types, with no historical trend data and no self-serve path.</p>
             <p>I was brought in as the sole developer to build the system end to end. The binding constraint was that compliance analysts aren't engineers, so the solution had to be entirely self-serve. That ruled out ad-hoc SQL and pointed toward R Shiny as the delivery layer, with parquet-backed storage via Apache Arrow for persistent, auditable records.</p>
-            <p>For scoring, I designed an activity-specific weighted system rather than a single global score. Disbursement reviews carry different risk profiles than routine transaction checks, so weights and pass thresholds are defined per activity type and externalized as config — the team can tune the system as their understanding matures without a code deploy.</p>
+            <p>For scoring, I designed an activity-specific weighted system rather than a single global score. Disbursement reviews carry different risk profiles than routine transaction checks, so weights and pass thresholds are defined per activity type and externalized as config, the team can tune the system as their understanding matures without a code deploy.</p>
           </div>
         </section>
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>U.S. Inflation Dynamics: VECM Analysis | Peyton Ramsey</title>
-  <meta name="description" content="A Vector Error Correction Model on 33 years of monthly FRED data reveals how demand, supply, and labor shocks dynamically transmit to U.S. inflation — capturing long-run equilibrium relationships invisible to VAR on differences." />
+  <meta name="description" content="A Vector Error Correction Model on 33 years of monthly FRED data reveals how demand, supply, and labor shocks dynamically transmit to U.S. inflation, capturing long-run equilibrium relationships invisible to VAR on differences." />
 
   <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
   <link rel="preconnect" href="https://api.fontshare.com" />
@@ -747,7 +747,7 @@
   <header class="page-header">
     <div class="container">
       <h1>U.S. Inflation Dynamics:<br/>A Vector Error Correction Model Analysis</h1>
-      <p class="subtitle">Modeling how demand, supply, and labor shocks dynamically transmit to U.S. inflation — revealing long-run equilibrium relationships that univariate models and VAR on differences cannot detect.</p>
+      <p class="subtitle">Modeling how demand, supply, and labor shocks dynamically transmit to U.S. inflation, revealing long-run equilibrium relationships that univariate models and VAR on differences cannot detect.</p>
       <div class="header-meta">
         <span>Peyton Ramsey</span>
         <span class="sep">·</span>
@@ -769,7 +769,7 @@
         <section>
           <span class="label">TL;DR</span>
           <div class="tldr-box">
-            <p>A Vector Error Correction Model on 33 years of monthly FRED data reveals that <strong>demand (retail sales, 35.5%) and inflation inertia (own-shock, 38.4%) dominate long-run CPI variance</strong>, while labor market effects work through cointegrating equilibrium channels rather than short-run dynamics. A VAR on differences — the naive alternative — attributed 95.68% of CPI variance to its own shocks, missing 61.6% of the external transmission the VECM captures.</p>
+            <p>A Vector Error Correction Model on 33 years of monthly FRED data reveals that <strong>demand (retail sales, 35.5%) and inflation inertia (own-shock, 38.4%) dominate long-run CPI variance</strong>, while labor market effects work through cointegrating equilibrium channels rather than short-run dynamics. A VAR on differences, the naive alternative, attributed 95.68% of CPI variance to its own shocks, missing 61.6% of the external transmission the VECM captures.</p>
           </div>
         </section>
 
@@ -779,13 +779,13 @@
           <!-- Primary metric: thesis-level claim, Geist Mono, large, amber -->
           <div class="metric-primary">
             <div class="value">35.5%</div>
-            <div class="label-text">of long-run CPI variance explained by retail sales demand shocks — the dominant external transmission channel at a 20-month horizon</div>
+            <div class="label-text">of long-run CPI variance explained by retail sales demand shocks, the dominant external transmission channel at a 20-month horizon</div>
           </div>
           <!-- Secondary metrics: descending weight -->
           <div class="metric-secondary-group">
             <div class="metric-secondary-wide">
               <div class="value">38.4%</div>
-              <div class="label-text">own-shock (inflation inertia) — the largest single share, confirming strong persistence alongside external drivers</div>
+              <div class="label-text">own-shock (inflation inertia), the largest single share, confirming strong persistence alongside external drivers</div>
             </div>
             <div class="metric-secondary-pair">
               <div class="metric-secondary-sm">
@@ -809,12 +809,12 @@
           <span class="label">Problem &amp; Approach</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Why Standard Models Miss Inflation Dynamics</h2>
           <div class="prose">
-            <p>Inflation is not just an autoregressive process. It's the output of interacting macroeconomic forces: consumer demand driving prices up, industrial production expanding supply, labor market slack moderating wage growth — all operating across different time horizons simultaneously.</p>
+            <p>Inflation is not just an autoregressive process. It's the output of interacting macroeconomic forces: consumer demand driving prices up, industrial production expanding supply, labor market slack moderating wage growth, all operating across different time horizons simultaneously.</p>
             <p>A univariate model (ARIMA on CPI alone) captures inflation's persistence but attributes everything to its own past values. A VAR on differenced data respects stationarity but destroys the long-run relationships between variables in the process. The right tool when series are non-stationary but move together over time is a <strong style="color: var(--text-1);">Vector Error Correction Model</strong>, which models both short-run dynamics and the long-run equilibria that tie the variables together.</p>
             <p>The core research question: <em style="color: var(--text-1);">How do demand, supply, and labor market shocks dynamically affect U.S. inflation, and through what channels?</em></p>
 
             <h3>Model Selection by Elimination</h3>
-            <p>The VECM specification was arrived at by ruling out simpler alternatives in sequence — not chosen upfront. ARIMA on CPI alone captures persistence but attributes everything to its own past values. VAR on differences preserves stationarity but destroys the long-run relationships. Only after ADF tests confirmed I(1) behavior across all four series and Johansen's trace test confirmed three cointegrating vectors was VECM the correct model. The key constraint throughout was the 2020–2022 COVID period — a structural break that sits outside the equilibrium estimated on 1992–2019 data and complicates formal inference on the residuals.</p>
+            <p>The VECM specification was arrived at by ruling out simpler alternatives in sequence, not chosen upfront. ARIMA on CPI alone captures persistence but attributes everything to its own past values. VAR on differences preserves stationarity but destroys the long-run relationships. Only after ADF tests confirmed I(1) behavior across all four series and Johansen's trace test confirmed three cointegrating vectors was VECM the correct model. The key constraint throughout was the 2020–2022 COVID period, a structural break that sits outside the equilibrium estimated on 1992–2019 data and complicates formal inference on the residuals.</p>
           </div>
         </section>
 
@@ -828,7 +828,7 @@
           <div class="dataset-grid">
             <div class="dataset-card">
               <div class="dataset-card-head">CPI (CPIAUCSL)</div>
-              <p>Consumer Price Index for All Urban Consumers — the primary outcome variable measuring inflation. Non-stationary in levels, stationary after first differencing (I(1)).</p>
+              <p>Consumer Price Index for All Urban Consumers, the primary outcome variable measuring inflation. Non-stationary in levels, stationary after first differencing (I(1)).</p>
             </div>
             <div class="dataset-card">
               <div class="dataset-card-head">Industrial Production (INDPRO)</div>
@@ -836,7 +836,7 @@
             </div>
             <div class="dataset-card">
               <div class="dataset-card-head">Advance Retail Sales (RSXFS)</div>
-              <p>Demand-side proxy. Consumer spending drives demand-pull inflation — the dominant transmission channel found in this analysis at 35.5% of long-run CPI variance.</p>
+              <p>Demand-side proxy. Consumer spending drives demand-pull inflation, the dominant transmission channel found in this analysis at 35.5% of long-run CPI variance.</p>
             </div>
             <div class="dataset-card">
               <div class="dataset-card-head">Unemployment Rate (UNRATE)</div>
@@ -897,14 +897,14 @@
               <div class="step-num">01</div>
               <div class="step-body">
                 <h4>ADF Tests: Stationarity</h4>
-                <p>Augmented Dickey-Fuller tests on all four series. Result: all four are <strong>I(1)</strong> — non-stationary in levels and stationary after first differencing. This rules out VAR in levels (spurious regression) and confirms cointegration is possible.</p>
+                <p>Augmented Dickey-Fuller tests on all four series. Result: all four are <strong>I(1)</strong>, non-stationary in levels and stationary after first differencing. This rules out VAR in levels (spurious regression) and confirms cointegration is possible.</p>
               </div>
             </div>
             <div class="step-card">
               <div class="step-num">02</div>
               <div class="step-body">
                 <h4>Johansen Trace Test: Cointegration</h4>
-                <p>Tests whether linear combinations of non-stationary series are themselves stationary — whether variables share a long-run equilibrium. Result: <strong>r = 3 cointegrating relationships</strong> among the four variables. This rules out VAR on differences, which discards the long-run information, justifying VECM.</p>
+                <p>Tests whether linear combinations of non-stationary series are themselves stationary, whether variables share a long-run equilibrium. Result: <strong>r = 3 cointegrating relationships</strong> among the four variables. This rules out VAR on differences, which discards the long-run information, justifying VECM.</p>
               </div>
             </div>
             <div class="step-card">
@@ -918,7 +918,7 @@
 
           <div class="callout">
             <div class="callout-head">Intuition: What an Error Correction Term Does</div>
-            <div class="callout-body">If CPI drifts too far above its long-run equilibrium with retail sales and unemployment, the ECT coefficient (−0.0305) says CPI will fall back by ~3% of that gap each month. This is the mechanism that prevents the variables from wandering apart indefinitely — and it's <strong>invisible in a VAR on differences</strong>.</div>
+            <div class="callout-body">If CPI drifts too far above its long-run equilibrium with retail sales and unemployment, the ECT coefficient (−0.0305) says CPI will fall back by ~3% of that gap each month. This is the mechanism that prevents the variables from wandering apart indefinitely, and it's <strong>invisible in a VAR on differences</strong>.</div>
           </div>
         </section>
 
@@ -929,7 +929,7 @@
 
           <div class="table-wrap">
             <div class="table-header">
-              <p>VECM — CPI Equation Key Coefficients</p>
+              <p>VECM, CPI Equation Key Coefficients</p>
             </div>
             <div class="table-inner">
               <table class="data-table">
@@ -949,7 +949,7 @@
                   <tr>
                     <td>cpi.dl1 (Lagged CPI)</td>
                     <td class="accent">0.317 ***</td>
-                    <td>Strong short-run inflation momentum — past inflation predicts near-term inflation</td>
+                    <td>Strong short-run inflation momentum, past inflation predicts near-term inflation</td>
                   </tr>
                   <tr>
                     <td>retail_sales.dl1</td>
@@ -972,7 +972,7 @@
           </div>
 
           <!-- FEVD -->
-          <h3 style="font-family: var(--font-heading); font-size: 1rem; color: var(--text-2); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">Forecast Error Variance Decomposition — CPI at 20-Month Horizon</h3>
+          <h3 style="font-family: var(--font-heading); font-size: 1rem; color: var(--text-2); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">Forecast Error Variance Decomposition, CPI at 20-Month Horizon</h3>
           <div class="fevd-stack">
             <div class="fevd-row">
               <div class="fevd-labels">
@@ -1013,7 +1013,7 @@
           </div>
 
           <div class="callout" style="margin-top: 1.25rem;">
-            <div class="callout-body"><strong>VAR on differences baseline:</strong> attributed 95.68% of CPI variance to own-shocks — appearing to confirm inflation is purely self-perpetuating. VECM reveals this is an artifact of discarding long-run information; the cointegrating structure is the mechanism through which macroeconomic forces actually operate.</div>
+            <div class="callout-body"><strong>VAR on differences baseline:</strong> attributed 95.68% of CPI variance to own-shocks, appearing to confirm inflation is purely self-perpetuating. VECM reveals this is an artifact of discarding long-run information; the cointegrating structure is the mechanism through which macroeconomic forces actually operate.</div>
           </div>
         </section>
 
@@ -1027,11 +1027,11 @@
           <div class="irf-stack">
             <div class="irf-card">
               <h4>Retail Sales Shock → CPI</h4>
-              <p>Near-linear increase in CPI over the full 20-month horizon: demand shocks don't dissipate quickly — they compound. This is the clearest evidence of demand-pull inflation dynamics in the data. IRFs remain non-zero at 20 months versus VAR convergence by 8–10 months.</p>
+              <p>Near-linear increase in CPI over the full 20-month horizon: demand shocks don't dissipate quickly, they compound. This is the clearest evidence of demand-pull inflation dynamics in the data. IRFs remain non-zero at 20 months versus VAR convergence by 8–10 months.</p>
             </div>
             <div class="irf-card">
               <h4>Unemployment Shock → CPI</h4>
-              <p>Insignificant in the short-run CPI equation but explains 20.5% of long-run variance. The signal lives in the error correction terms — labor market slack moderates inflation gradually through wage-price dynamics and equilibrium adjustment, not immediate transmission.</p>
+              <p>Insignificant in the short-run CPI equation but explains 20.5% of long-run variance. The signal lives in the error correction terms, labor market slack moderates inflation gradually through wage-price dynamics and equilibrium adjustment, not immediate transmission.</p>
             </div>
             <div class="irf-card">
               <h4>Industrial Production Shock → CPI</h4>
@@ -1045,7 +1045,7 @@
           <span class="label">Diagnostic Challenges</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">The COVID-19 Structural Break Problem</h2>
           <div class="callout">
-            <div class="callout-body">All three standard residual diagnostics reject their null hypotheses: Portmanteau (serial correlation), ARCH-LM (heteroscedasticity), and Jarque-Bera (normality). The root cause is the 2020–2022 COVID-19 period — an extreme structural shock that sits outside the equilibrium relationships estimated on 1992–2019 data.</div>
+            <div class="callout-body">All three standard residual diagnostics reject their null hypotheses: Portmanteau (serial correlation), ARCH-LM (heteroscedasticity), and Jarque-Bera (normality). The root cause is the 2020–2022 COVID-19 period, an extreme structural shock that sits outside the equilibrium relationships estimated on 1992–2019 data.</div>
           </div>
 
           <div class="step-stack" style="margin-top: 1rem;">
@@ -1073,11 +1073,11 @@
           <div class="findings-list">
             <div class="finding-item">
               <div class="finding-num">01</div>
-              <div class="finding-body"><strong>Demand-pull inflation dominates long-run dynamics.</strong> Retail sales explains 35.5% of CPI variance at a 20-month horizon and produces a near-linear IRF. Consumer spending is the primary external driver of sustained inflation — more so than labor market conditions or supply capacity.</div>
+              <div class="finding-body"><strong>Demand-pull inflation dominates long-run dynamics.</strong> Retail sales explains 35.5% of CPI variance at a 20-month horizon and produces a near-linear IRF. Consumer spending is the primary external driver of sustained inflation, more so than labor market conditions or supply capacity.</div>
             </div>
             <div class="finding-item">
               <div class="finding-num">02</div>
-              <div class="finding-body"><strong>Labor market effects are real but operate through equilibrium, not short-run dynamics.</strong> Unemployment is insignificant in the CPI short-run equation but accounts for 20.5% of long-run variance through error correction terms. The Phillips Curve is not dead — it works through cointegrating relationships over longer horizons.</div>
+              <div class="finding-body"><strong>Labor market effects are real but operate through equilibrium, not short-run dynamics.</strong> Unemployment is insignificant in the CPI short-run equation but accounts for 20.5% of long-run variance through error correction terms. The Phillips Curve is not dead, it works through cointegrating relationships over longer horizons.</div>
             </div>
             <div class="finding-item">
               <div class="finding-num">03</div>
@@ -1085,7 +1085,7 @@
             </div>
             <div class="finding-item">
               <div class="finding-num">04</div>
-              <div class="finding-body"><strong>Model selection matters enormously.</strong> The VAR on differences attributed 95.68% of CPI variance to own-shocks — appearing to confirm inflation is purely self-perpetuating. VECM reveals this is an artifact of discarding long-run information; the cointegrating structure is the mechanism through which macroeconomic forces actually operate.</div>
+              <div class="finding-body"><strong>Model selection matters enormously.</strong> The VAR on differences attributed 95.68% of CPI variance to own-shocks, appearing to confirm inflation is purely self-perpetuating. VECM reveals this is an artifact of discarding long-run information; the cointegrating structure is the mechanism through which macroeconomic forces actually operate.</div>
             </div>
           </div>
         </section>
@@ -1097,11 +1097,11 @@
           <div class="revisit-list">
             <div class="revisit-item">
               <div class="revisit-num">01</div>
-              <div class="revisit-body"><strong>Add a structural break dummy for 2020–2022.</strong> The COVID period drives all three diagnostic failures. A dummy variable for that window — or a Markov-switching VECM allowing ECT coefficients to vary across regimes — would produce cleaner residuals and tighter inference without sacrificing the pre-COVID cointegrating structure.</div>
+              <div class="revisit-body"><strong>Add a structural break dummy for 2020–2022.</strong> The COVID period drives all three diagnostic failures. A dummy variable for that window, or a Markov-switching VECM allowing ECT coefficients to vary across regimes, would produce cleaner residuals and tighter inference without sacrificing the pre-COVID cointegrating structure.</div>
             </div>
             <div class="revisit-item">
               <div class="revisit-num">02</div>
-              <div class="revisit-body"><strong>Extend to a larger variable set.</strong> Money supply (M2), Federal Funds Rate, and commodity prices are conspicuously absent. The monetary transmission mechanism — the channel most central bankers care about — is invisible in this specification. Adding it would require retesting for cointegration rank and potentially re-specifying the ECT structure.</div>
+              <div class="revisit-body"><strong>Extend to a larger variable set.</strong> Money supply (M2), Federal Funds Rate, and commodity prices are conspicuously absent. The monetary transmission mechanism, the channel most central bankers care about, is invisible in this specification. Adding it would require retesting for cointegration rank and potentially re-specifying the ECT structure.</div>
             </div>
             <div class="revisit-item">
               <div class="revisit-num">03</div>

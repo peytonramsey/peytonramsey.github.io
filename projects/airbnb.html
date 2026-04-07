@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Airbnb Market Prediction | Peyton Ramsey</title>
-  <meta name="description" content="Supervised ML models predicting high-booking Airbnb listings in San Francisco — Random Forest at 91.7% ROC-AUC with actionable pricing insights from 12,947 listings." />
+  <meta name="description" content="Supervised ML models predicting high-booking Airbnb listings in San Francisco, Random Forest at 91.7% ROC-AUC with actionable pricing insights from 12,947 listings." />
 
   <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
   <link rel="preconnect" href="https://api.fontshare.com" />
@@ -703,7 +703,7 @@
   <header class="page-header">
     <div class="container">
       <h1>Airbnb Market Prediction:<br/>San Francisco</h1>
-      <p class="subtitle">Predicting which listings achieve high booking rates — and surfacing the pricing and property decisions that actually drive Airbnb success in a hyper-competitive short-term rental market.</p>
+      <p class="subtitle">Predicting which listings achieve high booking rates, and surfacing the pricing and property decisions that actually drive Airbnb success in a hyper-competitive short-term rental market.</p>
       <div class="header-meta">
         <span>Peyton Ramsey</span>
         <span class="sep">·</span>
@@ -725,7 +725,7 @@
         <section>
           <span class="label">TL;DR</span>
           <div class="tldr-box">
-            <p>Built supervised ML models to predict which San Francisco Airbnb listings achieve high booking rates, using a dataset of 12,947 listings with 32 features. A <strong>Random Forest model achieved 91.7% ROC-AUC</strong>, outperforming Logistic Regression (78.7%), Bagged Trees (90.5%), and LightGBM (91.3%). Beyond model performance, the analysis surfaced actionable pricing insights — high-booking hosts offer ~14.3% weekly discounts versus 5% industry average, and each additional bedroom increases booking odds by roughly 65%.</p>
+            <p>Built supervised ML models to predict which San Francisco Airbnb listings achieve high booking rates, using a dataset of 12,947 listings with 32 features. A <strong>Random Forest model achieved 91.7% ROC-AUC</strong>, outperforming Logistic Regression (78.7%), Bagged Trees (90.5%), and LightGBM (91.3%). Beyond model performance, the analysis surfaced actionable pricing insights, high-booking hosts offer ~14.3% weekly discounts versus 5% industry average, and each additional bedroom increases booking odds by roughly 65%.</p>
           </div>
         </section>
 
@@ -735,13 +735,13 @@
           <!-- Primary metric: large, Geist Mono, amber -->
           <div class="metric-primary">
             <div class="value">91.7%</div>
-            <div class="label-text">ROC-AUC — Random Forest, the top-performing model across four algorithms tested on stratified 5-fold cross-validation</div>
+            <div class="label-text">ROC-AUC, Random Forest, the top-performing model across four algorithms tested on stratified 5-fold cross-validation</div>
           </div>
           <!-- Secondary metrics: descending weight -->
           <div class="metric-secondary-group">
             <div class="metric-secondary-wide">
               <div class="value">14.3%</div>
-              <div class="label-text">average weekly discount offered by high-booking hosts — 2.9× the 5% industry average, the strongest differentiating feature</div>
+              <div class="label-text">average weekly discount offered by high-booking hosts, 2.9× the 5% industry average, the strongest differentiating feature</div>
             </div>
             <div class="metric-secondary-pair">
               <div class="metric-secondary-sm">
@@ -765,8 +765,8 @@
           <span class="label">Problem &amp; Approach</span>
           <div class="prose">
             <p>The San Francisco short-term rental market is highly competitive. Hosts with similar properties can see wildly different booking rates depending on pricing strategy, amenity offerings, review quality, and host behavior. Understanding what drives high booking rates matters for hosts optimizing pricing, platform teams deciding which listing attributes to surface, and investors evaluating properties before purchase.</p>
-            <p>The core modeling problem is binary classification: given a listing's features, will it achieve a high booking rate? This framing turns qualitative host intuitions into a data-driven, explainable framework. Binary classification was chosen over regression because the actionable question for a host is binary — am I in the high-booking tier or not?</p>
-            <p>Four models were compared ranging from a linear baseline to gradient boosting to confirm that performance gaps were real and not an artifact of a single algorithm class. The key constraint was the target variable itself: actual booking data isn't public, so review count was used as a proxy for occupancy — a limitation acknowledged explicitly rather than buried.</p>
+            <p>The core modeling problem is binary classification: given a listing's features, will it achieve a high booking rate? This framing turns qualitative host intuitions into a data-driven, explainable framework. Binary classification was chosen over regression because the actionable question for a host is binary, am I in the high-booking tier or not?</p>
+            <p>Four models were compared ranging from a linear baseline to gradient boosting to confirm that performance gaps were real and not an artifact of a single algorithm class. The key constraint was the target variable itself: actual booking data isn't public, so review count was used as a proxy for occupancy, a limitation acknowledged explicitly rather than buried.</p>
           </div>
         </section>
 
@@ -808,7 +808,7 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
         <section>
           <span class="label">Data &amp; Preprocessing</span>
           <div class="prose">
-            <p>The dataset comes from <strong>Inside Airbnb</strong>, containing 12,947 San Francisco listings across four feature categories. Each listing is observed at a point in time — no time-series structure. The target variable was defined as a binary high-booking indicator based on review count as a proxy for occupancy, thresholded at the 60th percentile.</p>
+            <p>The dataset comes from <strong>Inside Airbnb</strong>, containing 12,947 San Francisco listings across four feature categories. Each listing is observed at a point in time, no time-series structure. The target variable was defined as a binary high-booking indicator based on review count as a proxy for occupancy, thresholded at the 60th percentile.</p>
           </div>
           <div class="dataset-grid">
             <div class="dataset-card">
@@ -830,7 +830,7 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
           </div>
           <div class="callout" style="margin-top: 1rem;">
             <div class="callout-head">Preprocessing Steps</div>
-            <div class="callout-body"><strong>Log-transform price</strong> to handle the right-skewed long tail ($150 median, $257 mean). <strong>Binary encode</strong> superhost status and room type. <strong>Median impute</strong> missing review scores — new listings have no reviews yet. <strong>Near-zero variance filter</strong> to remove uninformative predictors before modeling.</div>
+            <div class="callout-body"><strong>Log-transform price</strong> to handle the right-skewed long tail ($150 median, $257 mean). <strong>Binary encode</strong> superhost status and room type. <strong>Median impute</strong> missing review scores, new listings have no reviews yet. <strong>Near-zero variance filter</strong> to remove uninformative predictors before modeling.</div>
           </div>
         </section>
 
@@ -889,7 +889,7 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
           <div class="findings-list">
             <div class="finding-item">
               <div class="finding-num">01.</div>
-              <div class="finding-body"><strong>Weekly discount generosity is the strongest differentiator.</strong> High-booking hosts offer 14.3% weekly discounts — 2–3× the 5% industry average. Price sensitivity is the primary booking driver for multi-night guests. Hosts who resist discounting are likely leaving occupancy on the table.</div>
+              <div class="finding-body"><strong>Weekly discount generosity is the strongest differentiator.</strong> High-booking hosts offer 14.3% weekly discounts, 2–3× the 5% industry average. Price sensitivity is the primary booking driver for multi-night guests. Hosts who resist discounting are likely leaving occupancy on the table.</div>
             </div>
             <div class="finding-item">
               <div class="finding-num">02.</div>
@@ -901,7 +901,7 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
             </div>
             <div class="finding-item">
               <div class="finding-num">04.</div>
-              <div class="finding-body"><strong>Entire home vs. private room is significant but mostly captured by bedroom count.</strong> Whole-home listings simply have more rooms. The room type variable adds little independent signal once bedroom count is in the model — a useful reminder that correlated features don't all earn their own interpretation.</div>
+              <div class="finding-body"><strong>Entire home vs. private room is significant but mostly captured by bedroom count.</strong> Whole-home listings simply have more rooms. The room type variable adds little independent signal once bedroom count is in the model, a useful reminder that correlated features don't all earn their own interpretation.</div>
             </div>
           </div>
         </section>
@@ -920,7 +920,7 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
               <img src="../assets/airbnb-weekly-discount.png"
                    alt="Weekly price by booking status"
                    onerror="this.parentElement.innerHTML='<div style=\'padding:2.5rem 1.5rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-3);text-align:center;\'>airbnb-weekly-discount.png</div>'" />
-              <p class="viz-cap">High-booking listings average 14.3% weekly discounts vs. 5% industry average — the top differentiating signal</p>
+              <p class="viz-cap">High-booking listings average 14.3% weekly discounts vs. 5% industry average, the top differentiating signal</p>
             </div>
             <div class="viz-card">
               <img src="../assets/airbnb-ratings-vs-price.png"
@@ -932,13 +932,13 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
               <img src="../assets/airbnb-review-scores.png"
                    alt="Review scores by booking status"
                    onerror="this.parentElement.innerHTML='<div style=\'padding:2.5rem 1.5rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-3);text-align:center;\'>airbnb-review-scores.png</div>'" />
-              <p class="viz-cap">Review score breakdown: high-booking listings score only marginally higher — scores alone don't predict occupancy</p>
+              <p class="viz-cap">Review score breakdown: high-booking listings score only marginally higher, scores alone don't predict occupancy</p>
             </div>
             <div class="viz-card viz-wide">
               <img src="../assets/airbnb-roc_comparison_plot.png"
                    alt="ROC curve comparison across four models"
                    onerror="this.parentElement.innerHTML='<div style=\'padding:2.5rem 1.5rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-3);text-align:center;\'>airbnb-roc_comparison_plot.png</div>'" />
-              <p class="viz-cap">ROC curves: RF 91.7% · LightGBM 91.3% · Bagged Trees 90.5% · Logistic 78.7% — ensemble methods dominate the linear baseline</p>
+              <p class="viz-cap">ROC curves: RF 91.7% · LightGBM 91.3% · Bagged Trees 90.5% · Logistic 78.7%, ensemble methods dominate the linear baseline</p>
             </div>
           </div>
         </section>
@@ -949,15 +949,15 @@ Log. Reg.   Bagged Trees  Random Forest   LightGBM
           <div class="revisit-list">
             <div class="revisit-item">
               <div class="revisit-num">01.</div>
-              <div class="revisit-body"><strong>Replace the review-count proxy with actual booking data.</strong> Not all guests leave reviews, which introduces label noise into the target variable. The ideal dataset would use actual booking rates from the Airbnb API or a host-facing analytics export — modeling limitations like this should be disclosed upfront, not buried in a footnote.</div>
+              <div class="revisit-body"><strong>Replace the review-count proxy with actual booking data.</strong> Not all guests leave reviews, which introduces label noise into the target variable. The ideal dataset would use actual booking rates from the Airbnb API or a host-facing analytics export, modeling limitations like this should be disclosed upfront, not buried in a footnote.</div>
             </div>
             <div class="revisit-item">
               <div class="revisit-num">02.</div>
-              <div class="revisit-body"><strong>Add SHAP values for instance-level explainability.</strong> Global feature importance tells hosts what matters on average — but a host with a 3-bedroom entire-home listing already offering 15% discounts needs to know what's specific to their listing. SHAP values would enable a per-listing diagnostic rather than a population-level summary.</div>
+              <div class="revisit-body"><strong>Add SHAP values for instance-level explainability.</strong> Global feature importance tells hosts what matters on average, but a host with a 3-bedroom entire-home listing already offering 15% discounts needs to know what's specific to their listing. SHAP values would enable a per-listing diagnostic rather than a population-level summary.</div>
             </div>
             <div class="revisit-item">
               <div class="revisit-num">03.</div>
-              <div class="revisit-body"><strong>Incorporate temporal data and seasonal patterns.</strong> The Inside Airbnb snapshot is a point-in-time cross-section. SF short-term rental demand is seasonal — SF summer vs. winter occupancy patterns differ substantially. Longitudinal data would allow modeling of seasonal pricing optimization, not just static feature effects.</div>
+              <div class="revisit-body"><strong>Incorporate temporal data and seasonal patterns.</strong> The Inside Airbnb snapshot is a point-in-time cross-section. SF short-term rental demand is seasonal, SF summer vs. winter occupancy patterns differ substantially. Longitudinal data would allow modeling of seasonal pricing optimization, not just static feature effects.</div>
             </div>
           </div>
         </section>
