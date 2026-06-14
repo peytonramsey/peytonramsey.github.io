@@ -452,18 +452,73 @@
           <span class="label">Problem &amp; Approach</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Manual Oversight at Scale</h2>
           <div class="prose">
-            <p>The binding constraint going in: compliance analysts aren't engineers. That ruled out every solution that required a data pull, a query, or a code change to get an answer. The delivery layer had to be entirely self-serve, or it wouldn't get used.</p>
-            <p>The problem itself was 120K+ insurance policies reviewed manually across 7 AWS data sources. Analysts were reconciling entity mismatches by hand, scoring quality inconsistently across 8 activity types, with no historical data to track whether a TPA was actually improving.</p>
-            <p>I built the system solo: ETL, scoring engine, dashboard. One early decision shaped everything else: activity-specific weights instead of a single global score. Disbursement reviews and routine transaction checks carry different risk profiles. Weights and pass thresholds are externalized as config, so the team can tune the system as their understanding matures without a code deploy.</p>
+            <p>The current TPA review process was manual and time-consuming, where the analysts would hand-pick policies for review, while there are thousands of new policies a month meaning the review process wasn't being done optimally. Each was reviewed manually in Excel across 7 activity types. There was no consistent scoring methodology and no historical record of TPA performance. What "quality" meant for a disbursement review was different from what it meant for claims review, and neither had been formally defined. On day one I was handed the problem and told to figure it out.</p>
+            <p>That meant scheduling weekly meetings with the operations team member responsible for each of the 8 activity types occuring throughout the project, as my understanding of their workflows changed what the system needed to do. I periodically worked directly with the data team to fact-check every field mapping and business rule before implementing it into the pipeline. At the end I wrote a detailed handoff report and commented the codebase so the team could maintain and adapt it without me.</p>
+            <p>The ETL work was more complex than it initially appeared. The 7 AWS tables operate at different grains, some at contract level, some at participant level, which means naive joins multiply rows. Every join required explicit deduplication guards. Temporal consistency was another problem because multiple records can exist per contract per cycle, so the pipeline takes the latest by cycle_date rather than trusting the data to be clean. The output is 8 parquet files via Apache Arrow, which gave the Shiny app fast load times on large record sets without a live database connection during review sessions.</p>
           </div>
+        </section>
+
+        <!-- Architecture -->
+        <section>
+          <span class="label">Architecture</span>
+          <div class="arch-block">
+            <pre>
+AWS EDW  (insurance_data schema)
+  │
+  ├── roles / names / agent
+  ├── transactions / automatedactivity
+  ├── policy / disbursements
+  └── claims / annuityvalues / lifevalues
+  │
+  ▼
+R Markdown ETL Pipeline
+  ├── Stratified sample: 50 contracts/month per activity type
+  ├── Rolling 1-month lookback cutoff keeps data current
+  ├── Temporal dedup: latest record by cycle_date per contract
+  ├── Many-to-many guard: distinct() on contract/participant/role
+  ├── Master lookup: agent_name_role_lookup (roles + names + agent)
+  └── Column standardization across all 7 datasets
+  │
+  ▼
+Apache Arrow / Parquet Store  (8 output files)
+  ├── agent_name_role_lookup.parquet
+  ├── transactions · disbursements · claims
+  ├── automated_activity · policies
+  └── annuity_values · life_values
+  │
+  ▼
+R Shiny Dashboard
+  ├── 8 activity types, each with weighted checklist scoring
+  ├── Pass threshold: 80%  (color-coded: green ≥85% / yellow ≥80% / red &lt;80%)
+  ├── Risk flags: high dollar (&gt;$100K) and low dollar (&lt;$100) thresholds
+  ├── 6 tabs: Overview · Executive Summary · Contract Details ·
+  │           Risk Monitoring · Review History · Correspondence
+  └── 30 compliance analysts · 50+ stakeholders
+            </pre>
+          </div>
+        </section>
+
+        <!-- Dashboard & Scoring -->
+        <section>
+          <span class="label">Dashboard &amp; Scoring</span>
+          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Eight Activity Types, One Scoring Engine</h2>
+          <div class="prose">
+            <p>The scoring engine covers 8 activity types: Transactions, Disbursements, Claims, Automated Activity, Policies, Annuity Values, Life Values, and Correspondence. Each has 3-4 weighted checklist categories; the pass threshold sits at 80%. Scores are color-coded so an analyst can read the status of a review at a glance.</p>
+          </div>
+          <ul class="prose-list" style="margin-top: 1rem;">
+            <li><span><strong>Risk monitoring.</strong> Dollar thresholds flag items automatically. High-dollar contracts (above $100K by default) and low-dollar outliers (below $100) surface in a dedicated tab with trend charts across review periods.</span></li>
+            <li><span><strong>Executive summary.</strong> Aggregates pass rate, average quality score, and completion status by activity type across the current month. Designed so C-suite stakeholders can read it without opening individual contract records.</span></li>
+            <li><span><strong>Follow-up tracking.</strong> Analysts can flag contracts for contact customer, request documentation, escalate, or schedule follow-up directly in the dashboard. The action is logged to review history automatically.</span></li>
+            <li><span><strong>Configurable thresholds.</strong> Dollar flags, pass thresholds, and activity weights are externalized. No code deploy required to adjust them as compliance requirements change.</span></li>
+          </ul>
         </section>
 
         <!-- WHAT I LEARNED -->
         <section>
           <span class="label">WHAT I LEARNED</span>
           <div class="prose">
-            <p>The technical build was maybe 40% of the job.</p>
-            <p>The scoring engine worked on my laptop weeks before a compliance analyst could actually use it. Not because of bugs, but because the gap between working code and deployable code is mostly about the people using it. Designing a UI that required no training, handling edge cases my clean test files never exposed, writing queries fast enough not to time out on 100M rows. That was the other 60%.</p>
+            <p>The biggest thing I took from this project has nothing to do with R or Shiny. It's that the technical work is only as good as your understanding of what the people using it actually need, and that understanding doesn't come from a single kickoff meeting. The weekly cadence with each activity type owner was where the real requirements lived. Every conversation changed something about the scoring logic, the dashboard layout, or what edge cases needed to be handled. If I had built in isolation and handed it over at the end, it would have been technically correct and practically useless.</p>
+            <p>Presenting to 50+ stakeholders at the end-of-year intern presentations was a different kind of challenge. The operations team knew the system because they helped build it. C-suite stakeholders didn't, and they weren't going to sit through a walkthrough of the ETL pipeline. That forced me to think clearly about what actually mattered at each level of the organization, and how to communicate the same project differently depending on who was in the room.</p>
           </div>
         </section>
 

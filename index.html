@@ -929,6 +929,7 @@
       .about-grid {
         grid-template-columns: 1fr 1fr;
         gap: 4rem;
+        align-items: start;
       }
     }
 
@@ -1149,20 +1150,18 @@
                 <span class="cred-num" data-target="3">3</span>
                 <span class="cred-desc">live ML deployments (HuggingFace + Render + workplace)</span>
               </div>
-              <div class="cred-metric">
-                <span class="cred-num">100M+</span>
-                <span class="cred-desc">rows of production data processed</span>
-              </div>
-              <div class="cred-metric">
-                <span class="cred-num" data-target="4">4</span>
-                <span class="cred-desc">years NCAA Division I athlete</span>
-              </div>
             </div>
           </div>
           <div class="cred-divider"></div>
           <div class="cred-block">
             <p class="cred-label">Core Stack</p>
-            <p class="cred-stack">Python | SQL | R | PyTorch | LangChain | CatBoost | NLP | A/B Testing | Causal Inference</p>
+            <p class="cred-stack">Python | SQL | R | LangChain | NLP | Causal Inference</p>
+          </div>
+          <div class="cred-divider"></div>
+          <div class="cred-block">
+            <p class="cred-label">Previously</p>
+            <p class="cred-sub">Data Engineer Intern &middot; Nassau Financial Group</p>
+            <p class="cred-sub">Business Intelligence Intern &middot; Sprague Operating Resources</p>
           </div>
         </div>
 
@@ -1173,184 +1172,70 @@
   <!-- ─── WORK (TPA left · Experience right, two-column) ───── -->
   <section id="work">
     <div class="container">
-      <div class="work-grid">
+      <!-- Deployments: full-width -->
+      <div>
+        <div class="work-col-head">
+          <p class="label">Deployments</p>
+          <h2>Shipped Work</h2>
+        </div>
 
-        <!-- Left: Deployments (TPA + Self-Deployed) -->
-        <div>
-          <div class="work-col-head">
-            <p class="label">Deployments</p>
-            <h2>Shipped Work</h2>
-          </div>
-
-          <div class="workplace-card">
-            <p class="workplace-meta">Data Engineering · Nassau Financial Group · Summer 2025</p>
-            <h3 class="workplace-title">TPA Compliance Review System</h3>
-            <p class="workplace-desc">
-              End-to-end third-party administrator oversight platform built solo at Nassau Financial Group. ETL pipelines
-              integrate 7 insurance data streams from AWS into a parquet-backed layer; a weighted scoring engine assesses
-              compliance across 8 activity types; a self-serve R Shiny dashboard deployed to a 30-person compliance team
-              managing 120K+ policies.
-            </p>
-            <p class="workplace-metric">60% reduction in manual review time</p>
-            <div class="workplace-links">
-              <a href="projects/tpa-compliance.html">View Project →</a>
-              <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank"
-                rel="noopener noreferrer" class="muted">GitHub ↗</a>
-            </div>
-          </div>
-
-          <div style="margin-top:2rem;">
-            <p class="proj-domain-label" style="margin-bottom:1.25rem;">Self-Deployed · Live</p>
-            <div class="sd-grid" style="grid-template-columns:1fr;">
-
-              <div class="sd-card">
-                <p class="sd-card-meta">RAG · Jan 2026</p>
-                <h3 class="sd-card-title">Financial News RAG Analyst</h3>
-                <p class="sd-card-desc">
-                  Ask questions about 500+ financial news articles in plain English and get sourced answers in under 5
-                  seconds. Built with ChromaDB, LangChain, and FinBERT sentiment scoring.
-                </p>
-                <p class="sd-card-metric">92% retrieval precision</p>
-                <div class="sd-card-links">
-                  <a href="projects/financial-rag.html">View Project →</a>
-                  <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank"
-                    rel="noopener noreferrer" class="muted">Live Demo ↗</a>
-                </div>
-              </div>
-
-              <div class="sd-card">
-                <p class="sd-card-meta">Anomaly Detection · Spring 2026</p>
-                <h3 class="sd-card-title">Macroeconomic Anomaly Detection</h3>
-                <p class="sd-card-desc">
-                  LSTM Autoencoder ingesting 7 FRED macroeconomic indicators in real time, flagging structural breaks by
-                  reconstruction error with plain-English explanations via Llama-3.1-8B. Calibrated on a pre-2007
-                  baseline.
-                </p>
-                <p class="sd-card-metric">3/3 historical crises identified</p>
-                <div class="sd-card-links">
-                  <a href="projects/macro-anomaly-detection.html">View Project →</a>
-                  <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank"
-                    rel="noopener noreferrer" class="muted">Live Demo ↗</a>
-                </div>
-              </div>
-
-            </div>
+        <div class="workplace-card">
+          <p class="workplace-meta">Data Engineering · Nassau Financial Group · Summer 2025</p>
+          <h3 class="workplace-title">TPA Compliance Review System</h3>
+          <p class="workplace-desc">
+            End-to-end third-party administrator oversight platform built solo at Nassau Financial Group. ETL pipelines
+            integrate 7 insurance data streams from AWS into a parquet-backed layer; a weighted scoring engine assesses
+            compliance across 8 activity types; a self-serve R Shiny dashboard deployed to a 30-person compliance team
+            managing 120K+ policies.
+          </p>
+          <p class="workplace-metric">60% reduction in manual review time</p>
+          <div class="workplace-links">
+            <a href="projects/tpa-compliance.html">View Project →</a>
+            <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank"
+              rel="noopener noreferrer" class="muted">GitHub ↗</a>
           </div>
         </div>
 
-        <!-- Right: Experience timeline + Education -->
-        <div>
-          <div class="work-col-head">
-            <p class="label">Experience</p>
-            <h2>Work &amp; Education</h2>
-          </div>
+        <div style="margin-top:2rem;">
+          <p class="proj-domain-label" style="margin-bottom:1.25rem;">Self-Deployed · Live</p>
+          <div class="sd-grid">
 
-          <div class="timeline">
-
-            <div class="tl-item">
-              <div class="tl-dot"></div>
-              <div class="exp-card">
-                <div class="exp-head">
-                  <div>
-                    <p class="exp-title">Graduate Research Assistant, Data Science &amp; AI</p>
-                    <p class="exp-org">University of New Hampshire · Durham, NH</p>
-                  </div>
-                  <span class="exp-date">Aug 2025 – Present</span>
-                </div>
-                <ul class="exp-bullets">
-                  <li>Co-built a new graduate course on AI tools and production ML deployment for future MSBA student courses,
-                    covering Docker, Hugging Face, LLMs, and responsible AI through hands-on labs.</li>
-                  <li>Updated 12+ modules across Predictive Analytics, NLP, and Big Data; wrote new labs covering RAG
-                    systems, K-means, vector embeddings, and deep learning in Python and R.</li>
-                </ul>
-                <div class="exp-tags">
-                  <span class="exp-tag">Curriculum Design</span>
-                  <span class="exp-tag">Python</span>
-                  <span class="exp-tag">R</span>
-                  <span class="exp-tag">RAG</span>
-                  <span class="exp-tag">LLMs</span>
-                  <span class="exp-tag">MLOps</span>
-                </div>
+            <div class="sd-card">
+              <p class="sd-card-meta">RAG · Jan 2026</p>
+              <h3 class="sd-card-title">Financial News RAG Analyst</h3>
+              <p class="sd-card-desc">
+                Ask questions about 500+ financial news articles in plain English and get sourced answers in under 5
+                seconds. Built with ChromaDB, LangChain, and FinBERT sentiment scoring.
+              </p>
+              <p class="sd-card-metric">92% retrieval precision</p>
+              <div class="sd-card-links">
+                <a href="projects/financial-rag.html">View Project →</a>
+                <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank"
+                  rel="noopener noreferrer" class="muted">Live Demo ↗</a>
               </div>
             </div>
 
-            <div class="tl-item">
-              <div class="tl-dot"></div>
-              <div class="exp-card">
-                <div class="exp-head">
-                  <div>
-                    <p class="exp-title">Data Engineer Intern</p>
-                    <p class="exp-org">Nassau Financial Group · Hartford, CT</p>
-                  </div>
-                  <span class="exp-date">June – Aug 2025</span>
-                </div>
-                <ul class="exp-bullets">
-                  <li>Designed and built a TPA Oversight Dashboard in R Shiny, connecting AWS and the enterprise data
-                    warehouse: 120K+ insurance policies, up to 100M rows across 7 data sources.</li>
-                  <li>Built a weighted compliance scoring engine with category-specific weights and an 80% pass threshold
-                    across 8 insurance activity types, backed by Arrow/Parquet ETL pipelines from AWS.</li>
-                  <li>Built the reactive Shiny UI so analysts could filter, drill, and export risk data themselves, no
-                    more queuing manual reports.</li>
-                </ul>
-                <div class="exp-tags">
-                  <span class="exp-tag">R Shiny</span>
-                  <span class="exp-tag">AWS S3</span>
-                  <span class="exp-tag">ETL</span>
-                  <span class="exp-tag">Arrow/Parquet</span>
-                  <span class="exp-tag">dbplyr</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="tl-item">
-              <div class="tl-dot dim"></div>
-              <div class="exp-card">
-                <div class="exp-head">
-                  <div>
-                    <p class="exp-title">Business Intelligence Intern</p>
-                    <p class="exp-org">Sprague Operating Resources · Portsmouth, NH</p>
-                  </div>
-                  <span class="exp-date">June – Aug 2024</span>
-                </div>
-                <ul class="exp-bullets">
-                  <li>Analyzed commodity contract data using SQL and Python to surface pricing trends and forecast
-                    accuracy gaps; built Power BI dashboards enabling the trading team to monitor variance in real
-                    time.</li>
-                </ul>
-                <div class="exp-tags">
-                  <span class="exp-tag">SQL</span>
-                  <span class="exp-tag">Python</span>
-                  <span class="exp-tag">Power BI</span>
-                  <span class="exp-tag">DAX</span>
-                </div>
+            <div class="sd-card">
+              <p class="sd-card-meta">Anomaly Detection · Spring 2026</p>
+              <h3 class="sd-card-title">Macroeconomic Anomaly Detection</h3>
+              <p class="sd-card-desc">
+                LSTM Autoencoder ingesting 7 FRED macroeconomic indicators in real time, flagging structural breaks by
+                reconstruction error with plain-English explanations via Llama-3.1-8B. Calibrated on a pre-2007
+                baseline.
+              </p>
+              <p class="sd-card-metric">3/3 historical crises identified</p>
+              <div class="sd-card-links">
+                <a href="projects/macro-anomaly-detection.html">View Project →</a>
+                <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank"
+                  rel="noopener noreferrer" class="muted">Live Demo ↗</a>
               </div>
             </div>
 
           </div>
-
         </div>
 
       </div>
 
-      <!-- Education: full-width below the two-column grid -->
-      <div style="margin-top:3rem; padding-top:3rem; border-top:1px solid var(--border);">
-        <p style="font-family:var(--font-mono); font-size:0.625rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3); margin-bottom:1rem;">Education</p>
-        <div class="edu-card">
-          <div class="edu-head">
-            <div>
-              <p class="edu-school">University of New Hampshire</p>
-              <p class="edu-degree">MS Business Analytics · GPA 3.83 · Aug 2025 – May 2026</p>
-            </div>
-            <span class="exp-date">Durham, NH</span>
-          </div>
-          <div class="edu-rule">
-            <p class="edu-bs">BS Business Administration: Information Systems &amp; Business Analytics · Aug 2021 –
-              May 2025</p>
-            <p class="edu-honors">NCAA Division I Cross Country &amp; Track · Dean's List · America East
-              Commissioner's Honor Roll</p>
-          </div>
-        </div>
-      </div>
 
     </div>
   </section>
@@ -1375,34 +1260,6 @@
 
       <div class="proj-grid">
 
-        <!-- VECM -->
-        <div class="proj-card" data-role="data-science">
-          <p class="proj-card-tag">Finance &amp; Economics</p>
-          <h3 class="proj-card-title">U.S. Inflation Dynamics: VECM Analysis</h3>
-          <p class="proj-card-summary">Modeled how demand, supply, and labor shocks transmit to U.S. inflation using a
-            Vector Error Correction Model on 407 monthly FRED observations (1992–2024). Retail sales explains 35.5%
-            of long-run CPI variance.</p>
-          <p class="proj-card-metric">61.6% more external shock variance vs. VAR</p>
-          <div class="proj-card-links">
-            <a href="projects/inflation-vecm.html">View →</a>
-            <a href="https://peytonramsey.github.io/us-inflation-dynamics/" target="_blank"
-              rel="noopener noreferrer" class="muted">Report ↗</a>
-          </div>
-        </div>
-
-        <!-- Student Dropout -->
-        <div class="proj-card" data-role="data-science ml-engineering">
-          <p class="proj-card-tag">Classification &amp; MLOps</p>
-          <h3 class="proj-card-title">Student Dropout Classification</h3>
-          <p class="proj-card-summary">Universities can intervene if they catch at-risk students early enough. Compared four classifiers on 4,424 students, framing threshold selection around the cost of a missed intervention rather than raw accuracy.</p>
-          <p class="proj-card-metric">89.79% recall on dropout class</p>
-          <div class="proj-card-links">
-            <a href="projects/student-dropout.html">View →</a>
-            <a href="https://peytonramsey.github.io/student-dropout-classification/" target="_blank"
-              rel="noopener noreferrer" class="muted">Report ↗</a>
-          </div>
-        </div>
-
         <!-- Airbnb Booking Prediction -->
         <div class="proj-card" data-role="data-science ml-engineering">
           <p class="proj-card-tag">Causality</p>
@@ -1416,6 +1273,34 @@
             <a href="projects/airbnb-booking-prediction.html">View →</a>
             <a href="https://github.com/peytonramsey/airbnb-booking-prediction" target="_blank"
               rel="noopener noreferrer" class="muted">GitHub ↗</a>
+          </div>
+        </div>
+
+        <!-- MLOps Drift Detection -->
+        <div class="proj-card" data-role="data-science ml-engineering">
+          <p class="proj-card-tag">MLOps</p>
+          <h3 class="proj-card-title">Loan Default Prediction with Drift Monitoring</h3>
+          <p class="proj-card-summary">Built a production ML system on 148K loan applications with real-time data drift monitoring. FastAPI serving sub-100ms predictions, multi-method drift detection (PSI, KS, Chi-squared), MLflow experiment tracking, and Docker deployment.</p>
+          <p class="proj-card-metric">0.92 ROC-AUC · sub-100ms inference</p>
+          <div class="proj-card-links">
+            <a href="projects/mlops-drift-detection.html">View →</a>
+            <a href="https://github.com/peytonramsey/mlops-drift-detection" target="_blank"
+              rel="noopener noreferrer" class="muted">GitHub ↗</a>
+          </div>
+        </div>
+
+        <!-- VECM -->
+        <div class="proj-card" data-role="data-science">
+          <p class="proj-card-tag">Finance &amp; Economics</p>
+          <h3 class="proj-card-title">U.S. Inflation Dynamics: VECM Analysis</h3>
+          <p class="proj-card-summary">Modeled how demand, supply, and labor shocks transmit to U.S. inflation using a
+            Vector Error Correction Model on 407 monthly FRED observations (1992–2024). Retail sales explains 35.5%
+            of long-run CPI variance.</p>
+          <p class="proj-card-metric">61.6% more external shock variance vs. VAR</p>
+          <div class="proj-card-links">
+            <a href="projects/inflation-vecm.html">View →</a>
+            <a href="https://peytonramsey.github.io/us-inflation-dynamics/" target="_blank"
+              rel="noopener noreferrer" class="muted">Report ↗</a>
           </div>
         </div>
 
@@ -1459,6 +1344,12 @@
               from it understand its capabilities and its failure modes equally well.</p>
           </div>
           <p>Outside of school, I ran Division I Cross Country and Track at UNH for four years. I'm a huge fan of the Denver Broncos, enjoy road cycling and lifting, and am currently reading <em>Bad Blood</em> by John Carreyrou.</p>
+          <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+            <p class="looking-label" style="margin-bottom:0.5rem;">Education</p>
+            <p style="font-size:0.875rem; color:var(--text-2);">MS Business Analytics · University of New Hampshire · GPA 3.83 · May 2026</p>
+            <p style="font-size:0.875rem; color:var(--text-3); margin-top:0.2rem;">BS Business Administration: Information Systems &amp; Business Analytics · 2025</p>
+            <p style="font-size:0.875rem; color:var(--text-3); margin-top:0.2rem;">NCAA Division I Cross Country &amp; Track · Dean's List · America East Commissioner's Honor Roll</p>
+          </div>
         </div>
 
         <div class="about-right">
