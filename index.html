@@ -20,27 +20,27 @@
   <style>
     /* ── DESIGN TOKENS ──────────────────────────────────────── */
     :root {
-      --bg-base: #0f0f0e;
-      --bg-surface: #161614;
-      --bg-card: #1c1b19;
-      --bg-elevated: #222120;
+      --bg-base:     #f7f6f4;
+      --bg-surface:  #ffffff;
+      --bg-card:     #f0efed;
+      --bg-elevated: #e8e7e4;
 
-      --text-1: #cdccca;
-      --text-2: #797876;
-      --text-3: #5a5957;
-      --accent: #e8a035;
-      --border: oklch(from #cdccca l c h / 0.10);
+      --text-1: #1a1918;
+      --text-2: #4a4947;
+      --text-3: #7a7875;
+      --accent:  #b45309;
+      --border:  rgba(26, 25, 24, 0.12);
 
-      --font-body: 'Satoshi', system-ui, sans-serif;
+      --font-body:    'Satoshi', system-ui, sans-serif;
       --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
-      --font-mono: 'Geist Mono', monospace;
+      --font-mono:    'Geist Mono', monospace;
 
       --radius-chip: 4px;
       --radius-card: 10px;
 
       --section-pad: clamp(3rem, 6vw, 6rem);
-      --container: 72rem;
-      --pad-x: clamp(1.25rem, 4vw, 2.5rem);
+      --container:   72rem;
+      --pad-x:       clamp(1.25rem, 4vw, 2.5rem);
     }
 
     /* ── RESET ──────────────────────────────────────────────── */
@@ -88,7 +88,7 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: var(--bg-elevated);
+      background: var(--text-3);
       border-radius: 3px;
     }
 
@@ -133,8 +133,8 @@
 
     .section-head p {
       margin-top: 0.75rem;
-      /* color: var(--text-2); */
       max-width: 44rem;
+      color: var(--text-2);
     }
 
     /* ── NAV ─────────────────────────────────────────────────── */
@@ -142,7 +142,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(15, 15, 14, 0.92);
+      background: rgba(247, 246, 244, 0.93);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -173,6 +173,8 @@
       font-weight: 500;
       color: var(--text-2);
       transition: color 0.15s;
+      position: relative;
+      padding-bottom: 2px;
     }
 
     .nav-links a:hover {
@@ -180,7 +182,18 @@
     }
 
     .nav-links a.active {
-      color: var(--accent);
+      color: var(--text-1);
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 1px;
     }
 
     .nav-actions {
@@ -274,8 +287,22 @@
       background: var(--bg-base);
     }
 
+    .hero-split {
+      display: grid;
+      grid-template-columns: 55fr 45fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero-split {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+    }
+
     .hero-name {
-      font-size: clamp(3.5rem, 10vw, 8rem);
+      font-size: clamp(3rem, 7vw, 5.5rem);
       color: var(--text-1);
       line-height: 0.95;
       letter-spacing: -0.02em;
@@ -283,17 +310,19 @@
     }
 
     .hero-role {
-      font-size: 1.125rem;
-      font-weight: 500;
-      color: var(--text-2);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
       margin-bottom: 1.25rem;
     }
 
     .hero-bio {
-      max-width: 42rem;
-      color: rgba(205, 204, 202, 0.75);
+      color: var(--text-2);
       line-height: 1.75;
       margin-bottom: 2.5rem;
+      font-size: 1.0625rem;
     }
 
     .hero-actions {
@@ -303,6 +332,93 @@
       align-items: center;
     }
 
+    /* ── CREDENTIAL PANEL ────────────────────────────────────── */
+    .hero-cred {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cred-block {
+      padding-block: 1.125rem;
+    }
+
+    .cred-block:first-child {
+      padding-top: 0;
+    }
+
+    .cred-block:last-child {
+      padding-bottom: 0;
+    }
+
+    .cred-divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    .cred-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.625rem;
+    }
+
+    .cred-value {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--text-1);
+      margin-bottom: 0.25rem;
+    }
+
+    .cred-sub {
+      font-size: 0.875rem;
+      color: var(--text-2);
+    }
+
+    .cred-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.375rem;
+    }
+
+    .cred-metric {
+      display: flex;
+      align-items: baseline;
+      gap: 0.375rem;
+    }
+
+    .cred-num {
+      font-family: var(--font-mono);
+      font-size: 1.375rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .cred-unit {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--accent);
+    }
+
+    .cred-desc {
+      font-size: 0.875rem;
+      color: var(--text-2);
+    }
+
+    .cred-stack {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-top: 0.25rem;
+    }
+
+    /* ── BUTTONS ────────────────────────────────────────────── */
     .btn-primary {
       display: inline-flex;
       align-items: center;
@@ -311,7 +427,7 @@
       font-size: 0.875rem;
       font-weight: 500;
       background: var(--accent);
-      color: var(--bg-base);
+      color: #ffffff;
       border-radius: 6px;
       transition: opacity 0.15s;
     }
@@ -337,9 +453,33 @@
       border-color: var(--text-2);
     }
 
-    /* ── WORKPLACE DEPLOYMENT ────────────────────────────────── */
-    #workplace {
+    /* ── WORK (two-column: TPA left · Experience right) ─────── */
+    #work {
       background: var(--bg-surface);
+    }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: 55fr 45fr;
+      gap: 3rem 4rem;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .work-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .work-col-head {
+      margin-bottom: 2rem;
+    }
+
+    .work-col-head h2 {
+      font-size: clamp(1.25rem, 2.5vw, 1.875rem);
+      color: var(--text-1);
+      margin-top: 0.5rem;
+      margin-bottom: 0.75rem;
     }
 
     .workplace-card {
@@ -391,16 +531,16 @@
     .workplace-links a {
       font-size: 0.875rem;
       font-weight: 500;
-      /* color: var(--accent); */
-      transition: opacity 0.15s;
+      color: var(--text-1);
+      transition: color 0.15s;
     }
 
     .workplace-links a:hover {
-      opacity: 0.75;
+      color: var(--accent);
     }
 
     .workplace-links a.muted {
-      /* color: var(--text-2); */
+      color: var(--text-2);
       font-weight: 400;
       transition: color 0.15s;
     }
@@ -409,9 +549,15 @@
       color: var(--text-1);
     }
 
-    /* ── SELF-DEPLOYED ───────────────────────────────────────── */
-    #self-deployed {
+    /* ── PROJECTS (self-deployed featured + filtered list) ───── */
+    #projects {
       background: var(--bg-base);
+    }
+
+    .proj-featured {
+      margin-bottom: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
     }
 
     .sd-grid {
@@ -475,16 +621,16 @@
     .sd-card-links a {
       font-size: 0.875rem;
       font-weight: 500;
-      color: var(--accent-2);
-      transition: opacity 0.15s;
+      color: var(--text-1);
+      transition: color 0.15s;
     }
 
     .sd-card-links a:hover {
-      opacity: 0.75;
+      color: var(--accent);
     }
 
     .sd-card-links a.muted {
-      /* color: var(--text-2); */
+      color: var(--text-2);
       font-weight: 400;
       transition: color 0.15s;
     }
@@ -493,126 +639,122 @@
       color: var(--text-1);
     }
 
-    /* ── PROJECTS LIST (editorial, domain-grouped) ───────────── */
-    #projects {
-      background: var(--bg-surface);
+    /* ── PROJECT FILTER TABS ─────────────────────────────────── */
+    .proj-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
     }
 
-    .proj-domain {
-      margin-bottom: 3rem;
-    }
-
-    .proj-domain:last-child {
-      margin-bottom: 0;
-    }
-
-    .proj-domain-label {
+    .proj-filter-btn {
       font-family: var(--font-mono);
-      font-size: 0.812rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-1);
-      margin-bottom: 0;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+      letter-spacing: 0.04em;
+      padding: 0.375rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-chip);
+      background: none;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.15s;
     }
 
-    .proj-list {
+    .proj-filter-btn:hover {
+      color: var(--text-1);
+      border-color: var(--text-3);
+    }
+
+    .proj-filter-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* ── PROJECT CARD GRID ───────────────────────────────────── */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 640px) {
+      .proj-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .proj-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
     }
 
-    .proj-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.75rem 2rem;
-      padding-block: 1.5rem;
-      border-bottom: 1px solid var(--border);
-      align-items: start;
+    .proj-card.hidden {
+      display: none;
     }
 
-    .proj-body {
-      min-width: 0;
+    .proj-card-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.75rem;
     }
 
-    .proj-title {
+    .proj-card-title {
       font-size: 1.0625rem;
       color: var(--text-1);
-      margin-bottom: 0.375rem;
+      margin-bottom: 0.5rem;
     }
 
-    .proj-summary {
+    .proj-card-summary {
       font-size: 0.9375rem;
       color: var(--text-2);
       line-height: 1.6;
+      flex-grow: 1;
+      margin-bottom: 1rem;
     }
 
-    .proj-aside {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.375rem;
-      padding-top: 0.125rem;
-      min-width: max-content;
-    }
-
-    .proj-metric {
+    .proj-card-metric {
       font-family: var(--font-mono);
-      font-size: 0.9275rem;
+      font-size: 0.9rem;
       color: var(--accent);
-      text-align: right;
+      margin-bottom: 1rem;
     }
 
-    .proj-aside a {
+    .proj-card-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .proj-card-links a {
       font-size: 0.8125rem;
       font-weight: 500;
-      /* color: var(--text-2); */
-      white-space: nowrap;
+      color: var(--text-1);
       transition: color 0.15s;
     }
 
-    .proj-aside a:hover {
+    .proj-card-links a:hover {
+      color: var(--accent);
+    }
+
+    .proj-card-links a.muted {
+      color: var(--text-2);
+      font-weight: 400;
+    }
+
+    .proj-card-links a.muted:hover {
       color: var(--text-1);
     }
 
-    .proj-aside a.primary {
-      color: var(--accent-2);
-    }
-
-    .proj-aside a.primary:hover {
-      opacity: 0.8;
-    }
-
-    @media (max-width: 600px) {
-      .proj-row {
-        grid-template-columns: 1fr;
-      }
-
-      .proj-aside {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: flex-start;
-        margin-top: 0.5rem;
-      }
-
-      .proj-metric {
-        text-align: left;
-      }
-    }
-
-    /* ── TABLEAU ────────────────────────────────────────────── */
-    .tableau-wrap {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      overflow: hidden;
-    }
-
-    /* ── EXPERIENCE ─────────────────────────────────────────── */
-    #experience {
-      background: var(--bg-surface);
-    }
-
+    /* ── TIMELINE (inside #work right column) ───────────────── */
     .timeline {
       position: relative;
       padding-left: 1.5rem;
@@ -647,7 +789,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-card);
-      padding: 1.5rem;
+      padding: 1.25rem;
     }
 
     .exp-head {
@@ -666,7 +808,7 @@
     }
 
     .exp-title {
-      font-size: 1.25rem;
+      font-size: 1.0625rem;
       color: var(--text-1);
     }
 
@@ -726,7 +868,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-card);
-      padding: 1.5rem;
+      padding: 1.25rem;
     }
 
     .edu-head {
@@ -745,7 +887,7 @@
     }
 
     .edu-school {
-      font-size: 1.25rem;
+      font-size: 1.0625rem;
       color: var(--text-1);
     }
 
@@ -773,6 +915,10 @@
     }
 
     /* ── ABOUT ───────────────────────────────────────────────── */
+    #about {
+      background: var(--bg-surface);
+    }
+
     .about-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -787,7 +933,7 @@
     }
 
     .about-bio p {
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       line-height: 1.75;
       margin-bottom: 1rem;
     }
@@ -829,65 +975,40 @@
       opacity: 0.75;
     }
 
-    .skills-grid {
+    .looking-grid {
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
     }
 
-    .skill-cat h4 {
+    .looking-label {
       font-family: var(--font-mono);
-      font-size: 0.875rem;
-      letter-spacing: 0.1em;
+      font-size: 0.6875rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--text-2);
-      font-weight: 400;
-      margin-bottom: 0.5rem;
+      color: var(--accent);
+      margin-bottom: 0.375rem;
     }
 
-    .skill-cat p {
+    .looking-val {
       font-size: 0.9375rem;
-      color: var(--text);
+      color: var(--text-2);
       line-height: 1.6;
     }
 
-    /* ── CONTACT ────────────────────────────────────────────── */
-    #contact {
-      background: var(--bg-surface);
-    }
-
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-
-    @media (min-width: 768px) {
-      .contact-grid {
-        grid-template-columns: 1fr 1fr;
-        align-items: start;
-      }
-    }
-
-    .contact-heading {
-      font-size: clamp(1.5rem, 3vw, 2.25rem);
-      color: var(--text-1);
-      margin-bottom: 1rem;
-    }
-
-    .contact-copy {
-      color: var(--text-2);
-      line-height: 1.7;
-      margin-bottom: 2rem;
+    .about-contact {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
     }
 
     .contact-email {
       font-family: var(--font-body);
-      font-size: 1.25rem;
+      font-size: 1rem;
       font-weight: 500;
       color: var(--accent);
       display: inline-block;
-      margin-bottom: 0;
+      margin-top: 0.375rem;
       transition: opacity 0.15s;
     }
 
@@ -895,29 +1016,22 @@
       opacity: 0.75;
     }
 
-    .contact-links {
+    .about-contact-links {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 1rem;
+      margin-top: 0.75rem;
     }
 
-    .contact-link {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.9375rem;
+    .about-contact-links a {
+      font-size: 0.875rem;
       font-weight: 500;
       color: var(--text-2);
       transition: color 0.15s;
     }
 
-    .contact-link:hover {
+    .about-contact-links a:hover {
       color: var(--text-1);
-    }
-
-    .contact-link svg {
-      color: var(--text-3);
-      flex-shrink: 0;
     }
 
     /* ── FOOTER ─────────────────────────────────────────────── */
@@ -940,11 +1054,9 @@
       <div class="nav-inner">
         <a href="#hero" class="nav-logo">PR</a>
         <div class="nav-links">
-          <a href="#workplace">Work</a>
+          <a href="#work">Work</a>
           <a href="#projects">Projects</a>
-          <a href="#experience">Experience</a>
           <a href="#about">About</a>
-          <a href="#contact">Contact</a>
         </div>
         <div class="nav-actions">
           <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="nav-icon"
@@ -982,11 +1094,9 @@
       </div>
     </div>
     <div id="mobile-nav" class="mobile-nav">
-      <a href="#workplace">Work</a>
+      <a href="#work">Work</a>
       <a href="#projects">Projects</a>
-      <a href="#experience">Experience</a>
       <a href="#about">About</a>
-      <a href="#contact">Contact</a>
       <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank">Resume ↗</a>
     </div>
   </nav>
@@ -994,95 +1104,65 @@
   <!-- ─── HERO ─────────────────────────────────────────────── -->
   <section id="hero" class="hero">
     <div class="container">
-      <h1 class="hero-name">Peyton<br>Ramsey</h1>
-      <p class="hero-role">Chasing performance: from D1 track to production machine learning.</p>
-      <p class="hero-bio">
-        I've shipped systems a 30-person compliance team uses daily and ML pipelines scoring 120K insurance policies.
-        Currently finishing an MS in Business Analytics at the University of New Hampshire, May 2026.
-      </p>
-      <div class="hero-actions">
-        <a href="#deployed" class="btn-primary">View Work</a>
-        <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank" class="btn-secondary">
-          Resume
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-          </svg>
-        </a>
-        <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="btn-secondary">GitHub
-          ↗</a>
-      </div>
-    </div>
-  </section>
+      <div class="hero-split">
 
-  <!-- ─── WORKPLACE DEPLOYMENT ──────────────────────────────── -->
-  <section id="workplace">
-    <div class="container">
-      <div class="section-head">
-        <p class="label">Workplace Deployment</p>
-        <h2>TPA Compliance Review System</h2>
-        <p>Production system built solo during a data engineering internship, not a course project, not a demo.</p>
-      </div>
-
-      <div class="workplace-card">
-        <p class="workplace-meta">Data Engineering · Nassau Financial Group · Summer 2025</p>
-        <h3 class="workplace-title">TPA Compliance Review System</h3>
-        <p class="workplace-desc">
-          End-to-end third-party administrator oversight platform built solo at Nassau Financial Group. ETL pipelines
-          integrate 7 insurance data streams from AWS into a parquet-backed layer; a weighted scoring engine assesses
-          compliance across 8 activity types; a self-serve R Shiny dashboard deployed to a 30-person compliance team
-          managing 120K+ policies.
-        </p>
-        <p class="workplace-metric">60% reduction in manual review time</p>
-        <div class="workplace-links">
-          <a href="projects/tpa-compliance.html">View Project →</a>
-          <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank"
-            rel="noopener noreferrer" class="muted">GitHub ↗</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── SELF-DEPLOYED ────────────────────────────────────── -->
-  <section id="self-deployed">
-    <div class="container">
-      <div class="section-head">
-        <p class="label">Self-Deployed</p>
-        <h2>Personal Production</h2>
-        <p>Built and run in production personally. Both are live.</p>
-      </div>
-
-      <div class="sd-grid">
-
-        <!-- Financial RAG -->
-        <div class="sd-card">
-          <p class="sd-card-meta">RAG · Jan 2026</p>
-          <h3 class="sd-card-title">Financial News RAG Analyst</h3>
-          <p class="sd-card-desc">
-            Ask questions about 500+ financial news articles in plain English and get sourced answers in under 5
-            seconds. Built with ChromaDB, LangChain, and FinBERT sentiment scoring.
+        <!-- Left: name + pitch -->
+        <div class="hero-left">
+          <h1 class="hero-name">Peyton<br>Ramsey</h1>
+          <p class="hero-role">Data Science &amp; Machine Learning</p>
+          <p class="hero-bio">
+            I build systems that make life easier. From financial news AI tools that cut through market noise, to
+            a Kaggle classifier that became an investor study on gentrification in Paris, to full-stack fitness
+            tracking apps. I have a genuine passion for building things I actually use. Not scared
+            to go deep into a niche topic to truly understand it.
           </p>
-          <p class="sd-card-metric">92% retrieval precision</p>
-          <div class="sd-card-links">
-            <a href="projects/financial-rag.html">View Project →</a>
-            <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank"
-              rel="noopener noreferrer" class="muted">Live Demo ↗</a>
+          <div class="hero-actions">
+            <a href="#work" class="btn-primary">View Work</a>
+            <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank" class="btn-secondary">
+              Resume
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              </svg>
+            </a>
+            <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer"
+              class="btn-secondary">GitHub ↗</a>
           </div>
         </div>
 
-        <!-- MacroSentinel -->
-        <div class="sd-card">
-          <p class="sd-card-meta">Anomaly Detection · Spring 2026</p>
-          <h3 class="sd-card-title">Macroeconomic Anomaly Detection</h3>
-          <p class="sd-card-desc">
-            LSTM Autoencoder ingesting 7 FRED macroeconomic indicators in real time, flagging structural breaks by
-            reconstruction error with plain-English explanations via Llama-3.1-8B. Calibrated on a pre-2007 baseline.
-          </p>
-          <p class="sd-card-metric">3/3 historical crises identified</p>
-          <div class="sd-card-links">
-            <a href="projects/macro-anomaly-detection.html">View Project →</a>
-            <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank"
-              rel="noopener noreferrer" class="muted">Live Demo ↗</a>
+        <!-- Right: credential panel -->
+        <div class="hero-cred">
+          <div class="cred-block">
+            <p class="cred-label">Currently</p>
+            <p class="cred-value">Research Assistant, Data Science &amp; AI</p>
+            <p class="cred-sub">University of New Hampshire · GPA 3.83 · May 2026</p>
+          </div>
+          <div class="cred-divider"></div>
+          <div class="cred-block">
+            <p class="cred-label">By the Numbers</p>
+            <div class="cred-metrics">
+              <div class="cred-metric">
+                <span class="cred-num" data-target="7">7</span>
+                <span class="cred-desc">AI/ML &amp; full-stack projects</span>
+              </div>
+              <div class="cred-metric">
+                <span class="cred-num" data-target="3">3</span>
+                <span class="cred-desc">live ML deployments (HuggingFace + Render + workplace)</span>
+              </div>
+              <div class="cred-metric">
+                <span class="cred-num">100M+</span>
+                <span class="cred-desc">rows of production data processed</span>
+              </div>
+              <div class="cred-metric">
+                <span class="cred-num" data-target="4">4</span>
+                <span class="cred-desc">years NCAA Division I athlete</span>
+              </div>
+            </div>
+          </div>
+          <div class="cred-divider"></div>
+          <div class="cred-block">
+            <p class="cred-label">Core Stack</p>
+            <p class="cred-stack">Python | SQL | R | PyTorch | LangChain | CatBoost | NLP | A/B Testing | Causal Inference</p>
           </div>
         </div>
 
@@ -1090,254 +1170,171 @@
     </div>
   </section>
 
-  <!-- ─── PROJECTS (Editorial List, domain-grouped) ────────── -->
-  <section id="projects">
+  <!-- ─── WORK (TPA left · Experience right, two-column) ───── -->
+  <section id="work">
     <div class="container">
-      <div class="section-head">
-        <p class="label">Projects</p>
-        <h2>More Work</h2>
-        <p>ML systems, data pipelines, and full-stack apps. Each one started with a concrete problem and ended with
-          something that runs.</p>
-      </div>
+      <div class="work-grid">
 
-      <!-- Domain: Finance & Economics -->
-      <div class="proj-domain">
-        <p class="proj-domain-label">Finance &amp; Economics</p>
-        <div class="proj-list">
+        <!-- Left: Deployments (TPA + Self-Deployed) -->
+        <div>
+          <div class="work-col-head">
+            <p class="label">Deployments</p>
+            <h2>Shipped Work</h2>
+          </div>
 
-          <!-- VECM -->
-          <div class="proj-row">
-            <div class="proj-body">
-              <h3 class="proj-title">U.S. Inflation Dynamics: VECM Analysis</h3>
-              <p class="proj-summary">Modeled how demand, supply, and labor shocks transmit to U.S. inflation using a
-                Vector Error Correction Model on 407 monthly FRED observations (1992–2024). Retail sales explains 35.5%
-                of long-run CPI variance.</p>
-            </div>
-            <div class="proj-aside">
-              <span class="proj-metric">61.6% more external shock variance vs. VAR</span>
-              <a href="projects/inflation-vecm.html" class="primary">View →</a>
-              <a href="https://peytonramsey.github.io/us-inflation-dynamics/" target="_blank"
-                rel="noopener noreferrer">Report ↗</a>
+          <div class="workplace-card">
+            <p class="workplace-meta">Data Engineering · Nassau Financial Group · Summer 2025</p>
+            <h3 class="workplace-title">TPA Compliance Review System</h3>
+            <p class="workplace-desc">
+              End-to-end third-party administrator oversight platform built solo at Nassau Financial Group. ETL pipelines
+              integrate 7 insurance data streams from AWS into a parquet-backed layer; a weighted scoring engine assesses
+              compliance across 8 activity types; a self-serve R Shiny dashboard deployed to a 30-person compliance team
+              managing 120K+ policies.
+            </p>
+            <p class="workplace-metric">60% reduction in manual review time</p>
+            <div class="workplace-links">
+              <a href="projects/tpa-compliance.html">View Project →</a>
+              <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank"
+                rel="noopener noreferrer" class="muted">GitHub ↗</a>
             </div>
           </div>
 
-          <!-- Airbnb -->
-          <div class="proj-row">
-            <div class="proj-body">
-              <h3 class="proj-title">Airbnb Market Prediction, SF</h3>
-              <p class="proj-summary">Identified drivers of high booking rates across 12,947 SF listings. Most useful
-                finding: listings with ~14% weekly discounts outperform the 5% industry average significantly.</p>
-            </div>
-            <div class="proj-aside">
-              <span class="proj-metric">95% ROC-AUC on booking rate</span>
-              <a href="projects/airbnb.html" class="primary">View →</a>
-            </div>
-          </div>
+          <div style="margin-top:2rem;">
+            <p class="proj-domain-label" style="margin-bottom:1.25rem;">Self-Deployed · Live</p>
+            <div class="sd-grid" style="grid-template-columns:1fr;">
 
-          <!-- Amazon -->
-          <div class="proj-row">
-            <div class="proj-body">
-              <h3 class="proj-title">Amazon Pricing Strategy Analysis</h3>
-              <p class="proj-summary">EDA across 1.4M Amazon products. Found the "Discount Paradox": best sellers
-                average lower discounts than regular products. Sentiment segmentation across 248 categories.</p>
-            </div>
-            <div class="proj-aside">
-              <a href="projects/amazon-pricing.html" class="primary">View →</a>
-              <a href="https://peytonramsey.github.io/amazon-pricing-analysis/amazon-pricing-analysis.html"
-                target="_blank" rel="noopener noreferrer">Report ↗</a>
-              <a href="https://github.com/peytonramsey/amazon-pricing-analysis" target="_blank"
-                rel="noopener noreferrer">GitHub ↗</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Domain: Classification & MLOps -->
-      <div class="proj-domain">
-        <p class="proj-domain-label">Classification &amp; MLOps</p>
-        <div class="proj-list">
-
-          <!-- Student Dropout -->
-          <div class="proj-row">
-            <div class="proj-body">
-              <h3 class="proj-title">Student Dropout Classification</h3>
-              <p class="proj-summary">Compared Logistic Regression, KNN, Random Forest, and SVM on 4,424 university
-                students. Threshold tuned to 0.3, optimizing for the cost of a missed intervention over false alarms.
-              </p>
-            </div>
-            <div class="proj-aside">
-              <span class="proj-metric">89.79% recall on dropout class</span>
-              <a href="projects/student-dropout.html" class="primary">View →</a>
-              <a href="https://peytonramsey.github.io/student-dropout-classification/" target="_blank"
-                rel="noopener noreferrer">Report ↗</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Domain: Causality -->
-      <div class="proj-domain">
-        <p class="proj-domain-label">Causality</p>
-        <div class="proj-list">
-
-          <!-- Airbnb Booking Prediction -->
-          <div class="proj-row">
-            <div class="proj-body">
-              <h3 class="proj-title">Airbnb Booking Prediction</h3>
-              <p class="proj-summary">Two-part project: national CatBoost classifier on 374K US listings (Kaggle AUC 0.8668), then hyperlocal Popincourt, Paris market analysis revealing a 6× booking rate gap between casual and commercial hosts that price and geography cannot explain.</p>
-            </div>
-            <div class="proj-aside">
-              <span class="proj-metric">0.966 holdout AUC · 6× booking rate gap confirmed by SHAP</span>
-              <a href="projects/airbnb-booking-prediction.html" class="primary">View →</a>
-              <a href="https://github.com/peytonramsey/airbnb-booking-prediction" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Domain: Full-Stack -->
-      <div class="proj-domain">
-        <p class="proj-domain-label">Full-Stack</p>
-        <div class="proj-list">
-
-          <!-- GymLog -->
-          <div class="proj-row">
-            <div class="proj-body">
-              <h3 class="proj-title">GymLog: Full-Stack Fitness App</h3>
-              <p class="proj-summary">Built from scratch: workout logging, nutrition tracking with dual-API food search
-                (OpenFoodFacts + USDA), and a Gradient Boosting model for progressive overload predictions.</p>
-            </div>
-            <div class="proj-aside">
-              <span class="proj-metric">40+ REST endpoints · 11,500+ lines</span>
-              <a href="projects/gymlog.html" class="primary">View →</a>
-              <a href="https://gym-log-s702.onrender.com/?demo=true" target="_blank" rel="noopener noreferrer">Demo
-                ↗</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Tableau -->
-      <div style="margin-top:4rem; padding-top:3rem; border-top:1px solid var(--border);">
-        <p class="label" style="margin-bottom:0.5rem;">Data Visualization</p>
-        <h3 style="font-family:var(--font-heading); font-size:1.125rem; color:var(--text-1); margin-bottom:0.5rem;">
-          Tableau Public</h3>
-        <p style="font-size:0.9375rem; color:var(--text-2); margin-bottom:1.25rem;">Interactive dashboard exploring
-          average sunlight hours across major cities.</p>
-        <div class="tableau-wrap"> 
-          <iframe
-            src="https://public.tableau.com/views/SunlightAcrossMonthsinVariousCities/Dashboard2?:embed=y&:showVizHome=no&:toolbar=yes&:device=desktop"
-            width="100%" height="520" frameborder="0" style="display:block;"></iframe>
-        </div>
-        <p style="font-size:0.75rem; color:var(--text-3); margin-top:0.5rem; text-align:right;">
-          <a href="https://public.tableau.com/app/profile/peyton.ramsey/vizzes" target="_blank"
-            rel="noopener noreferrer" style="transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'"
-            onmouseout="this.style.color='var(--text-3)'">
-            Tableau profile ↗
-          </a>
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ─── EXPERIENCE ────────────────────────────────────────── -->
-  <section id="experience">
-    <div class="container">
-      <div class="section-head">
-        <h2>Work Experience</h2>
-      </div>
-
-      <div class="timeline">
-
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="exp-card">
-            <div class="exp-head">
-              <div>
-                <p class="exp-title">Graduate Research Assistant, Data Science &amp; AI</p>
-                <p class="exp-org">University of New Hampshire · Durham, NH</p>
+              <div class="sd-card">
+                <p class="sd-card-meta">RAG · Jan 2026</p>
+                <h3 class="sd-card-title">Financial News RAG Analyst</h3>
+                <p class="sd-card-desc">
+                  Ask questions about 500+ financial news articles in plain English and get sourced answers in under 5
+                  seconds. Built with ChromaDB, LangChain, and FinBERT sentiment scoring.
+                </p>
+                <p class="sd-card-metric">92% retrieval precision</p>
+                <div class="sd-card-links">
+                  <a href="projects/financial-rag.html">View Project →</a>
+                  <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank"
+                    rel="noopener noreferrer" class="muted">Live Demo ↗</a>
+                </div>
               </div>
-              <span class="exp-date">Aug 2025 – Present</span>
-            </div>
-            <ul class="exp-bullets">
-              <li>Co-built a new graduate course on AI tools and production ML deployment for 20 MSBA students, covering
-                Docker, Hugging Face, LLMs, and responsible AI through hands-on labs.</li>
-              <li>Updated 12+ modules across Predictive Analytics, NLP, and Big Data; wrote new labs covering RAG
-                systems, K-means, vector embeddings, and deep learning in Python and R.</li>
-            </ul>
-            <div class="exp-tags">
-              <span class="exp-tag">Curriculum Design</span>
-              <span class="exp-tag">Python</span>
-              <span class="exp-tag">R</span>
-              <span class="exp-tag">RAG</span>
-              <span class="exp-tag">LLMs</span>
-              <span class="exp-tag">MLOps</span>
+
+              <div class="sd-card">
+                <p class="sd-card-meta">Anomaly Detection · Spring 2026</p>
+                <h3 class="sd-card-title">Macroeconomic Anomaly Detection</h3>
+                <p class="sd-card-desc">
+                  LSTM Autoencoder ingesting 7 FRED macroeconomic indicators in real time, flagging structural breaks by
+                  reconstruction error with plain-English explanations via Llama-3.1-8B. Calibrated on a pre-2007
+                  baseline.
+                </p>
+                <p class="sd-card-metric">3/3 historical crises identified</p>
+                <div class="sd-card-links">
+                  <a href="projects/macro-anomaly-detection.html">View Project →</a>
+                  <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank"
+                    rel="noopener noreferrer" class="muted">Live Demo ↗</a>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
 
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="exp-card">
-            <div class="exp-head">
-              <div>
-                <p class="exp-title">Data Engineer Intern</p>
-                <p class="exp-org">Nassau Financial Group · Hartford, CT</p>
-              </div>
-              <span class="exp-date">June – Aug 2025</span>
-            </div>
-            <ul class="exp-bullets">
-              <li>Designed and built a TPA Oversight Dashboard in R Shiny, connecting AWS and the enterprise data
-                warehouse: 120K+ insurance policies, up to 100M rows across 7 data sources.</li>
-              <li>Built a weighted compliance scoring engine with category-specific weights and an 80% pass threshold
-                across 8 insurance activity types, backed by Arrow/Parquet ETL pipelines from AWS.</li>
-              <li>Built the reactive Shiny UI so analysts could filter, drill, and export risk data themselves, no more
-                queuing manual reports.</li>
-            </ul>
-            <div class="exp-tags">
-              <span class="exp-tag">R Shiny</span>
-              <span class="exp-tag">AWS S3</span>
-              <span class="exp-tag">ETL</span>
-              <span class="exp-tag">Arrow/Parquet</span>
-              <span class="exp-tag">dbplyr</span>
-            </div>
+        <!-- Right: Experience timeline + Education -->
+        <div>
+          <div class="work-col-head">
+            <p class="label">Experience</p>
+            <h2>Work &amp; Education</h2>
           </div>
-        </div>
 
-        <div class="tl-item">
-          <div class="tl-dot dim"></div>
-          <div class="exp-card">
-            <div class="exp-head">
-              <div>
-                <p class="exp-title">Business Intelligence Intern</p>
-                <p class="exp-org">Sprague Operating Resources · Portsmouth, NH</p>
+          <div class="timeline">
+
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="exp-card">
+                <div class="exp-head">
+                  <div>
+                    <p class="exp-title">Graduate Research Assistant, Data Science &amp; AI</p>
+                    <p class="exp-org">University of New Hampshire · Durham, NH</p>
+                  </div>
+                  <span class="exp-date">Aug 2025 – Present</span>
+                </div>
+                <ul class="exp-bullets">
+                  <li>Co-built a new graduate course on AI tools and production ML deployment for future MSBA student courses,
+                    covering Docker, Hugging Face, LLMs, and responsible AI through hands-on labs.</li>
+                  <li>Updated 12+ modules across Predictive Analytics, NLP, and Big Data; wrote new labs covering RAG
+                    systems, K-means, vector embeddings, and deep learning in Python and R.</li>
+                </ul>
+                <div class="exp-tags">
+                  <span class="exp-tag">Curriculum Design</span>
+                  <span class="exp-tag">Python</span>
+                  <span class="exp-tag">R</span>
+                  <span class="exp-tag">RAG</span>
+                  <span class="exp-tag">LLMs</span>
+                  <span class="exp-tag">MLOps</span>
+                </div>
               </div>
-              <span class="exp-date">June – Aug 2024</span>
             </div>
-            <ul class="exp-bullets">
-              <li>Analyzed commodity contract data using SQL and Python to surface pricing trends and forecast accuracy
-                gaps; built Power BI dashboards enabling the trading team to monitor variance in real time.</li>
-            </ul>
-            <div class="exp-tags">
-              <span class="exp-tag">SQL</span>
-              <span class="exp-tag">Python</span>
-              <span class="exp-tag">Power BI</span>
-              <span class="exp-tag">DAX</span>
+
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="exp-card">
+                <div class="exp-head">
+                  <div>
+                    <p class="exp-title">Data Engineer Intern</p>
+                    <p class="exp-org">Nassau Financial Group · Hartford, CT</p>
+                  </div>
+                  <span class="exp-date">June – Aug 2025</span>
+                </div>
+                <ul class="exp-bullets">
+                  <li>Designed and built a TPA Oversight Dashboard in R Shiny, connecting AWS and the enterprise data
+                    warehouse: 120K+ insurance policies, up to 100M rows across 7 data sources.</li>
+                  <li>Built a weighted compliance scoring engine with category-specific weights and an 80% pass threshold
+                    across 8 insurance activity types, backed by Arrow/Parquet ETL pipelines from AWS.</li>
+                  <li>Built the reactive Shiny UI so analysts could filter, drill, and export risk data themselves, no
+                    more queuing manual reports.</li>
+                </ul>
+                <div class="exp-tags">
+                  <span class="exp-tag">R Shiny</span>
+                  <span class="exp-tag">AWS S3</span>
+                  <span class="exp-tag">ETL</span>
+                  <span class="exp-tag">Arrow/Parquet</span>
+                  <span class="exp-tag">dbplyr</span>
+                </div>
+              </div>
             </div>
+
+            <div class="tl-item">
+              <div class="tl-dot dim"></div>
+              <div class="exp-card">
+                <div class="exp-head">
+                  <div>
+                    <p class="exp-title">Business Intelligence Intern</p>
+                    <p class="exp-org">Sprague Operating Resources · Portsmouth, NH</p>
+                  </div>
+                  <span class="exp-date">June – Aug 2024</span>
+                </div>
+                <ul class="exp-bullets">
+                  <li>Analyzed commodity contract data using SQL and Python to surface pricing trends and forecast
+                    accuracy gaps; built Power BI dashboards enabling the trading team to monitor variance in real
+                    time.</li>
+                </ul>
+                <div class="exp-tags">
+                  <span class="exp-tag">SQL</span>
+                  <span class="exp-tag">Python</span>
+                  <span class="exp-tag">Power BI</span>
+                  <span class="exp-tag">DAX</span>
+                </div>
+              </div>
+            </div>
+
           </div>
+
         </div>
 
       </div>
 
-      <div style="margin-top:3rem;">
-        <p
-          style="font-family:var(--font-mono); font-size:0.625rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3); margin-bottom:1rem;">
-          Education</p>
+      <!-- Education: full-width below the two-column grid -->
+      <div style="margin-top:3rem; padding-top:3rem; border-top:1px solid var(--border);">
+        <p style="font-family:var(--font-mono); font-size:0.625rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3); margin-bottom:1rem;">Education</p>
         <div class="edu-card">
           <div class="edu-head">
             <div>
@@ -1347,13 +1344,97 @@
             <span class="exp-date">Durham, NH</span>
           </div>
           <div class="edu-rule">
-            <p class="edu-bs">BS Business Administration: Information Systems &amp; Business Analytics · Aug 2021 – May
-              2025</p>
-            <p class="edu-honors">NCAA Division I Cross Country &amp; Track · Dean's List · America East Commissioner's
-              Honor Roll</p>
+            <p class="edu-bs">BS Business Administration: Information Systems &amp; Business Analytics · Aug 2021 –
+              May 2025</p>
+            <p class="edu-honors">NCAA Division I Cross Country &amp; Track · Dean's List · America East
+              Commissioner's Honor Roll</p>
           </div>
         </div>
       </div>
+
+    </div>
+  </section>
+
+  <!-- ─── PROJECTS (self-deployed at top · filtered list) ──── -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-head">
+        <p class="label">Projects</p>
+        <h2>More Work</h2>
+        <p>ML systems, data pipelines, and full-stack apps. Each one started with a concrete problem and ended with
+          something that runs.</p>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="proj-filter">
+        <button class="proj-filter-btn active" data-filter="all">All</button>
+        <button class="proj-filter-btn" data-filter="data-science">Data Science</button>
+        <button class="proj-filter-btn" data-filter="ml-engineering">ML Engineering</button>
+        <button class="proj-filter-btn" data-filter="full-stack">Full Stack</button>
+      </div>
+
+      <div class="proj-grid">
+
+        <!-- VECM -->
+        <div class="proj-card" data-role="data-science">
+          <p class="proj-card-tag">Finance &amp; Economics</p>
+          <h3 class="proj-card-title">U.S. Inflation Dynamics: VECM Analysis</h3>
+          <p class="proj-card-summary">Modeled how demand, supply, and labor shocks transmit to U.S. inflation using a
+            Vector Error Correction Model on 407 monthly FRED observations (1992–2024). Retail sales explains 35.5%
+            of long-run CPI variance.</p>
+          <p class="proj-card-metric">61.6% more external shock variance vs. VAR</p>
+          <div class="proj-card-links">
+            <a href="projects/inflation-vecm.html">View →</a>
+            <a href="https://peytonramsey.github.io/us-inflation-dynamics/" target="_blank"
+              rel="noopener noreferrer" class="muted">Report ↗</a>
+          </div>
+        </div>
+
+        <!-- Student Dropout -->
+        <div class="proj-card" data-role="data-science ml-engineering">
+          <p class="proj-card-tag">Classification &amp; MLOps</p>
+          <h3 class="proj-card-title">Student Dropout Classification</h3>
+          <p class="proj-card-summary">Universities can intervene if they catch at-risk students early enough. Compared four classifiers on 4,424 students, framing threshold selection around the cost of a missed intervention rather than raw accuracy.</p>
+          <p class="proj-card-metric">89.79% recall on dropout class</p>
+          <div class="proj-card-links">
+            <a href="projects/student-dropout.html">View →</a>
+            <a href="https://peytonramsey.github.io/student-dropout-classification/" target="_blank"
+              rel="noopener noreferrer" class="muted">Report ↗</a>
+          </div>
+        </div>
+
+        <!-- Airbnb Booking Prediction -->
+        <div class="proj-card" data-role="data-science ml-engineering">
+          <p class="proj-card-tag">Causality</p>
+          <h3 class="proj-card-title">Airbnb: US Market Classifier &amp; Paris Investment Study</h3>
+          <p class="proj-card-summary">Built a national CatBoost classifier on 374K US listings (Kaggle AUC 0.8668),
+            then retrained it on Popincourt, Paris to answer an investor question: does gentrification create a
+            booking advantage? The answer is host type creates a booking advantage.  Casual hosts book at 44% vs. 11.5% for
+            commercial operators, a gap that price, amenities, and geography can't catch up with.</p>
+          <p class="proj-card-metric">0.966 holdout AUC</p>
+          <div class="proj-card-links">
+            <a href="projects/airbnb-booking-prediction.html">View →</a>
+            <a href="https://github.com/peytonramsey/airbnb-booking-prediction" target="_blank"
+              rel="noopener noreferrer" class="muted">GitHub ↗</a>
+          </div>
+        </div>
+
+        <!-- GymLog -->
+        <div class="proj-card" data-role="full-stack">
+          <p class="proj-card-tag">Full-Stack</p>
+          <h3 class="proj-card-title">GymLog: Full-Stack Fitness App</h3>
+          <p class="proj-card-summary">Every fitness tracking app worth using costs money. Built my own instead, with workout logging backed by its own database, a Gradient Boosting model for progressive overload predictions, and a full REST API deployed on Render.</p>
+          <p class="proj-card-metric">40+ REST endpoints · PostgreSQL · 11,500+ lines</p>
+          <div class="proj-card-links">
+            <a href="projects/gymlog.html">View →</a>
+            <a href="https://gym-log-s702.onrender.com/?demo=true" target="_blank"
+              rel="noopener noreferrer" class="muted">Demo ↗</a>
+          </div>
+        </div>
+
+      </div>
+
+
     </div>
   </section>
 
@@ -1366,12 +1447,10 @@
 
       <div class="about-grid">
         <div class="about-bio">
-          <p>I'm a business analytics student specializing in data science and AI engineering, finishing an MS in
-            Business Analytics at UNH (GPA 3.83, May 2026). Most of my work bridges the technical side of building
-            models and the business context they're meant to serve.</p>
-          <p>I care about the whole problem, building something that fits the need of the actual user, not just
-            something that passes a benchmark. That means understanding what each person actually needs before deciding
-            what to build.</p>
+          <p>Across different industries like energy and insurance, what stayed constant is the needs of stakeholders.
+            Shipping to production and deeply understanding the problem, asking why before asking how, is what separates
+            a good job from a great one. I don't want to just hit a benchmark. I want every person who uses what I build
+            to feel like they actually want to use it.</p>
           <div class="on-ai">
             <p class="on-ai-label">On AI</p>
             <p>Working with generative models through my research role has sharpened one view: AI is most effective when
@@ -1379,69 +1458,38 @@
               just as easily anchor you to mediocre results if you're not skeptical. The practitioners who get the most
               from it understand its capabilities and its failure modes equally well.</p>
           </div>
-          <p>Outside of school, I ran Division I Cross Country and Track at UNH for four years. I'm an avid football
-            fan, enjoy road cycling and lifting, and am currently reading <em>Bad Blood</em> by John Carreyrou.</p>
-          <a href="#contact" class="about-cta" style="display:inline-block;">Get in touch →</a>
+          <p>Outside of school, I ran Division I Cross Country and Track at UNH for four years. I'm a huge fan of the Denver Broncos, enjoy road cycling and lifting, and am currently reading <em>Bad Blood</em> by John Carreyrou.</p>
         </div>
 
-        <div class="skills-grid">
-          <div class="skill-cat">
-            <h4>ML &amp; Algorithms</h4>
-            <p>Logistic Regression, Lasso/Ridge, SVM, Random Forest, XGBoost, LightGBM, Gradient Boosting, Time Series,
-              Clustering, RAG, LLMs, NLP, AI Agents, Vector Embeddings, A/B Testing, Feature Engineering</p>
+        <div class="about-right">
+          <div class="looking-grid">
+            <div class="looking-item">
+              <p class="looking-label">Roles</p>
+              <p class="looking-val">Data Scientist · ML Engineer · Data Engineer · AI Engineer</p>
+            </div>
+            <div class="looking-item">
+              <p class="looking-label">Available</p>
+              <p class="looking-val">Actively Looking</p>
+            </div>
+            <div class="looking-item">
+              <p class="looking-label">Open To</p>
+              <p class="looking-val">Full-time · Remote or On-site</p>
+            </div>
+            <div class="looking-item">
+              <p class="looking-label">Interested In</p>
+              <p class="looking-val">AI in physical systems, humanoid robotics especially. Understanding customer behavior through data. Staying sharp on modern techniques: conferences, research papers, and various talks on YouTube.</p>
+            </div>
           </div>
-          <div class="skill-cat">
-            <h4>Programming &amp; Frameworks</h4>
-            <p>Python, R, SQL, PyTorch, pandas, scikit-learn, LangChain, Flask, R Shiny, Gradio, FastAPI</p>
-          </div>
-          <div class="skill-cat">
-            <h4>MLOps &amp; Infrastructure</h4>
-            <p>Docker, MLflow, AWS (S3, Lambda), Hugging Face, ChromaDB, Git/GitHub, ETL Pipelines, Apache Arrow/Parquet
-            </p>
-          </div>
-          <div class="skill-cat">
-            <h4>Data Visualization</h4>
-            <p>Tableau, ggplot2, seaborn, matplotlib, Plotly, Power BI</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ─── CONTACT ───────────────────────────────────────────── -->
-  <section id="contact">
-    <div class="container">
-      <div class="contact-grid">
-        <div>
-          <p class="label" style="margin-bottom:0.5rem;">Get in Touch</p>
-          <h2 class="contact-heading">Let's talk.</h2>
-          <p class="contact-copy">If you're working on something in ML, data engineering, or AI, or just want to talk
-            shop, reach out.</p>
-          <a href="mailto:ramseypeyton@gmail.com" class="contact-email">ramseypeyton@gmail.com</a>
-        </div>
-        <div class="contact-links">
-          <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer" class="contact-link">
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z" />
-            </svg>
-            github.com/peytonramsey
-          </a>
-          <a href="https://www.linkedin.com/in/peytonr-msba/" target="_blank" rel="noopener noreferrer"
-            class="contact-link">
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-            </svg>
-            linkedin.com/in/peytonr-msba
-          </a>
-          <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank" class="contact-link">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-            </svg>
-            Download Resume
-          </a>
+          <div class="about-contact">
+            <p class="looking-label">Get in Touch</p>
+            <a href="mailto:ramseypeyton@gmail.com" class="contact-email">ramseypeyton@gmail.com</a>
+            <div class="about-contact-links">
+              <a href="https://github.com/peytonramsey" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+              <a href="https://www.linkedin.com/in/peytonr-msba/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+              <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank">Resume ↗</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

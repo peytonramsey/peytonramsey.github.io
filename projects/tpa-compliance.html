@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -17,16 +17,16 @@
   <style>
     /* ── DESIGN TOKENS ──────────────────────────────────────── */
     :root {
-      --bg-base:     #0f0f0e;
-      --bg-surface:  #161614;
-      --bg-card:     #1c1b19;
-      --bg-elevated: #222120;
+      --bg-base:     #f7f6f4;
+      --bg-surface:  #ffffff;
+      --bg-card:     #f0efed;
+      --bg-elevated: #e8e7e4;
 
-      --text-1: #cdccca;
-      --text-2: #797876;
-      --text-3: #5a5957;
-      --accent:  #e8a035;
-      --border:  oklch(from #cdccca l c h / 0.10);
+      --text-1: #1a1918;
+      --text-2: #4a4947;
+      --text-3: #7a7875;
+      --accent:  #b45309;
+      --border:  rgba(26, 25, 24, 0.12);
 
       --font-body:    'Satoshi', system-ui, sans-serif;
       --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
@@ -57,7 +57,7 @@
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track  { background: var(--bg-base); }
-    ::-webkit-scrollbar-thumb  { background: var(--bg-elevated); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb  { background: var(--text-3); border-radius: 3px; }
 
     /* ── TYPOGRAPHY ─────────────────────────────────────────── */
     h1, h2, h3, h4 {
@@ -89,7 +89,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(15, 15, 14, 0.92);
+      background: rgba(247, 246, 244, 0.93);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -158,7 +158,7 @@
       font-size: 0.6875rem;
       letter-spacing: 0.06em;
       color: var(--accent);
-      border: 1px solid oklch(from #e8a035 l c h / 0.30);
+      border: 1px solid rgba(180, 83, 9, 0.25);
       border-radius: 4px;
       padding: 0.2rem 0.5rem;
     }
@@ -174,83 +174,39 @@
       gap: clamp(3rem, 6vw, 5rem);
     }
 
-    /* ── TL;DR BOX — amber left border, never teal ──────────── */
-    .tldr-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--accent);
-      border-radius: var(--radius-card);
-      padding: 1.5rem;
-    }
-
-    .tldr-box p {
+    /* ── SUMMARY STRIP — replaces TL;DR box + Outcomes ────────── */
+    .summary-sentence {
       font-size: 0.9375rem;
       line-height: 1.75;
-      color: rgba(205, 204, 202, 0.85);
-      margin: 0;
+      color: var(--text-2);
+      margin-bottom: 1.75rem;
+      max-width: 44rem;
     }
 
-    .tldr-box strong { color: var(--text-1); font-weight: 500; }
-
-    /* ── METRICS — pure typographic hierarchy, no cards, no borders */
-    .metric-primary {
-      margin-bottom: 2rem;
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: 0 3rem;
+      justify-content: start;
     }
 
-    .metric-primary .value {
+    @media (max-width: 640px) {
+      .metric-strip { grid-template-columns: 1fr 1fr; row-gap: 1.5rem; }
+    }
+
+    .metric-strip-item .value {
       font-family: var(--font-mono);
-      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-size: clamp(1.5rem, 4vw, 2rem);
       color: var(--accent);
       line-height: 1;
-      margin-bottom: 0.375rem;
+      margin-bottom: 0.25rem;
     }
 
-    .metric-primary .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
+    .metric-strip-item:first-child .value {
+      font-size: clamp(2rem, 5vw, 2.75rem);
     }
 
-    /* Secondary: no card containers — weight alone creates hierarchy */
-    .metric-secondary-group {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    /* 120K+ row — amber, smaller than primary, inline value + label */
-    .metric-secondary-wide {
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
-    }
-
-    .metric-secondary-wide .value {
-      font-family: var(--font-mono);
-      font-size: 1.5rem;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .metric-secondary-wide .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
-      line-height: 1.4;
-    }
-
-    /* 30 / 50+ row — muted, smallest, side by side */
-    .metric-secondary-pair {
-      display: flex;
-      gap: 2.5rem;
-    }
-
-    .metric-secondary-sm .value {
-      font-family: var(--font-mono);
-      font-size: 1.125rem;
-      color: var(--text-2);
-      margin-bottom: 0.2rem;
-    }
-
-    .metric-secondary-sm .label-text {
+    .metric-strip-item .label-text {
       font-size: 0.8125rem;
       color: var(--text-3);
       line-height: 1.35;
@@ -260,7 +216,7 @@
     .prose p {
       font-size: 0.9375rem;
       line-height: 1.8;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       margin-bottom: 1rem;
     }
     .prose p:last-child { margin-bottom: 0; }
@@ -283,7 +239,7 @@
       display: flex;
       gap: 0.75rem;
       font-size: 0.9375rem;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       line-height: 1.65;
     }
 
@@ -467,37 +423,26 @@
     <div class="container">
       <div class="content-stack">
 
-        <!-- TL;DR -->
+        <!-- Summary -->
         <section>
-          <span class="label">TL;DR</span>
-          <div class="tldr-box">
-            <p>Built a production TPA compliance platform solo at Nassau Financial Group, from ETL through dashboard, that automated quality reviews across <strong>120K+ insurance policies</strong> and <strong>8 activity types</strong>. Integrated 7 AWS data sources, designed a configurable weighted scoring engine, and shipped a self-serve R Shiny dashboard to a 30-person compliance team. Reduced manual review time by <strong>60%</strong>. Presented to 50+ stakeholders including C-level executives.</p>
-          </div>
-        </section>
-
-        <!-- Outcomes -->
-        <section>
-          <span class="label">Outcomes</span>
-          <!-- Primary metric: thesis-level claim, typeset large in Geist Mono, amber -->
-          <div class="metric-primary">
-            <div class="value">60%</div>
-            <div class="label-text">reduction in manual review time</div>
-          </div>
-          <!-- Secondary metrics: descending weight, no cards, no borders -->
-          <div class="metric-secondary-group">
-            <div class="metric-secondary-wide">
-              <div class="value">120K+</div>
-              <div class="label-text">insurance policies across 7 AWS activity streams</div>
+          <span class="label">Summary</span>
+          <p class="summary-sentence">ETL pipelines, a configurable weighted scoring engine, and a self-serve R Shiny dashboard, built solo and shipped to Nassau Financial Group's 30-person compliance team, automating quality review across 120K+ insurance policies.</p>
+          <div class="metric-strip">
+            <div class="metric-strip-item">
+              <div class="value">60%</div>
+              <div class="label-text">reduction in manual<br>review time</div>
             </div>
-            <div class="metric-secondary-pair">
-              <div class="metric-secondary-sm">
-                <div class="value">30</div>
-                <div class="label-text">compliance analysts served</div>
-              </div>
-              <div class="metric-secondary-sm">
-                <div class="value">50+</div>
-                <div class="label-text">stakeholders incl. C-suite</div>
-              </div>
+            <div class="metric-strip-item">
+              <div class="value">120K+</div>
+              <div class="label-text">insurance policies<br>across 7 AWS streams</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">30</div>
+              <div class="label-text">compliance<br>analysts served</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">50+</div>
+              <div class="label-text">stakeholders<br>incl. C-suite</div>
             </div>
           </div>
         </section>
@@ -507,95 +452,18 @@
           <span class="label">Problem &amp; Approach</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Manual Oversight at Scale</h2>
           <div class="prose">
-            <p>Nassau manages 120K+ insurance policies through third-party administrators responsible for transactions, claims, disbursements, and valuations. Compliance review was fully manual: analysts pulled reports from disparate systems, reconciled entity mismatches by hand, and scored quality inconsistently across 8 activity types, with no historical trend data and no self-serve path.</p>
-            <p>I was brought in as the sole developer to build the system end to end. The binding constraint was that compliance analysts aren't engineers, so the solution had to be entirely self-serve. That ruled out ad-hoc SQL and pointed toward R Shiny as the delivery layer, with parquet-backed storage via Apache Arrow for persistent, auditable records.</p>
-            <p>For scoring, I designed an activity-specific weighted system rather than a single global score. Disbursement reviews carry different risk profiles than routine transaction checks, so weights and pass thresholds are defined per activity type and externalized as config, the team can tune the system as their understanding matures without a code deploy.</p>
+            <p>The binding constraint going in: compliance analysts aren't engineers. That ruled out every solution that required a data pull, a query, or a code change to get an answer. The delivery layer had to be entirely self-serve, or it wouldn't get used.</p>
+            <p>The problem itself was 120K+ insurance policies reviewed manually across 7 AWS data sources. Analysts were reconciling entity mismatches by hand, scoring quality inconsistently across 8 activity types, with no historical data to track whether a TPA was actually improving.</p>
+            <p>I built the system solo: ETL, scoring engine, dashboard. One early decision shaped everything else: activity-specific weights instead of a single global score. Disbursement reviews and routine transaction checks carry different risk profiles. Weights and pass thresholds are externalized as config, so the team can tune the system as their understanding matures without a code deploy.</p>
           </div>
         </section>
 
-        <!-- Architecture -->
+        <!-- WHAT I LEARNED -->
         <section>
-          <span class="label">Architecture</span>
-          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">System Overview</h2>
-
-          <div class="arch-block" style="margin-bottom: 2rem;">
-            <pre>
-AWS Enterprise Data Warehouse (7 activity streams)
-  │
-  └──► ETL Pipeline  [processing_data.Rmd]
-         │  monthly delta pulls, entity dedup, schema normalization
-         │
-         └──► Parquet Data Layer  [Apache Arrow]
-                │  columnar storage, audit trail persistence
-                │
-                └──► Compliance Scoring Engine
-                       │  activity-specific weights, configurable thresholds
-                       │  12-month rolling quality trends
-                       │
-                       └──► R Shiny Dashboard
-                              │  self-serve · reactive filters · export
-                              │
-                              └──► 30-person compliance team</pre>
-          </div>
-
+          <span class="label">WHAT I LEARNED</span>
           <div class="prose">
-            <h3>1. ETL Pipeline</h3>
-            <p>The pipeline (<code>processing_data.Rmd</code>) pulls from 7 insurance activity streams in the AWS Enterprise Data Warehouse: transactions, claims, disbursements, policies, automated activities, and annuity/life valuations. Each source has its own schema and update cadence, requiring activity-specific ingestion logic.</p>
-            <ul class="prose-list">
-              <li>Monthly delta processing: only new or updated records are pulled each run</li>
-              <li>Many-to-many entity deduplication across roles, names, and agent IDs using latest-record logic</li>
-              <li>Output written to parquet via Apache Arrow for fast reads and audit trail persistence</li>
-              <li>Handles 1M–100M row datasets across the full policy book</li>
-            </ul>
-
-            <h3>2. Compliance Scoring Engine</h3>
-            <p>The scoring engine evaluates each policy review against activity-specific weighted checklists. Rather than a one-size-fits-all quality score, each of the 8 activity types has its own category weights and configurable pass threshold, defaulting to 80%.</p>
-            <ul class="prose-list">
-              <li>Weighted scoring per activity type: high-risk activities carry greater weight toward overall compliance score</li>
-              <li>Dollar-risk classification (High / Low / Normal) applied via configurable threshold rules</li>
-              <li>Pass/fail determination at configurable threshold, defaulting to 80%</li>
-              <li>12-month rolling quality trend computed per TPA for longitudinal oversight</li>
-            </ul>
-
-            <h3>3. R Shiny Dashboard</h3>
-            <p>The dashboard (<code>insurance_oversight_app.R</code>) is the primary interface for the 30-person compliance team. Built for self-serve use: analysts can flag reviews, adjust scoring thresholds, and track policy status without engineering support.</p>
-            <ul class="prose-list">
-              <li>Executive KPI panels: contract counts, completion rates, risk breakdowns by TPA</li>
-              <li>Activity-level quality assessment with drill-down per policy</li>
-              <li>Risk tier classification (High / Low / Normal) with exception flagging</li>
-              <li>12-month trend charts via Plotly and ggplot2</li>
-              <li>Interactive data tables (DT) for analyst-level review and export</li>
-              <li>Reactive programming: all views update instantly on filter changes</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- IF I WERE TO REVISIT IT — editorial label, verbatim -->
-        <section>
-          <span class="label">IF I WERE TO REVISIT IT</span>
-          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1rem;">What Scales, What Doesn't</h2>
-          <div class="prose revisit-intro">
-            <p>It was designed to scale within a bounded compliance workflow: parquet storage, configurable thresholds, and modular ETL all hold up well. The main architectural tradeoff I'd revisit is the parquet upsert pattern for review persistence, which would need a proper indexed database at higher review volumes.</p>
-          </div>
-          <div class="revisit-grid">
-            <div>
-              <p class="revisit-col-head">What scales well</p>
-              <ul class="prose-list">
-                <li><strong>Parquet storage:</strong> columnar format handles wide, sparse insurance data efficiently and reads far faster than CSVs at large row counts</li>
-                <li><strong>Externalized config:</strong> thresholds like <code>HIGH_THRESHOLD</code> and <code>quality_pass_threshold</code> adapt to new business rules without code changes</li>
-                <li><strong>Contract sampling design:</strong> pulling 50 contracts per month per stream keeps memory usage bounded regardless of warehouse growth</li>
-                <li><strong>Modular ETL:</strong> each activity stream is processed independently, so adding a new stream is additive rather than a refactor</li>
-              </ul>
-            </div>
-            <div>
-              <p class="revisit-col-head">What doesn't</p>
-              <ul class="prose-list">
-                <li><strong><code>save_review_to_parquet():</code></strong> reads the full file, modifies in memory, rewrites the whole thing. Fine at a few hundred reviews; an O(n) bottleneck at tens of thousands. Indexed upserts in a real database would replace this</li>
-                <li><strong><code>collect()</code> everywhere:</strong> every stream is fully pulled into R memory before filtering. Works at current volumes; breaks under production-scale row counts without lazy evaluation or server-side filtering</li>
-                <li><strong>Hard-coded checklists:</strong> adding a new insurance product type requires a code deploy, not a config change. A database-driven checklist system would be more extensible</li>
-                <li><strong>Single-threaded Shiny:</strong> handles a 30-person team fine; for 300 concurrent users it would need async processing or a different framework</li>
-              </ul>
-            </div>
+            <p>The technical build was maybe 40% of the job.</p>
+            <p>The scoring engine worked on my laptop weeks before a compliance analyst could actually use it. Not because of bugs, but because the gap between working code and deployable code is mostly about the people using it. Designing a UI that required no training, handling edge cases my clean test files never exposed, writing queries fast enough not to time out on 100M rows. That was the other 60%.</p>
           </div>
         </section>
 

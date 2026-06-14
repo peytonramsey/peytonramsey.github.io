@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -17,16 +17,16 @@
   <style>
     /* ── DESIGN TOKENS ──────────────────────────────────────── */
     :root {
-      --bg-base:     #0f0f0e;
-      --bg-surface:  #161614;
-      --bg-card:     #1c1b19;
-      --bg-elevated: #222120;
+      --bg-base:     #f7f6f4;
+      --bg-surface:  #ffffff;
+      --bg-card:     #f0efed;
+      --bg-elevated: #e8e7e4;
 
-      --text-1: #cdccca;
-      --text-2: #797876;
-      --text-3: #5a5957;
-      --accent:  #e8a035;
-      --border:  oklch(from #cdccca l c h / 0.10);
+      --text-1: #1a1918;
+      --text-2: #4a4947;
+      --text-3: #7a7875;
+      --accent:  #b45309;
+      --border:  rgba(26, 25, 24, 0.12);
 
       --font-body:    'Satoshi', system-ui, sans-serif;
       --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
@@ -57,7 +57,7 @@
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track  { background: var(--bg-base); }
-    ::-webkit-scrollbar-thumb  { background: var(--bg-elevated); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb  { background: var(--text-3); border-radius: 3px; }
 
     /* ── TYPOGRAPHY ─────────────────────────────────────────── */
     h1, h2, h3, h4 {
@@ -89,7 +89,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(15, 15, 14, 0.92);
+      background: rgba(247, 246, 244, 0.93);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -179,7 +179,7 @@
       font-size: 0.6875rem;
       letter-spacing: 0.06em;
       color: var(--accent);
-      border: 1px solid oklch(from #e8a035 l c h / 0.30);
+      border: 1px solid rgba(180, 83, 9, 0.25);
       border-radius: 4px;
       padding: 0.2rem 0.5rem;
     }
@@ -195,83 +195,39 @@
       gap: clamp(3rem, 6vw, 5rem);
     }
 
-    /* ── TL;DR BOX — amber left border, never teal ──────────── */
-    .tldr-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--accent);
-      border-radius: var(--radius-card);
-      padding: 1.5rem;
-    }
-
-    .tldr-box p {
+    /* ── SUMMARY STRIP ─────────────────────────────────────── */
+    .summary-sentence {
       font-size: 0.9375rem;
       line-height: 1.75;
-      color: rgba(205, 204, 202, 0.85);
-      margin: 0;
+      color: var(--text-2);
+      margin-bottom: 1.75rem;
+      max-width: 44rem;
     }
 
-    .tldr-box strong { color: var(--text-1); font-weight: 500; }
-
-    /* ── METRICS — pure typographic hierarchy ───────────────── */
-    /* Primary: thesis-level claim — Geist Mono, large, amber */
-    .metric-primary {
-      margin-bottom: 2rem;
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: 0 3rem;
+      justify-content: start;
     }
 
-    .metric-primary .value {
+    @media (max-width: 640px) {
+      .metric-strip { grid-template-columns: 1fr 1fr; row-gap: 1.5rem; }
+    }
+
+    .metric-strip-item .value {
       font-family: var(--font-mono);
-      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-size: clamp(1.5rem, 4vw, 2rem);
       color: var(--accent);
       line-height: 1;
-      margin-bottom: 0.375rem;
+      margin-bottom: 0.25rem;
     }
 
-    .metric-primary .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
+    .metric-strip-item:first-child .value {
+      font-size: clamp(2rem, 5vw, 2.75rem);
     }
 
-    /* Secondary: smaller, inline value + label */
-    .metric-secondary-group {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .metric-secondary-wide {
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
-    }
-
-    .metric-secondary-wide .value {
-      font-family: var(--font-mono);
-      font-size: 1.5rem;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .metric-secondary-wide .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
-      line-height: 1.4;
-    }
-
-    /* Tertiary pair — muted, smallest */
-    .metric-secondary-pair {
-      display: flex;
-      gap: 2.5rem;
-    }
-
-    .metric-secondary-sm .value {
-      font-family: var(--font-mono);
-      font-size: 1.125rem;
-      color: var(--text-2);
-      margin-bottom: 0.2rem;
-    }
-
-    .metric-secondary-sm .label-text {
+    .metric-strip-item .label-text {
       font-size: 0.8125rem;
       color: var(--text-3);
       line-height: 1.35;
@@ -281,7 +237,7 @@
     .prose p {
       font-size: 0.9375rem;
       line-height: 1.8;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       margin-bottom: 1rem;
     }
     .prose p:last-child { margin-bottom: 0; }
@@ -305,7 +261,7 @@
       display: flex;
       gap: 0.75rem;
       font-size: 0.9375rem;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       line-height: 1.65;
     }
 
@@ -355,12 +311,12 @@
     .data-table th:last-child { text-align: right; padding-right: 0; }
 
     .data-table tbody tr {
-      border-bottom: 1px solid oklch(from #cdccca l c h / 0.05);
+      border-bottom: 1px solid var(--border);
     }
 
     .data-table td {
       padding: 0.625rem 1.5rem 0.625rem 0;
-      color: rgba(205, 204, 202, 0.75);
+      color: var(--text-3);
       vertical-align: top;
       line-height: 1.5;
     }
@@ -574,37 +530,26 @@
     <div class="container">
       <div class="content-stack">
 
-        <!-- TL;DR -->
+        <!-- Summary -->
         <section>
-          <span class="label">TL;DR</span>
-          <div class="tldr-box">
-            <p>Built a deployed macroeconomic anomaly detection system that ingests 7 FRED indicators in real time, runs a <strong>multivariate LSTM Autoencoder</strong>, and flags periods where the macro environment deviates from learned normal patterns. The anomaly threshold is calibrated on a pre-2007 baseline (mean + 2 std = <strong>0.0203</strong>), and the model correctly identified all three target events: the <strong>2008 GFC</strong>, <strong>COVID-19 shock</strong>, and <strong>2022 Fed rate cycle</strong>, with minimal false positives in the 1990–2007 baseline. Flagged windows are passed to Llama-3.1-8B for plain-English explanation. Live on Hugging Face Spaces via Gradio with FastAPI and MLflow tracking.</p>
-          </div>
-        </section>
-
-        <!-- Outcomes -->
-        <section>
-          <span class="label">Outcomes</span>
-          <!-- Primary metric: thesis-level claim, typeset large in Geist Mono, amber -->
-          <div class="metric-primary">
-            <div class="value">3/3</div>
-            <div class="label-text">target crises correctly identified, GFC, COVID-19, 2022 Fed shock</div>
-          </div>
-          <!-- Secondary metrics: descending weight, no cards, no borders -->
-          <div class="metric-secondary-group">
-            <div class="metric-secondary-wide">
-              <div class="value">0.0203</div>
-              <div class="label-text">anomaly threshold, calibrated on pre-2007 calm baseline (mean + 2 std)</div>
+          <span class="label">Summary</span>
+          <p class="summary-sentence">An LSTM Autoencoder trained on pre-2007 FRED data to detect macroeconomic crises using reconstruction error alone, no labeled anomalies, no crisis dates during training. Deployed on Hugging Face Spaces with Llama-3.1-8B for plain-English anomaly explanations.</p>
+          <div class="metric-strip">
+            <div class="metric-strip-item">
+              <div class="value">3/3</div>
+              <div class="label-text">target crises flagged<br>(GFC, COVID, 2022 Fed shock)</div>
             </div>
-            <div class="metric-secondary-pair">
-              <div class="metric-secondary-sm">
-                <div class="value">7</div>
-                <div class="label-text">FRED indicators<br/>jointly modeled</div>
-              </div>
-              <div class="metric-secondary-sm">
-                <div class="value">32yr</div>
-                <div class="label-text">training window<br/>(1990–2022)</div>
-              </div>
+            <div class="metric-strip-item">
+              <div class="value">0.0203</div>
+              <div class="label-text">anomaly threshold,<br>pre-2007 baseline</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">7</div>
+              <div class="label-text">FRED indicators<br>jointly modeled</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">32yr</div>
+              <div class="label-text">training window<br>(1990–2022)</div>
             </div>
           </div>
         </section>
@@ -614,115 +559,11 @@
           <span class="label">Problem &amp; Approach</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">The Fintech Risk Team Problem</h2>
           <div class="prose">
-            <p>Fintech risk teams, especially those running anomaly detection and macro risk monitoring, follow a core loop: <strong style="color: var(--text-1); font-weight: 500;">flag changes, identify root causes, generate response rules</strong>. The challenge is that macroeconomic regime shifts don't announce themselves. They emerge from the co-movement of multiple indicators: credit spreads widen as unemployment rises while the Fed cuts rates simultaneously. No single series captures that.</p>
-            <p>Monitoring 7 macro indicators independently fails to capture those joint dynamics. The 2008 GFC, for example, wasn't a credit spread anomaly or an unemployment anomaly in isolation; it was the simultaneous, correlated deterioration across all of them that signaled a genuine regime shift. A univariate model on any single series would have missed it or flagged it late.</p>
-            <p>The goal was a system that learns the normal co-movement structure across macro indicators and flags deviations from that structure as a single anomaly signal, along with a plain-English explanation of what likely drove the deviation.</p>
-            <p>This project also builds directly on a prior <strong style="color: var(--text-1); font-weight: 500;">VECM analysis in R</strong> on 4 of the same FRED series, which identified 3 cointegrating relationships among CPI, Industrial Production, Retail Sales, and Unemployment. That finding confirmed the series share long-run equilibrium dynamics and directly motivated the multivariate design: rather than 7 independent models, one joint model learns the co-movement structure.</p>
-            <h3>LSTM Autoencoder Over Forecasting</h3>
-            <p>The standard LSTM setup for time series is a forecasting model: predict the next step and flag large prediction errors as anomalies. That approach was ruled out for two reasons. First, macro series are noisy enough that forecasting errors are high even in normal conditions, making the threshold unstable. Second, a forecasting model is directional: it flags a specific value being wrong, not a structural deviation in the joint pattern.</p>
-            <p>An autoencoder inverts this: train the model to <strong style="color: var(--text-1); font-weight: 500;">reconstruct</strong> normal sequences, not predict future ones. At inference time, high reconstruction error means the current window doesn't look like anything the model learned during training, which is the anomaly signal. The MSE across all 7 features and all 12 time steps collapses into a single number per window that can be directly compared to a stable threshold.</p>
-            <p>The threshold calibration approach was also deliberate. An initial attempt using percentile-based thresholds (85th, 95th) on the full reconstruction error distribution produced nearly identical values because the crisis events in the training data distort the upper tail. The fix was calibrating on the <strong style="color: var(--text-1); font-weight: 500;">pre-2007 baseline only</strong>, representing stable macro conditions before any major crisis entered the data. Mean + 2 std on that calm period gives a threshold that reflects genuine normal variation without being inflated by the events the model is trying to detect.</p>
+            <p>Fintech risk teams follow a core loop: <strong style="color: var(--text-1); font-weight: 500;">flag changes, identify root causes, generate response rules</strong>. The challenge is that macroeconomic regime shifts don't announce themselves. They emerge from the co-movement of multiple indicators simultaneously. The 2008 GFC wasn't a credit spread anomaly in isolation; it was the correlated deterioration across credit, unemployment, and rates at the same time. A univariate model on any single series would have missed it or flagged it late. A prior VECM analysis confirmed cointegration among 4 of these FRED series, motivating a joint multivariate model over 7 independent ones.</p>
+            <p>The standard LSTM for time series predicts the next step and flags large prediction errors. That approach was ruled out because macro series are noisy enough that forecasting errors are high even in normal conditions. An autoencoder inverts this: train the model to <strong style="color: var(--text-1); font-weight: 500;">reconstruct</strong> normal sequences. High reconstruction error at inference means the current window doesn't match anything from training. That's the anomaly signal, stable and threshold-able.</p>
           </div>
         </section>
 
-        <!-- Architecture -->
-        <section>
-          <span class="label">Architecture</span>
-          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Four-Layer System</h2>
-
-          <div class="arch-cols" style="margin-bottom: 2rem;">
-            <div class="arch-block">
-              <pre>Detection Layer (PyTorch)
-
-FRED Data (7 series)
-  │
-  └──► MinMaxScaler
-         │  fit on train only
-         │
-         └──► 12-Month Windows
-                │  batch × 12 × 7
-                │
-                └──► LSTM Encoder
-                       │  2-layer, hidden=64
-                       │
-                       └──► LSTM Decoder
-                              │  2-layer, hidden=64
-                              │
-                              └──► MSE Reconstruction Error
-                                     anomaly score per window</pre>
-            </div>
-            <div class="arch-block">
-              <pre>Explanation + Demo Layer
-
-Anomaly Flagged
-  │
-  └──► Dates + Threshold
-         │
-         └──► Structured Prompt
-                │
-                └──► Llama-3.1-8B
-                       │  HF Inference API
-                       │
-                       └──► Plain-English Summary
-                              │
-                              └──► Gradio on HF Spaces
-                                     fastapi · mlflow tracking</pre>
-            </div>
-          </div>
-
-          <div class="prose">
-            <h3>Model Architecture</h3>
-          </div>
-
-          <table class="data-table" style="margin-top: 0.75rem;">
-            <thead>
-              <tr>
-                <th>Component</th>
-                <th>Config</th>
-                <th>Role</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="color: var(--text-1);">Encoder</td>
-                <td><code>2-layer LSTM, hidden=64</code></td>
-                <td>Compresses 12×7 sequence into hidden state</td>
-              </tr>
-              <tr>
-                <td style="color: var(--text-1);">Decoder</td>
-                <td><code>2-layer LSTM, hidden=64</code></td>
-                <td>Reconstructs full sequence from hidden state</td>
-              </tr>
-              <tr>
-                <td style="color: var(--text-1);">Output</td>
-                <td><code>Linear(64, 7)</code></td>
-                <td>Projects back to 7 features per time step</td>
-              </tr>
-              <tr>
-                <td style="color: var(--text-1);">Loss</td>
-                <td><code>MSELoss</code></td>
-                <td>Per-window reconstruction error = anomaly score</td>
-              </tr>
-              <tr>
-                <td style="color: var(--text-1);">Optimizer</td>
-                <td><code>Adam, lr=0.001, 100 epochs</code></td>
-                <td>Standard for sequence models</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="prose" style="margin-top: 2rem;">
-            <h3>Key Design Decisions</h3>
-            <ul class="prose-list">
-              <li><strong>Autoencoder vs forecasting LSTM:</strong> reconstruction error is a stable, threshold-able anomaly signal; forecasting error is noisy and directional</li>
-              <li><strong>Multivariate (7 series):</strong> VECM analysis confirmed cointegration across 4 of these series, justifying a joint model that captures co-movement structure</li>
-              <li><strong>Pre-2007 threshold calibration:</strong> percentile-based thresholds on the full distribution were distorted by the crisis events in training data; the calm baseline isolates genuine normal variation</li>
-              <li><strong>MinMaxScaler fit on train only:</strong> prevents future price levels from bleeding into the scaler's normalization range (data leakage)</li>
-              <li><strong>12-month window:</strong> matches monthly data granularity and captures annual macro cycles; short enough to keep sequence length tractable</li>
-              <li><strong>Inline inference in app.py:</strong> app.py fetches FRED data and runs inference directly instead of calling a local FastAPI server, making it self-contained for HF Spaces deployment</li>
-            </ul>
-          </div>
-        </section>
 
         <!-- Data -->
         <section>
@@ -779,9 +620,6 @@ Anomaly Flagged
             </tbody>
           </table>
 
-          <div class="prose">
-            <p>Monthly frequency. Training window: January 1990 to December 2021 (32 years). Test window: January 2022 to present. A <code>MinMaxScaler</code> is fit on the training data only and applied to all other windows, preventing data leakage. Missing values are dropped after aligning all series on the date index. Sequences are created with a 12-month sliding window (shape: batch × 12 × 7), matching the monthly granularity and capturing annual macro cycles.</p>
-          </div>
         </section>
 
         <!-- Threshold Calibration -->
@@ -790,7 +628,7 @@ Anomaly Flagged
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Why 0.0203</h2>
           <div class="prose">
             <p>The anomaly threshold is the most important hyperparameter in this system because it determines the false positive rate. Two approaches were tried before landing on the final one.</p>
-            <p><strong style="color: var(--text-1); font-weight: 500;">Attempt 1: percentile-based.</strong> Thresholds at the 85th and 95th percentiles of reconstruction error across the full history produced values of 0.1565 and 0.1571, nearly identical. The reason: crisis periods like 2008 and 2020 inflate the upper tail of the distribution, compressing the difference between percentile cutoffs. Neither threshold correctly flagged all three known events.</p>
+            <p><strong style="color: var(--text-1); font-weight: 500;">Attempt 1: percentile-based.</strong> Thresholds at the 85th and 95th percentiles of reconstruction error across the full history produced values of 0.1565 and 0.1571, nearly identical. The reason is that crisis periods like 2008 and 2020 inflate the upper tail of the distribution, compressing the difference between percentile cutoffs. Neither threshold correctly flagged all three known events.</p>
             <p><strong style="color: var(--text-1); font-weight: 500;">Attempt 2: hardcoded.</strong> Setting threshold = 0.04 by visual inspection of the reconstruction error plot worked in the sense that it flagged the right events, but it was unprincipled and would not generalize.</p>
             <p><strong style="color: var(--text-1); font-weight: 500;">Final: pre-2007 calm baseline.</strong> Restrict the reference distribution to the period before any major crises entered the training data (1990 to 2007). Compute mean + 2 std on that subset. The result is 0.0203, a threshold grounded in what normal reconstruction error looks like during genuinely stable macro conditions. The pre-2007 period shows minimal false positives, and all three target events exceed it with clear margin.</p>
           </div>
@@ -833,46 +671,7 @@ Anomaly Flagged
           </table>
 
           <div class="prose" style="margin-top: 1.25rem;">
-            <p>The 2022 Fed shock is the most interesting case. Unlike 2008 and COVID (discrete shocks with clear onset and recovery), the Fed rate hiking cycle produced a <strong style="color: var(--text-1); font-weight: 500;">persistent regime shift</strong> in reconstruction error. The model doesn't just spike; it stays elevated through 2023–2025, reflecting that the macro environment hasn't returned to the learned normal. That pattern is real information: the system is correctly distinguishing between a temporary shock and a structural change in the macro regime.</p>
-          </div>
-        </section>
-
-        <!-- MLOps Layer -->
-        <section>
-          <span class="label">MLOps Layer</span>
-          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">MLflow Experiment Tracking</h2>
-          <div class="prose">
-            <p>All training runs are logged via MLflow. The experiment tracks both the parameters that define the model and the metrics that evaluate it, so any configuration can be reproduced from the log.</p>
-          </div>
-          <div style="display: grid; gap: 1rem; margin-top: 1.25rem;">
-            <div style="display: grid; gap: 1rem;">
-              <!-- two columns on wider screens -->
-              <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));">
-                <div class="stack-card">
-                  <div class="stack-card-head">Logged Parameters</div>
-                  <ul class="prose-list">
-                    <li><code>input_size</code> = 7</li>
-                    <li><code>hidden_size</code> = 64</li>
-                    <li><code>num_layers</code> = 2</li>
-                    <li><code>window_size</code> = 12</li>
-                    <li><code>epochs</code> = 100</li>
-                    <li><code>learning_rate</code> = 0.001</li>
-                    <li><code>threshold_method</code> = calm_baseline_mean+2std</li>
-                    <li><code>threshold_baseline_end</code> = 2007-01-01</li>
-                  </ul>
-                </div>
-                <div class="stack-card">
-                  <div class="stack-card-head">Logged Metrics + Artifacts</div>
-                  <ul class="prose-list">
-                    <li><code>threshold</code> = 0.0203</li>
-                    <li><code>n_anomalies</code> across full history</li>
-                    <li><code>final_train_loss</code></li>
-                    <li><code>model.pt</code> via mlflow.pytorch.log_model</li>
-                    <li><code>scaler.pkl</code> + <code>threshold.pkl</code> saved for API</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+            <p>The 2022 Fed shock is the most interesting case. Unlike 2008 and COVID (discrete shocks with clear onset and recovery), the Fed rate hiking cycle produced a <strong style="color: var(--text-1); font-weight: 500;">persistent regime shift</strong> in reconstruction error. The model doesn't just spike; it stays elevated through 2023–2025, reflecting that the macro environment hasn't returned to the learned normal. The system is correctly distinguishing between a temporary shock and a structural change in the macro regime.</p>
           </div>
         </section>
 
@@ -881,8 +680,8 @@ Anomaly Flagged
           <span class="label">Explanation Layer</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">LLM Post-Processing via Llama-3.1-8B</h2>
           <div class="prose">
-            <p>When the model flags anomalies in a selected date range, the flagged window dates and summary statistics are passed to <code>meta-llama/Llama-3.1-8B-Instruct</code> via the Hugging Face Inference API. The model returns a 2–3 sentence plain-English explanation of the likely macroeconomic cause.</p>
-            <p>This layer is intentionally thin. The prompt passes only the flagged dates, the threshold value, and the total anomaly count, so the LLM is doing pattern matching against its macro knowledge, not data analysis. The goal is interpretability for the user, not a second layer of modeling.</p>
+            <p>When the model flags anomalies in a selected date range, the flagged window dates and summary statistics are passed to <code>meta-llama/Llama-3.1-8B-Instruct</code> via the Hugging Face Inference API. The model returns a 2-3 sentence plain-English explanation of the likely macroeconomic cause.</p>
+            <p>This layer is intentionally thin because the goal is easy interpretation. The prompt passes only the flagged dates, the threshold value, and the total anomaly count, so the LLM is doing pattern matching against its macro knowledge.</p>
           </div>
           <div class="arch-block" style="margin-top: 1.25rem;">
             <pre>You are a macroeconomic analyst. An LSTM anomaly detection model
@@ -891,38 +690,12 @@ The anomaly threshold was {threshold}.
 There were {n_anomalies} anomalies total.
 In 2-3 sentences, explain what macroeconomic events likely caused these anomalies.</pre>
           </div>
-          <div class="prose" style="margin-top: 1.25rem;">
-            <p>The final model selection was <code>Llama-3.1-8B-Instruct</code> after two prior models failed: Mistral-7B did not support chat completion via the HF Inference API, and <code>zephyr-7b-beta</code> was not supported by any active provider. Llama-3.1-8B works on both local and HF Spaces environments via the same token.</p>
-          </div>
         </section>
 
-        <!-- IF I WERE TO REVISIT IT — editorial label, verbatim -->
+        <!-- WHAT I LEARNED -->
         <section>
-          <span class="label">IF I WERE TO REVISIT IT</span>
-          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1rem;">What Scales, What Doesn't</h2>
-          <div class="prose revisit-intro">
-            <p>The architecture is clean and the results are defensible. The main constraints are the static threshold and the monthly granularity ceiling, both by design, but real limits if the use case grows toward higher-frequency monitoring or multi-user production.</p>
-          </div>
-          <div class="revisit-grid">
-            <div>
-              <p class="revisit-col-head">What scales well</p>
-              <ul class="prose-list">
-                <li><strong>Pre-2007 baseline calibration:</strong> the calm-period threshold approach is principled and generalizes naturally to any domain where known event periods distort the full distribution. It's a reusable pattern.</li>
-                <li><strong>Multivariate joint model:</strong> the VECM-justified decision to model 7 series jointly instead of 7 independent models held up. The co-movement signal across transmissions channels is what makes the 2022 shock detectable at all, it wasn't a single-series event.</li>
-                <li><strong>Autoencoder over forecasting:</strong> reconstruction error as the anomaly score is more stable than prediction error for macro data. The threshold stays interpretable across model retraining and time windows.</li>
-                <li><strong>MLflow experiment tracking:</strong> with only one model in production, tracking matters less. But the logged configs and artifacts meant reproducing any prior run was a single command during development, a habit worth keeping at any scale.</li>
-              </ul>
-            </div>
-            <div>
-              <p class="revisit-col-head">What doesn't</p>
-              <ul class="prose-list">
-                <li><strong>Monthly granularity ceiling:</strong> FRED monthly releases mean lags of 2–6 weeks before data reflects current conditions. For genuine real-time macro monitoring, daily proxies (Treasury yields, VIX, credit spreads) would be substituted where available.</li>
-                <li><strong>Single static threshold:</strong> the 0.0203 threshold was calibrated once on a fixed baseline. Retraining on extended data (adding post-2022 years) would require recalibrating. A Bayesian updating approach to the threshold would be more robust.</li>
-                <li><strong>Inline inference on HF Spaces:</strong> running inference and data fetching inline in app.py is self-contained but brittle if FRED API rate limits or latency degrade. A proper backend with caching and retry logic would be the production version.</li>
-                <li><strong>LLM explanation quality:</strong> the explanations are useful for familiar crises (the model pattern-matches well on 2008, COVID, and Fed policy). For genuinely novel macro events, the LLM would hallucinate plausible-sounding causes. A retrieval layer grounding it in contemporaneous news would fix this.</li>
-              </ul>
-            </div>
-          </div>
+          <span class="label">WHAT I LEARNED</span>
+          <p class="revisit-intro">Training on pre-crisis data and testing on held-out crises is intellectually satisfying, but it's not a real backtest. The model "identified" 2008, 2020, and the 2022 rate cycle because I designed it to be sensitive to exactly the kind of multivariate divergence those events caused. The honest question is whether it would have flagged them in real time, before the narrative was clear, and I genuinely don't know. That uncertainty is now how I evaluate all anomaly detection work.</p>
         </section>
 
         <!-- Tech Stack — chips appear ONCE on this page, here only -->

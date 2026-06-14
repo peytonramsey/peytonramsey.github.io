@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -17,16 +17,16 @@
   <style>
     /* ── DESIGN TOKENS ──────────────────────────────────────── */
     :root {
-      --bg-base:     #0f0f0e;
-      --bg-surface:  #161614;
-      --bg-card:     #1c1b19;
-      --bg-elevated: #222120;
+      --bg-base:     #f7f6f4;
+      --bg-surface:  #ffffff;
+      --bg-card:     #f0efed;
+      --bg-elevated: #e8e7e4;
 
-      --text-1: #cdccca;
-      --text-2: #797876;
-      --text-3: #5a5957;
-      --accent:  #e8a035;
-      --border:  oklch(from #cdccca l c h / 0.10);
+      --text-1: #1a1918;
+      --text-2: #4a4947;
+      --text-3: #7a7875;
+      --accent:  #b45309;
+      --border:  rgba(26, 25, 24, 0.12);
 
       --font-body:    'Satoshi', system-ui, sans-serif;
       --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
@@ -57,7 +57,7 @@
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track  { background: var(--bg-base); }
-    ::-webkit-scrollbar-thumb  { background: var(--bg-elevated); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb  { background: var(--text-3); border-radius: 3px; }
 
     /* ── TYPOGRAPHY ─────────────────────────────────────────── */
     h1, h2, h3, h4 {
@@ -89,7 +89,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(15, 15, 14, 0.92);
+      background: rgba(247, 246, 244, 0.93);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -179,7 +179,7 @@
       font-size: 0.6875rem;
       letter-spacing: 0.06em;
       color: var(--accent);
-      border: 1px solid oklch(from #e8a035 l c h / 0.30);
+      border: 1px solid rgba(180, 83, 9, 0.25);
       border-radius: 4px;
       padding: 0.2rem 0.5rem;
     }
@@ -195,83 +195,39 @@
       gap: clamp(3rem, 6vw, 5rem);
     }
 
-    /* ── TL;DR BOX — amber left border, never teal ──────────── */
-    .tldr-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--accent);
-      border-radius: var(--radius-card);
-      padding: 1.5rem;
-    }
-
-    .tldr-box p {
+    /* ── SUMMARY STRIP ──────────────────────────────────────── */
+    .summary-sentence {
       font-size: 0.9375rem;
       line-height: 1.75;
-      color: rgba(205, 204, 202, 0.85);
-      margin: 0;
+      color: var(--text-2);
+      margin-bottom: 1.75rem;
+      max-width: 44rem;
     }
 
-    .tldr-box strong { color: var(--text-1); font-weight: 500; }
-
-    /* ── METRICS — pure typographic hierarchy ───────────────── */
-    /* Primary: thesis-level claim — Geist Mono, large, amber */
-    .metric-primary {
-      margin-bottom: 2rem;
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: 0 3rem;
+      justify-content: start;
     }
 
-    .metric-primary .value {
+    @media (max-width: 640px) {
+      .metric-strip { grid-template-columns: 1fr 1fr; row-gap: 1.5rem; }
+    }
+
+    .metric-strip-item .value {
       font-family: var(--font-mono);
-      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-size: clamp(1.5rem, 4vw, 2rem);
       color: var(--accent);
       line-height: 1;
-      margin-bottom: 0.375rem;
+      margin-bottom: 0.25rem;
     }
 
-    .metric-primary .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
+    .metric-strip-item:first-child .value {
+      font-size: clamp(2rem, 5vw, 2.75rem);
     }
 
-    /* Secondary: smaller, amber, inline value + label */
-    .metric-secondary-group {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .metric-secondary-wide {
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
-    }
-
-    .metric-secondary-wide .value {
-      font-family: var(--font-mono);
-      font-size: 1.5rem;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .metric-secondary-wide .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
-      line-height: 1.4;
-    }
-
-    /* Tertiary pair — muted, smallest */
-    .metric-secondary-pair {
-      display: flex;
-      gap: 2.5rem;
-    }
-
-    .metric-secondary-sm .value {
-      font-family: var(--font-mono);
-      font-size: 1.125rem;
-      color: var(--text-2);
-      margin-bottom: 0.2rem;
-    }
-
-    .metric-secondary-sm .label-text {
+    .metric-strip-item .label-text {
       font-size: 0.8125rem;
       color: var(--text-3);
       line-height: 1.35;
@@ -281,7 +237,7 @@
     .prose p {
       font-size: 0.9375rem;
       line-height: 1.8;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       margin-bottom: 1rem;
     }
     .prose p:last-child { margin-bottom: 0; }
@@ -304,7 +260,7 @@
       display: flex;
       gap: 0.75rem;
       font-size: 0.9375rem;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       line-height: 1.65;
     }
 
@@ -354,12 +310,12 @@
     .data-table th:last-child { text-align: right; padding-right: 0; }
 
     .data-table tbody tr {
-      border-bottom: 1px solid oklch(from #cdccca l c h / 0.05);
+      border-bottom: 1px solid var(--border);
     }
 
     .data-table td {
       padding: 0.625rem 1.5rem 0.625rem 0;
-      color: rgba(205, 204, 202, 0.75);
+      color: var(--text-3);
       vertical-align: top;
       line-height: 1.5;
     }
@@ -575,37 +531,26 @@
     <div class="container">
       <div class="content-stack">
 
-        <!-- TL;DR -->
+        <!-- Summary -->
         <section>
-          <span class="label">TL;DR</span>
-          <div class="tldr-box">
-            <p>Built a production RAG system that enables natural-language queries across 500+ financial articles, reducing research time from 30+ minutes to under 5 seconds. The system achieves <strong>92% retrieval precision</strong> and <strong>90% answer accuracy</strong> across 30 test queries, with FinBERT-powered sentiment analysis enriching every response. Deployed on Hugging Face Spaces via Docker with end-to-end latency of 2.5–4.5 seconds.</p>
-          </div>
-        </section>
-
-        <!-- Outcomes -->
-        <section>
-          <span class="label">Outcomes</span>
-          <!-- Primary metric: thesis-level claim, typeset large in Geist Mono, amber -->
-          <div class="metric-primary">
-            <div class="value">92%</div>
-            <div class="label-text">retrieval precision, top-5 results, 20–query evaluation</div>
-          </div>
-          <!-- Secondary metrics: descending weight, no cards, no borders -->
-          <div class="metric-secondary-group">
-            <div class="metric-secondary-wide">
-              <div class="value">90%</div>
-              <div class="label-text">answer accuracy across 30 factual test queries</div>
+          <span class="label">Summary</span>
+          <p class="summary-sentence">A RAG system that answers natural-language questions across 500+ financial news articles in under 5 seconds, replacing 30+ minutes of manual searching. Deployed on Hugging Face Spaces via Docker.</p>
+          <div class="metric-strip">
+            <div class="metric-strip-item">
+              <div class="value">92%</div>
+              <div class="label-text">retrieval precision,<br>top-5 results</div>
             </div>
-            <div class="metric-secondary-pair">
-              <div class="metric-secondary-sm">
-                <div class="value">&lt;5s</div>
-                <div class="label-text">end-to-end latency<br/>(2.5–4.5s avg)</div>
-              </div>
-              <div class="metric-secondary-sm">
-                <div class="value">86%</div>
-                <div class="label-text">FinBERT sentiment<br/>accuracy</div>
-              </div>
+            <div class="metric-strip-item">
+              <div class="value">90%</div>
+              <div class="label-text">answer accuracy,<br>30 test queries</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">&lt;5s</div>
+              <div class="label-text">end-to-end<br>latency</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">86%</div>
+              <div class="label-text">FinBERT sentiment<br>accuracy</div>
             </div>
           </div>
         </section>
@@ -617,68 +562,7 @@
           <div class="prose">
             <p>Financial markets generate approximately 10,000+ news articles daily across outlets like Bloomberg, Reuters, the Wall Street Journal, and MarketWatch. Analysts, portfolio managers, and traders need to rapidly synthesize this information to answer questions like "What are the current risks to tech stocks?" or "How is the Fed addressing inflation?"</p>
             <p>Traditional approaches are broken: manual research takes 30+ minutes per query, keyword search requires knowing exactly what to look for (5–10 minutes), and professional terminals like Bloomberg or FactSet cost thousands per seat. Generic LLMs hallucinate financial facts and have knowledge cutoffs. News aggregators can surface articles but can't synthesize or reason across them.</p>
-            <p>RAG was chosen over fine-tuning an LLM on financial data: fine-tuning requires expensive compute and goes stale within days as news changes, while RAG grounds every answer in a live, attributed knowledge base that can be updated without retraining. The key constraint shaping every decision was latency, a system that takes 30 seconds isn't useful in fast-moving markets, which drove the choice of a lightweight embedding model (MiniLM over larger alternatives), a curated 50-article corpus over an open-ended index, and a cloud-hosted inference API over a locally-quantized model.</p>
-          </div>
-        </section>
-
-        <!-- Architecture -->
-        <section>
-          <span class="label">Architecture</span>
-          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">System Design</h2>
-
-          <div class="arch-cols" style="margin-bottom: 2rem;">
-            <div class="arch-block">
-              <pre>Phase 1 — Offline Pipeline
-
-Finnhub API
-  │
-  └──► 5-Stage Filter
-         │  quality · relevance · dedup
-         │  scoring · diversity
-         │
-         └──► FinBERT Sentiment
-                │  per-article labels + scores
-                │
-                └──► Text Chunking
-                       │  1,000 char / 100 overlap
-                       │
-                       └──► MiniLM Embedding
-                              │  384-dim vectors
-                              │
-                              └──► ChromaDB
-                                     ~120 chunks · ~15 MB</pre>
-            </div>
-            <div class="arch-block">
-              <pre>Phase 2 — Online Query
-
-User Query
-  │
-  └──► Query Embedding
-         │  MiniLM · ~10ms
-         │
-         └──► Cosine Search (K=5)
-                │  ChromaDB · ~30-50ms
-                │
-                └──► Context Assembly
-                       │  chunks + sentiment metadata
-                       │
-                       └──► LLM Generation
-                              │  Llama-3.1-8B · 2–4s
-                              │
-                              └──► Cited Answer
-                                     title · source · URL</pre>
-            </div>
-          </div>
-
-          <div class="prose">
-            <h3>Key Component Decisions</h3>
-            <ul class="prose-list">
-              <li><strong>all-MiniLM-L6-v2</strong> for embeddings, fast CPU inference (~10ms/chunk) with strong semantic similarity at only 384 dimensions. Larger models added latency without meaningful precision gains at this corpus size.</li>
-              <li><strong>ChromaDB</strong> for vector storage, persistent, local, supports cosine similarity with metadata filtering. ~15 MB index for 120 chunks; no external dependency required.</li>
-              <li><strong>FinBERT (ProsusAI)</strong> for sentiment, domain-specific model trained on financial texts. 86% accuracy vs ~70% for generic BERT; "beat expectations" and similar financial language requires domain-aware signals.</li>
-              <li><strong>Dual LLM backends</strong>, Llama-3.1-8B-Instruct via HuggingFace Inference API (2–4s) for production; Phi-3 Mini via Ollama (5–10s) for local dev. Switching is a single environment variable.</li>
-              <li><strong>LangChain orchestration</strong>, structured prompt templates, context assembly, source attribution, and streaming token output. Reduced boilerplate for prompt construction and chain composition.</li>
-            </ul>
+            <p>RAG was chosen over fine-tuning an LLM on financial data: fine-tuning requires expensive compute and goes stale within days as news changes, while RAG grounds every answer in a live, attributed knowledge base that can be updated without retraining. The key constraint shaping every decision was latency. A system that takes 30 seconds isn't useful in fast-moving markets, which drove the choice of a lightweight embedding model (MiniLM over larger alternatives), a curated 50-article corpus over an open-ended index, and a cloud-hosted inference API over a locally-quantized model.</p>
           </div>
         </section>
 
@@ -771,38 +655,15 @@ User Query
           </table>
 
           <div class="prose">
-            <p>Sentiment validation: 50 articles manually labeled by human annotators. FinBERT achieved 86% overall agreement, 88% positive/negative precision, 82% neutral recall. Neutral class is hardest, financial news often has mixed signals, and article-level sentiment labels don't always reflect query-specific sentiment.</p>
+            <p>Sentiment validation: 50 articles manually labeled by human annotators. FinBERT achieved 86% overall agreement, 88% positive/negative precision, 82% neutral recall. Neutral class is hardest because financial news often has mixed signals, and article-level sentiment labels don't always reflect query-specific sentiment.</p>
             <p>Compared to manual research (30+ min) or Google Search (5–10 min), the system reduces query time by 95%+. The live demo is publicly accessible on Hugging Face Spaces.</p>
           </div>
         </section>
 
-        <!-- IF I WERE TO REVISIT IT — editorial label, verbatim -->
+        <!-- WHAT I LEARNED -->
         <section>
-          <span class="label">IF I WERE TO REVISIT IT</span>
-          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1rem;">What Scales, What Doesn't</h2>
-          <div class="prose revisit-intro">
-            <p>The core architecture holds up well for a single-user research tool. The main limitations stem from the static knowledge base and the 50-article corpus ceiling, both defensible given the latency constraints, but real bottlenecks if the use case scales to multi-user or real-time requirements.</p>
-          </div>
-          <div class="revisit-grid">
-            <div>
-              <p class="revisit-col-head">What scales well</p>
-              <ul class="prose-list">
-                <li><strong>Multi-stage filtering:</strong> the 90% noise reduction from 500+ to 50 articles was the single highest-leverage decision. More isn't better in RAG, a curated, high-quality corpus consistently outperforms a large noisy one at this scale.</li>
-                <li><strong>Domain-specific sentiment model:</strong> FinBERT's 86% vs ~70% for generic BERT isn't marginal, financial language has domain-specific signals ("beat expectations" = positive, "missed guidance" = negative) that generic models misclassify systematically.</li>
-                <li><strong>Dual LLM backends:</strong> supporting Ollama locally and HuggingFace cloud via a single environment variable meant fast iteration during development without burning API credits. The pattern generalizes well.</li>
-                <li><strong>Lightweight embedding model:</strong> MiniLM at 384 dimensions was the right call at this corpus size. Larger embedding models added 5–10× inference time for negligible precision gain on a 120-chunk index.</li>
-              </ul>
-            </div>
-            <div>
-              <p class="revisit-col-head">What doesn't</p>
-              <ul class="prose-list">
-                <li><strong>Static knowledge base:</strong> the system requires periodic re-ingestion for fresh news. Real-time updates would require webhook integration or a continuous ingestion pipeline, a natural next step that would make the tool genuinely useful for time-sensitive queries.</li>
-                <li><strong>Manual evaluation ceiling:</strong> 20–50 manually labeled samples is enough to identify weak points (neutral recall) but not enough to detect rare failure modes. A larger automated evaluation harness with ground-truth QA pairs would harden confidence in the 90% accuracy claim.</li>
-                <li><strong>Neutral sentiment recall:</strong> 82% recall on neutral sentiment is the known weak point. Article-level FinBERT labels don't always reflect query-specific sentiment, a chunk-level sentiment approach would be more precise.</li>
-                <li><strong>Single-tenant Spaces deployment:</strong> Hugging Face Spaces works well for a public demo; at production load it would need a proper API backend with request queuing and rate limiting.</li>
-              </ul>
-            </div>
-          </div>
+          <span class="label">WHAT I LEARNED</span>
+          <p class="revisit-intro">Latency is a UX constraint, not just an engineering metric. Users will tolerate a 4-second LLM response if the answer is good, but they'll abandon a 2-second response that's clearly wrong. Building the evaluation harness before fine-tuning retrieval parameters was the right call. It forced me to define "good answer" before I started optimizing for it.</p>
         </section>
 
         <!-- Tech Stack — chips appear ONCE on this page, here only -->

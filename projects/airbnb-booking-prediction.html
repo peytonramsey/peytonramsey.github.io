@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Airbnb Booking Prediction | Peyton Ramsey</title>
+  <title>Airbnb: US Market Classifier & Paris Investment Study | Peyton Ramsey</title>
   <meta name="description" content="CatBoost binary classifier on 374K US Airbnb listings and hyperlocal Popincourt Paris market analysis. Holdout AUC 0.966, 75+ engineered features, SHAP-backed investor recommendations." />
 
   <!-- Fontshare: Satoshi (body) + Cabinet Grotesk (headings) -->
@@ -17,16 +17,16 @@
   <style>
     /* ── DESIGN TOKENS ──────────────────────────────────────── */
     :root {
-      --bg-base:     #0f0f0e;
-      --bg-surface:  #161614;
-      --bg-card:     #1c1b19;
-      --bg-elevated: #222120;
+      --bg-base:     #f7f6f4;
+      --bg-surface:  #ffffff;
+      --bg-card:     #f0efed;
+      --bg-elevated: #e8e7e4;
 
-      --text-1: #cdccca;
-      --text-2: #797876;
-      --text-3: #5a5957;
-      --accent:  #e8a035;
-      --border:  oklch(from #cdccca l c h / 0.10);
+      --text-1: #1a1918;
+      --text-2: #4a4947;
+      --text-3: #7a7875;
+      --accent:  #b45309;
+      --border:  rgba(26, 25, 24, 0.12);
 
       --font-body:    'Satoshi', system-ui, sans-serif;
       --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
@@ -57,7 +57,7 @@
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track  { background: var(--bg-base); }
-    ::-webkit-scrollbar-thumb  { background: var(--bg-elevated); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb  { background: var(--text-3); border-radius: 3px; }
 
     /* ── TYPOGRAPHY ─────────────────────────────────────────── */
     h1, h2, h3, h4 {
@@ -88,7 +88,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(15, 15, 14, 0.92);
+      background: rgba(247, 246, 244, 0.93);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -168,81 +168,39 @@
       gap: clamp(3rem, 6vw, 5rem);
     }
 
-    /* ── TL;DR BOX ──────────────────────────────────────────── */
-    .tldr-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--accent);
-      border-radius: var(--radius-card);
-      padding: 1.5rem;
-    }
-
-    .tldr-box p {
+    /* ── SUMMARY STRIP ─────────────────────────────────────── */
+    .summary-sentence {
       font-size: 0.9375rem;
-      line-height: 1.80;
-      color: rgba(205, 204, 202, 0.85);
-      margin: 0;
+      line-height: 1.75;
+      color: var(--text-2);
+      margin-bottom: 1.75rem;
+      max-width: 44rem;
     }
 
-    .tldr-box strong { color: var(--text-1); font-weight: 500; }
-
-    /* ── METRICS ────────────────────────────────────────────── */
-    .metric-primary {
-      margin-bottom: 2rem;
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: 0 3rem;
+      justify-content: start;
     }
 
-    .metric-primary .value {
+    @media (max-width: 640px) {
+      .metric-strip { grid-template-columns: 1fr 1fr; row-gap: 1.5rem; }
+    }
+
+    .metric-strip-item .value {
       font-family: var(--font-mono);
-      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-size: clamp(1.5rem, 4vw, 2rem);
       color: var(--accent);
       line-height: 1;
-      margin-bottom: 0.375rem;
+      margin-bottom: 0.25rem;
     }
 
-    .metric-primary .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
+    .metric-strip-item:first-child .value {
+      font-size: clamp(2rem, 5vw, 2.75rem);
     }
 
-    .metric-secondary-group {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .metric-secondary-wide {
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
-    }
-
-    .metric-secondary-wide .value {
-      font-family: var(--font-mono);
-      font-size: 1.5rem;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .metric-secondary-wide .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
-      line-height: 1.4;
-    }
-
-    .metric-secondary-pair {
-      display: flex;
-      gap: 2.5rem;
-      flex-wrap: wrap;
-    }
-
-    .metric-secondary-sm .value {
-      font-family: var(--font-mono);
-      font-size: 1.125rem;
-      color: var(--text-2);
-      margin-bottom: 0.2rem;
-    }
-
-    .metric-secondary-sm .label-text {
+    .metric-strip-item .label-text {
       font-size: 0.8125rem;
       color: var(--text-3);
       line-height: 1.35;
@@ -252,7 +210,7 @@
     .prose p {
       font-size: 0.9375rem;
       line-height: 1.8;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       margin-bottom: 1rem;
     }
     .prose p:last-child { margin-bottom: 0; }
@@ -302,12 +260,12 @@
     .data-table th.right { text-align: right; padding-right: 0; }
 
     .data-table tbody tr {
-      border-bottom: 1px solid oklch(from #cdccca l c h / 0.05);
+      border-bottom: 1px solid var(--border);
     }
 
     .data-table td {
       padding: 0.625rem 1.5rem 0.625rem 0;
-      color: rgba(205, 204, 202, 0.75);
+      color: var(--text-3);
       vertical-align: top;
       line-height: 1.5;
     }
@@ -466,7 +424,7 @@
     .finding-body {
       font-size: 0.9375rem;
       line-height: 1.75;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
     }
 
     .finding-body strong { color: var(--text-1); font-weight: 500; }
@@ -495,7 +453,7 @@
     .revisit-body {
       font-size: 0.9375rem;
       line-height: 1.75;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
     }
 
     .revisit-body strong { color: var(--text-1); font-weight: 500; }
@@ -603,7 +561,7 @@
   <!-- ─── HEADER ─── -->
   <header class="page-header">
     <div class="container">
-      <h1>Airbnb Booking Prediction:<br/>US National + Paris Popincourt</h1>
+      <h1>Airbnb: US Market Classifier &amp; Paris Investment Study</h1>
       <p class="subtitle">Two-part project: a national-scale CatBoost classifier on 374K US listings, then a hyperlocal market analysis of Paris's 11th Arrondissement asking whether gentrification shifts the rules of what makes a short-term rental successful.</p>
       <div class="header-meta">
         <span>Peyton Ramsey</span>
@@ -622,39 +580,26 @@
     <div class="container">
       <div class="content-stack">
 
-        <!-- TL;DR -->
+        <!-- Summary -->
         <section>
-          <span class="label">TL;DR</span>
-          <div class="tldr-box">
-            <p>Built a CatBoost binary classifier to predict high-booking Airbnb listings (conversion rate > 5%) at two scales: a national US dataset of 374K listings achieving <strong>0.8668 Kaggle AUC</strong>, and a panel of 93,578 Popincourt, Paris listing-months achieving <strong>0.966 holdout AUC</strong>. The Paris analysis found that commercial operators — despite 15 years of market presence — book at 11.5% vs. 44.2% for casual hosts, a structural gap that price, location, and room type cannot close.</p>
-          </div>
-        </section>
-
-        <!-- Outcomes -->
-        <section>
-          <span class="label">Outcomes</span>
-          <div class="metric-primary">
-            <div class="value">0.966</div>
-            <div class="label-text">Holdout ROC-AUC, Popincourt CatBoost model, 34 tabular features, 80/20 stratified split</div>
-          </div>
-          <div class="metric-secondary-group">
-            <div class="metric-secondary-wide">
-              <div class="value">0.8668</div>
-              <div class="label-text">Kaggle leaderboard AUC, national US classifier, 374K listings, 78 features including 40-component text SVD</div>
+          <span class="label">Summary</span>
+          <p class="summary-sentence">National CatBoost classifier on 374K US listings (0.8668 Kaggle AUC), then retrained hyperlocal on 93K Popincourt, Paris listing-months. The Paris cut revealed a 6x booking rate gap between casual and commercial hosts that price and location cannot close.</p>
+          <div class="metric-strip">
+            <div class="metric-strip-item">
+              <div class="value">0.966</div>
+              <div class="label-text">holdout AUC,<br>Popincourt CatBoost model</div>
             </div>
-            <div class="metric-secondary-pair">
-              <div class="metric-secondary-sm">
-                <div class="value">6×</div>
-                <div class="label-text">booking rate gap<br/>commercial premium vs. casual budget</div>
-              </div>
-              <div class="metric-secondary-sm">
-                <div class="value">75+</div>
-                <div class="label-text">engineered features<br/>across 9 categories</div>
-              </div>
-              <div class="metric-secondary-sm">
-                <div class="value">0.018</div>
-                <div class="label-text">spatial cluster<br/>correlation with booking rate</div>
-              </div>
+            <div class="metric-strip-item">
+              <div class="value">0.8668</div>
+              <div class="label-text">Kaggle leaderboard AUC,<br>national US classifier</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">6×</div>
+              <div class="label-text">booking rate gap,<br>commercial vs. casual hosts</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">75+</div>
+              <div class="label-text">engineered features<br>across 9 categories</div>
             </div>
           </div>
         </section>
@@ -663,52 +608,18 @@
         <section>
           <span class="label">Problem &amp; Approach</span>
           <div class="prose">
-            <p>The core modeling problem is binary classification: given a listing's features, will it achieve a high booking rate (conversion rate > 5%)? Part I framed this at national scale using a Kaggle competition dataset of 374K US listings. Part II zoomed into Paris's Popincourt quarter to test whether a gentrifying market inverts the rules found nationally — specifically, whether commercial investment strategies that succeed in markets like Miami fail in a neighborhood shaped by rent control, tourist regulation, and cultural homogeneity.</p>
+            <p>The core modeling problem is binary classification: given a listing's features, will it achieve a high booking rate (conversion rate > 5%)? Part I framed this at national scale using a Kaggle competition dataset of 374K US listings. Part II zoomed into Paris's Popincourt quarter to test whether a gentrifying market inverts the rules found nationally, specifically whether commercial investment strategies that succeed in markets like Miami fail in a neighborhood shaped by rent control, tourist regulation, and cultural homogeneity.</p>
             <p>Three research questions drove Part II: Is price the primary lever for booking success? Does host type independently predict performance beyond what price explains? Does within-neighborhood geography create exploitable micro-market advantages? Each question was answered through EDA first, then validated by SHAP importance rankings from the trained model.</p>
             <p>CatBoost was chosen for its native categorical encoding, which avoids ordinal encoding leakage, and its ordered target statistics, which prevent within-fold target leakage during training. Optuna (40 Bayesian trials) tuned hyperparameters. The central engineering challenge throughout was leakage prevention: TF-IDF and SVD were fit separately inside each CV fold, and neighborhood booking rates were computed out-of-fold with Bayesian shrinkage (λ=30) to avoid the target bleeding into features.</p>
           </div>
         </section>
 
-        <!-- Architecture -->
-        <section>
-          <span class="label">Architecture</span>
-          <div class="arch-block">
-            <pre><code>Inside Airbnb (374K US listings · 56 raw columns)
-         │
-         ▼
-┌────────────────────────────────────────┐
-│         Feature Engineering (75+)     │
-│  Neighborhood OOF rate (λ=30 shrink)  │
-│  TF-IDF 5K bigrams → SVD 40 dims      │
-│  Regulatory, pricing, host, amenity   │
-└──────────────┬─────────────────────────┘
-               │
-               ▼
-     5-Fold Stratified CV
-     (SVD + OOF fit inside each fold)
-               │
-               ▼
-      CatBoost · Optuna 40-trial HPO
-      depth=10 · lr=0.02 · l2=35
-      Kaggle AUC: 0.8668
-               │
-               ▼
-   Part II: Popincourt, Paris
-   93,578 listing-months · 2015-2024
-   host_type · distance_to_anchors · min_30_flag
-               │
-               ▼
-   CatBoost (depth=9) + SHAP
-   Holdout AUC: 0.966 · F1: 0.88
-   Investor recommendation framework</code></pre>
-          </div>
-        </section>
 
         <!-- Data & Preprocessing -->
         <section>
           <span class="label">Data &amp; Preprocessing</span>
           <div class="prose">
-            <p>Two datasets from Inside Airbnb at very different scales: a national US snapshot for Part I and a longitudinal Popincourt panel for Part II. Feature engineering was the majority of the effort — 75+ features across 9 categories, with each category built for a specific predictive rationale rather than added opportunistically.</p>
+            <p>Two datasets from Inside Airbnb at very different scales: a national US snapshot for Part I and a longitudinal Popincourt panel for Part II. Feature engineering was the majority of the effort, 75+ features across 9 categories, with each category built for a specific predictive rationale rather than added opportunistically.</p>
           </div>
           <div class="dataset-grid">
             <div class="dataset-card">
@@ -752,17 +663,17 @@
                 </thead>
                 <tbody>
                   <tr class="highlight">
-                    <td>CatBoost — Popincourt (Part II) ✓ Best</td>
+                    <td>CatBoost: Popincourt (Part II) ✓ Best</td>
                     <td class="right accent">0.966</td>
                     <td>34 features · depth=9 · threshold 0.54 (F1-swept 0.20-0.78)</td>
                   </tr>
                   <tr>
-                    <td>CatBoost — US National Kaggle (Part I)</td>
+                    <td>CatBoost: US National Kaggle (Part I)</td>
                     <td class="right">0.8668</td>
                     <td>78 features · depth=10 · Optuna 40-trial Bayesian HPO</td>
                   </tr>
                   <tr>
-                    <td>CatBoost — US National CV</td>
+                    <td>CatBoost: US National CV</td>
                     <td class="right">0.8516</td>
                     <td>5-fold StratifiedKFold · OOF estimate · leakage-safe</td>
                   </tr>
@@ -784,19 +695,19 @@
           <div class="findings-list">
             <div class="finding-item">
               <div class="finding-num">01.</div>
-              <div class="finding-body"><strong>Price is the primary lever, not a secondary one.</strong> Budget listings book at 54.3%, premium at 22.1% — a 32-percentage-point spread that is monotonic across all tiers. Logistic regression coefficient on log_price = -1.126 (p &lt; 0.001). Charging more in Popincourt dramatically reduces booking rate; this is not the result you'd expect in most markets.</div>
+              <div class="finding-body"><strong>Price is the primary lever, not a secondary one.</strong> Budget listings book at 54.3%, premium at 22.1%. That's a 32-percentage-point spread that is monotonic across all tiers. Logistic regression coefficient on log_price = -1.126 (p &lt; 0.001). Charging more in Popincourt dramatically reduces booking rate; this is not the result you'd expect in most markets.</div>
             </div>
             <div class="finding-item">
               <div class="finding-num">02.</div>
-              <div class="finding-body"><strong>Commercial operators structurally underperform at every price tier.</strong> Commercial hosts (6+ listings) book at 11.5% vs. 44.2% for casual hosts — a 6× gap. Cross-tab confirms it isn't price-driven: commercial + budget = 13.0% vs. casual + budget = 59.1%. Host type ranks #11 in SHAP (mean |SHAP| 0.110) after controlling for four price features. 15 years of market data show no convergence — this is structural, not cyclical.</div>
+              <div class="finding-body"><strong>Commercial operators structurally underperform at every price tier.</strong> Commercial hosts (6+ listings) book at 11.5% vs. 44.2% for casual hosts, a 6× gap. Cross-tab confirms it isn't price-driven: commercial + budget = 13.0% vs. casual + budget = 59.1%. Host type ranks #11 in SHAP (mean |SHAP| 0.110) after controlling for four price features. 15 years of market data show no convergence. This is structural, not cyclical.</div>
             </div>
             <div class="finding-item">
               <div class="finding-num">03.</div>
-              <div class="finding-body"><strong>The Paris 120-night cap workaround backfires for commercial operators.</strong> Commercial hosts using min_nights ≥ 30 to reclassify as medium-term rentals book at 6.3% — the worst cell in the entire dataset. Casual hosts with the same flag book at 69.7% ($81/night). The regulatory escape hatch doesn't rescue the operating profile; it compounds the underperformance.</div>
+              <div class="finding-body"><strong>The Paris 120-night cap workaround backfires for commercial operators.</strong> Commercial hosts using min_nights ≥ 30 to reclassify as medium-term rentals book at 6.3%, the worst cell in the entire dataset. Casual hosts with the same flag book at 69.7% ($81/night). The regulatory escape hatch doesn't rescue the operating profile; it compounds the underperformance.</div>
             </div>
             <div class="finding-item">
               <div class="finding-num">04.</div>
-              <div class="finding-body"><strong>Geography is not a lever in Popincourt.</strong> K-means clustering (k=3 and k=4) correlates with booking rate at 0.018 — effectively zero. Only 4 percentage points of booking rate variation across all spatial clusters. Haversine distances to the three gentrification anchors (Oberkampf, Bastille, Roquette) rank #19-27 in SHAP. No sub-neighborhood delivers structurally higher conversion.</div>
+              <div class="finding-body"><strong>Geography is not a lever in Popincourt.</strong> K-means clustering (k=3 and k=4) correlates with booking rate at 0.018, effectively zero. Only 4 percentage points of booking rate variation across all spatial clusters. Haversine distances to the three gentrification anchors (Oberkampf, Bastille, Roquette) rank #19-27 in SHAP. No sub-neighborhood delivers structurally higher conversion.</div>
             </div>
           </div>
         </section>
@@ -807,7 +718,7 @@
           <div class="revisit-list">
             <div class="revisit-item">
               <div class="revisit-num">01.</div>
-              <div class="revisit-body"><strong>Engineer temporal features more carefully.</strong> Snapshot year ranked #2 in SHAP (mean |SHAP| 0.700) — higher than any investor-actionable feature. That's a COVID-era artifact from low-activity listings concentrated in 2020-2021, not a generalizable signal. A revisit would either exclude pandemic years or build explicit COVID-flag interactions rather than letting the model absorb temporal variance as a black-box year effect.</div>
+              <div class="revisit-body"><strong>Engineer temporal features more carefully.</strong> Snapshot year ranked #2 in SHAP (mean |SHAP| 0.700), higher than any investor-actionable feature. That's a COVID-era artifact from low-activity listings concentrated in 2020-2021, not a generalizable signal. A revisit would either exclude pandemic years or build explicit COVID-flag interactions rather than letting the model absorb temporal variance as a black-box year effect.</div>
             </div>
             <div class="revisit-item">
               <div class="revisit-num">02.</div>
@@ -818,6 +729,12 @@
               <div class="revisit-body"><strong>Extend the host type analysis to pricing dynamics over time.</strong> The EDA established that commercial hosts entered the market at the same time as casual hosts (2009-2011) and have held flat market share since 2012. What's missing is whether commercial pricing has been converging toward casual pricing over time, or whether the gap is stable. A price disparity regression by host_type × year would answer whether the structural underperformance is narrowing.</div>
             </div>
           </div>
+        </section>
+
+        <!-- WHAT I LEARNED -->
+        <section>
+          <span class="label">WHAT I LEARNED</span>
+          <p class="revisit-intro">The two-scale structure of this project was intentional: start with a national model to establish patterns, then drill into one neighborhood to stress-test them. The 6× booking rate gap between casual and commercial hosts that price and geography can't explain is the kind of finding that only shows up when you get specific enough. Kaggle-scale data gives you coverage; neighborhood-scale data gives you signal. I'll use this approach deliberately going forward.</p>
         </section>
 
         <!-- Tech Stack -->

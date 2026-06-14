@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -17,16 +17,16 @@
   <style>
     /* ── DESIGN TOKENS ──────────────────────────────────────── */
     :root {
-      --bg-base:     #0f0f0e;
-      --bg-surface:  #161614;
-      --bg-card:     #1c1b19;
-      --bg-elevated: #222120;
+      --bg-base:     #f7f6f4;
+      --bg-surface:  #ffffff;
+      --bg-card:     #f0efed;
+      --bg-elevated: #e8e7e4;
 
-      --text-1: #cdccca;
-      --text-2: #797876;
-      --text-3: #5a5957;
-      --accent:  #e8a035;
-      --border:  oklch(from #cdccca l c h / 0.10);
+      --text-1: #1a1918;
+      --text-2: #4a4947;
+      --text-3: #7a7875;
+      --accent:  #b45309;
+      --border:  rgba(26, 25, 24, 0.12);
 
       --font-body:    'Satoshi', system-ui, sans-serif;
       --font-heading: 'Cabinet Grotesk', system-ui, sans-serif;
@@ -57,7 +57,7 @@
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track  { background: var(--bg-base); }
-    ::-webkit-scrollbar-thumb  { background: var(--bg-elevated); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb  { background: var(--text-3); border-radius: 3px; }
 
     /* ── TYPOGRAPHY ─────────────────────────────────────────── */
     h1, h2, h3, h4 {
@@ -89,7 +89,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(15, 15, 14, 0.92);
+      background: rgba(247, 246, 244, 0.93);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -169,81 +169,39 @@
       gap: clamp(3rem, 6vw, 5rem);
     }
 
-    /* ── TL;DR BOX — amber left border, 2px, never teal ─────── */
-    .tldr-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--accent);
-      border-radius: var(--radius-card);
-      padding: 1.5rem;
-    }
-
-    .tldr-box p {
+    /* ── SUMMARY STRIP ─────────────────────────────────────── */
+    .summary-sentence {
       font-size: 0.9375rem;
-      line-height: 1.80;
-      color: rgba(205, 204, 202, 0.85);
-      margin: 0;
+      line-height: 1.75;
+      color: var(--text-2);
+      margin-bottom: 1.75rem;
+      max-width: 44rem;
     }
 
-    .tldr-box strong { color: var(--text-1); font-weight: 500; }
-
-    /* ── METRICS — pure typographic hierarchy ───────────────── */
-    .metric-primary {
-      margin-bottom: 2rem;
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: 0 3rem;
+      justify-content: start;
     }
 
-    .metric-primary .value {
+    @media (max-width: 640px) {
+      .metric-strip { grid-template-columns: 1fr 1fr; row-gap: 1.5rem; }
+    }
+
+    .metric-strip-item .value {
       font-family: var(--font-mono);
-      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-size: clamp(1.5rem, 4vw, 2rem);
       color: var(--accent);
       line-height: 1;
-      margin-bottom: 0.375rem;
+      margin-bottom: 0.25rem;
     }
 
-    .metric-primary .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
+    .metric-strip-item:first-child .value {
+      font-size: clamp(2rem, 5vw, 2.75rem);
     }
 
-    .metric-secondary-group {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .metric-secondary-wide {
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
-    }
-
-    .metric-secondary-wide .value {
-      font-family: var(--font-mono);
-      font-size: 1.5rem;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .metric-secondary-wide .label-text {
-      font-size: 0.9375rem;
-      color: var(--text-2);
-      line-height: 1.4;
-    }
-
-    .metric-secondary-pair {
-      display: flex;
-      gap: 2.5rem;
-      flex-wrap: wrap;
-    }
-
-    .metric-secondary-sm .value {
-      font-family: var(--font-mono);
-      font-size: 1.125rem;
-      color: var(--text-2);
-      margin-bottom: 0.2rem;
-    }
-
-    .metric-secondary-sm .label-text {
+    .metric-strip-item .label-text {
       font-size: 0.8125rem;
       color: var(--text-3);
       line-height: 1.35;
@@ -253,7 +211,7 @@
     .prose p {
       font-size: 0.9375rem;
       line-height: 1.8;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       margin-bottom: 1rem;
     }
     .prose p:last-child { margin-bottom: 0; }
@@ -277,7 +235,7 @@
       display: flex;
       gap: 0.75rem;
       font-size: 0.9375rem;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
       line-height: 1.65;
     }
 
@@ -327,12 +285,12 @@
     .data-table th.right { text-align: right; padding-right: 0; }
 
     .data-table tbody tr {
-      border-bottom: 1px solid oklch(from #cdccca l c h / 0.05);
+      border-bottom: 1px solid var(--border);
     }
 
     .data-table td {
       padding: 0.625rem 1.5rem 0.625rem 0;
-      color: rgba(205, 204, 202, 0.75);
+      color: var(--text-3);
       vertical-align: top;
       line-height: 1.5;
     }
@@ -564,7 +522,7 @@
     .revisit-body {
       font-size: 0.9375rem;
       line-height: 1.75;
-      color: rgba(205, 204, 202, 0.80);
+      color: var(--text-2);
     }
 
     .revisit-body strong { color: var(--text-1); font-weight: 500; }
@@ -726,41 +684,26 @@
     <div class="container">
       <div class="content-stack">
 
-        <!-- TL;DR -->
+        <!-- Summary -->
         <section>
-          <span class="label">TL;DR</span>
-          <div class="tldr-box">
-            <p>Random Forest with a lowered classification threshold (0.3) correctly identifies <strong>89.79% of true dropouts</strong>, roughly 9 out of 10 at-risk students, while achieving the lowest overall test error (16.86%) among all models tested. Second-semester academic performance and tuition fee status are the strongest predictors. A vanilla model with a 0.5 threshold misses too many real dropouts to be useful for intervention programs.</p>
-          </div>
-        </section>
-
-        <!-- Outcomes -->
-        <section>
-          <span class="label">Outcomes</span>
-          <!-- Primary metric: thesis-level claim, Geist Mono, large, amber -->
-          <div class="metric-primary">
-            <div class="value">89.79%</div>
-            <div class="label-text">dropout recall, Random Forest at threshold 0.3, roughly 9 in 10 at-risk students correctly flagged</div>
-          </div>
-          <!-- Secondary metrics: descending weight -->
-          <div class="metric-secondary-group">
-            <div class="metric-secondary-wide">
-              <div class="value">16.86%</div>
-              <div class="label-text">test error rate, lowest among all four models at the 0.3 threshold</div>
+          <span class="label">Summary</span>
+          <p class="summary-sentence">Four classifiers on 4,424 university students, threshold tuned to 0.3. Deliberately accepting more false alarms to catch more real dropouts, because the cost of a missed intervention outweighs a wrong alert.</p>
+          <div class="metric-strip">
+            <div class="metric-strip-item">
+              <div class="value">89.79%</div>
+              <div class="label-text">dropout recall<br>at threshold 0.3</div>
             </div>
-            <div class="metric-secondary-pair">
-              <div class="metric-secondary-sm">
-                <div class="value">4,424</div>
-                <div class="label-text">students<br/>UCI Dataset</div>
-              </div>
-              <div class="metric-secondary-sm">
-                <div class="value">4</div>
-                <div class="label-text">classification<br/>algorithms compared</div>
-              </div>
-              <div class="metric-secondary-sm">
-                <div class="value">2</div>
-                <div class="label-text">thresholds evaluated<br/>per model</div>
-              </div>
+            <div class="metric-strip-item">
+              <div class="value">16.86%</div>
+              <div class="label-text">test error rate,<br>lowest across all 4 models</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">4,424</div>
+              <div class="label-text">students,<br>UCI dataset</div>
+            </div>
+            <div class="metric-strip-item">
+              <div class="value">4</div>
+              <div class="label-text">classification<br>algorithms compared</div>
             </div>
           </div>
         </section>
@@ -772,10 +715,6 @@
           <div class="prose">
             <p>Student dropout is expensive on both sides. Universities lose tuition revenue and see funding tied to retention rates erode; students lose time, money, and momentum. The window for intervention, academic coaching, emergency financial aid, course load adjustment, only exists if you can identify risk early enough to act.</p>
             <p>This project treats dropout prediction as a classification problem where <strong style="color: var(--text-1);">the cost of a false negative (missing a real dropout) significantly outweighs the cost of a false positive</strong> (flagging a student who would have been fine). That asymmetry shaped every modeling decision, most importantly the choice to evaluate all models at both the default 0.5 threshold and a more aggressive 0.3 threshold.</p>
-            <p>The deployment scenario: run the model at the end of each student's first semester, flag students above the risk threshold, and route them to targeted support before the second semester begins.</p>
-
-            <h3>Recall First, Then Model Selection</h3>
-            <p>Four algorithms were evaluated at two classification thresholds because the threshold is a business decision that shouldn't be separated from model selection. Moving from 0.5 to 0.3 changes which students get flagged, and that choice belongs to the institution, not the modeler. The primary constraint was interpretability: the best-performing model also needs to explain which features drove the flag so advisors can have an informed conversation, which is why SVM was eliminated despite its lower test error. Recall on the dropout class was chosen as the primary metric before any model was run, not selected post-hoc to favor a preferred result.</p>
           </div>
         </section>
 
@@ -784,7 +723,7 @@
           <span class="label">Dataset</span>
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 0.75rem;">UCI Dropout &amp; Academic Success Dataset</h2>
           <div class="prose" style="margin-bottom:0;">
-            <p>4,424 students from a Portuguese higher education institution across multiple academic years. The original three-class outcome (Dropout / Enrolled / Graduate) was collapsed into a binary target: Dropout vs. Not Dropout.</p>
+            <p>4,424 students from a Portuguese higher education institution across multiple academic years, stratified 80/20 train/test split. The original three-class outcome (Dropout / Enrolled / Graduate) was collapsed into a binary target: Dropout vs. Not Dropout.</p>
           </div>
 
           <div class="dataset-grid">
@@ -807,70 +746,19 @@
                 <li>Mother's &amp; father's qualification &amp; occupation</li>
               </ul>
             </div>
-            <div class="dataset-card">
-              <div class="dataset-card-head">Macroeconomic Context</div>
-              <ul>
-                <li>GDP at time of enrollment</li>
-                <li>Unemployment rate</li>
-                <li>Inflation rate</li>
-              </ul>
-            </div>
-            <div class="dataset-card">
-              <div class="dataset-card-head">Train / Test Split</div>
-              <ul>
-                <li>Stratified 80/20 split (seed = 31)</li>
-                <li>Training: 3,539 observations</li>
-                <li>Testing: 885 observations</li>
-                <li>No missing values in dataset</li>
-              </ul>
-            </div>
           </div>
 
           <div class="callout">
             <div class="callout-head">Key EDA Findings</div>
             <div class="callout-items">
-              <div class="callout-item"><strong>Bimodal grade distribution for dropouts.</strong> Dropout students show a sharp spike at zero grades in the first semester, many stopped showing up before completing any coursework.</div>
-              <div class="callout-item"><strong>Tuition fees are a strong binary signal.</strong> Students behind on tuition had an 85% dropout rate vs. 25% for students current on payments.</div>
-              <div class="callout-item"><strong>Scholarships significantly reduce dropout.</strong> Scholarship holders dropped out at 12.5% vs. 40% without scholarships.</div>
-              <div class="callout-item"><strong>Evening students at higher risk.</strong> 38.7% dropout rate vs. 31.2% for daytime students.</div>
+              <div class="callout-item"><span><strong>Bimodal grade distribution for dropouts.</strong> Dropout students show a sharp spike at zero grades in the first semester, many stopped showing up before completing any coursework.</span></div>
+              <div class="callout-item"><span><strong>Tuition fees are a strong binary signal.</strong> Students behind on tuition had an 85% dropout rate vs. 25% for students current on payments.</span></div>
+              <div class="callout-item"><span><strong>Scholarships significantly reduce dropout.</strong> Scholarship holders dropped out at 12.5% vs. 40% without scholarships.</span></div>
+              <div class="callout-item"><span><strong>Evening students at higher risk.</strong> 38.7% dropout rate vs. 31.2% for daytime students.</span></div>
             </div>
           </div>
         </section>
 
-        <!-- Architecture -->
-        <section>
-          <span class="label">Architecture</span>
-          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">Modeling Pipeline</h2>
-
-          <div class="arch-block">
-            <pre>Data Source
-  UCI Repository (4,424 students, no missing values)
-    │
-    └──► Preprocessing
-           │  Binary outcome collapse: Dropout vs. Not Dropout
-           │  Stratified 80/20 split (seed = 31)
-           │  Center + scale for KNN only
-           │
-           ├──► Logistic Regression
-           │      5 hand-selected predictors, p &lt; 0.01
-           │      threshold = 0.5 / 0.3
-           │
-           ├──► KNN (k=15, tuned via 10-fold CV)
-           │      Numeric predictors only
-           │      Excludes tuition status + scholarship holder
-           │
-           ├──► Random Forest  ◄── SELECTED MODEL
-           │      mtry=4, ntree=500 (OOB-tuned)
-           │      All predictors including categorical
-           │      threshold = 0.5 / 0.3
-           │      Feature importance via mean accuracy decrease
-           │
-           └──► SVM (Radial Kernel)
-                  cost=10, gamma=0.01 (10-fold CV)
-                  No feature importance output
-                  Eliminated: interpretability constraint</pre>
-          </div>
-        </section>
 
         <!-- Model Selection -->
         <section>
@@ -880,24 +768,12 @@
             <p>All models were evaluated at both threshold=0.5 (default) and threshold=0.3 (aggressive, optimized for recall). The primary evaluation criteria were dropout-class recall and test error rate.</p>
           </div>
 
-          <div class="model-stack">
-            <div class="model-card">
-              <div class="model-card-name">Logistic Regression</div>
-              <div class="model-card-desc">5 hand-selected predictors: tuition fees status, 1st semester grades, scholarship status, debtor status, admission grade. All significant at p &lt; 0.01. Interpretable but linear decision boundary caps recall.</div>
-            </div>
-            <div class="model-card">
-              <div class="model-card-name">K-Nearest Neighbors (k=15)</div>
-              <div class="model-card-desc">Tuned k via 10-fold repeated CV. Can only use numeric predictors, excluding tuition fees and scholarship status, two of the strongest signals. Center + scale preprocessing applied to normalize distances.</div>
-            </div>
-            <div class="model-card">
-              <div class="model-card-name selected">Random Forest, Selected Model</div>
-              <div class="model-card-desc">mtry=4, ntree=500, both tuned via OOB error. Uses all predictors including categorical variables. Captures non-linear interactions between financial and academic signals. Best recall at both thresholds.</div>
-            </div>
-            <div class="model-card">
-              <div class="model-card-name">Support Vector Machine (Radial Kernel)</div>
-              <div class="model-card-desc">cost=10, gamma=0.01, tuned via 10-fold CV. Competitive error rate but no feature importance output, eliminated because advisors need to understand why a student was flagged.</div>
-            </div>
-          </div>
+          <ul class="prose-list" style="margin-top: 1rem;">
+            <li><span><strong>Logistic Regression.</strong> 5 hand-selected predictors, all significant at p &lt; 0.01. Interpretable but linear decision boundary caps recall.</span></li>
+            <li><span><strong>KNN (k=15).</strong> Can only use numeric predictors, which forced exclusion of tuition fees and scholarship status, two of the strongest signals.</span></li>
+            <li><span><strong style="color: var(--accent);">Random Forest (selected).</strong> mtry=4, ntree=500 tuned via OOB error. Uses all predictors including categorical. Best recall at both thresholds.</span></li>
+            <li><span><strong>SVM (Radial Kernel).</strong> Competitive error rate but no feature importance output, eliminated because advisors need to understand why a student was flagged.</span></li>
+          </ul>
 
           <!-- Results table -->
           <div class="table-wrap">
@@ -919,7 +795,7 @@
                     <td>Baseline (Majority Class)</td>
                     <td>32.13%</td>
                     <td>0.00%</td>
-                    <td class="right">—</td>
+                    <td class="right">N/A</td>
                   </tr>
                   <tr>
                     <td>Logistic Regression</td>
@@ -1011,36 +887,16 @@
           <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 1.25rem;">What the Models Revealed</h2>
           <div class="callout">
             <div class="callout-items">
-              <div class="callout-item"><strong>Non-linear interactions matter.</strong> The reason Random Forest beats Logistic Regression isn't just more predictors, the interaction between academic and financial distress is non-linear. A student behind on tuition AND with zero 1st semester approvals is dramatically higher risk than either signal alone suggests.</div>
-              <div class="callout-item"><strong>KNN's categorical exclusion cost it the race.</strong> KNN can't handle categorical predictors without encoding hacks, which forced exclusion of tuition status and scholarship holder, the 3rd and 4th most important predictors. This is a fundamental algorithm limitation, not a hyperparameter problem.</div>
-              <div class="callout-item"><strong>Threshold tuning is a business decision, not just a modeling one.</strong> Moving from 0.5 to 0.3 increased Random Forest recall from 79.23% to 89.79%, an extra 10 out of 100 true dropouts correctly flagged, at the cost of more false alarms. Whether that trade-off is worth it depends on advisor bandwidth and intervention cost, not test accuracy.</div>
-              <div class="callout-item"><strong>Evening students are better identified.</strong> Segment analysis showed the model achieved 92.7% recall on evening students vs. 89.3% on daytime, likely because evening students have stronger, less ambiguous predictor signals (more pronounced financial stress patterns).</div>
+              <div class="callout-item"><strong>Non-linear interactions matter.</strong> The reason Random Forest beats Logistic Regression isn't just more predictors. The interaction between academic and financial distress is non-linear. A student behind on tuition AND with zero 1st semester approvals is dramatically higher risk than either signal alone suggests.</div>
+<div class="callout-item"><strong>Evening students are better identified.</strong> Segment analysis showed the model achieved 92.7% recall on evening students vs. 89.3% on daytime, likely because evening students have stronger, less ambiguous predictor signals (more pronounced financial stress patterns).</div>
             </div>
           </div>
         </section>
 
-        <!-- IF I WERE TO REVISIT IT -->
+        <!-- WHAT I LEARNED -->
         <section>
-          <span class="label">If I Were to Revisit It</span>
-          <h2 style="font-size: clamp(1.25rem, 3vw, 1.625rem); color: var(--text-1); margin-bottom: 0.75rem;">What I'd Do Differently</h2>
-          <div class="revisit-list">
-            <div class="revisit-item">
-              <span class="revisit-num">01.</span>
-              <div class="revisit-body"><strong>Frame the evaluation metric before picking a model.</strong> Starting from "maximize recall, subject to error rate below X%" makes model selection much cleaner than comparing a table of numbers post-hoc. The business objective should define the metric, not the other way around.</div>
-            </div>
-            <div class="revisit-item">
-              <span class="revisit-num">02.</span>
-              <div class="revisit-body"><strong>Interpretability is a real constraint.</strong> SVM had the lowest test error but was eliminated because advisors need to understand why a student was flagged. A model that can't explain itself won't get used, no matter how accurate.</div>
-            </div>
-            <div class="revisit-item">
-              <span class="revisit-num">03.</span>
-              <div class="revisit-body"><strong>Mid-semester updates would sharpen predictions.</strong> The model currently runs on end-of-first-semester data, but payment status and attendance could be observed in real time. A version that updates risk scores continuously throughout the semester would catch struggling students earlier.</div>
-            </div>
-            <div class="revisit-item">
-              <span class="revisit-num">04.</span>
-              <div class="revisit-body"><strong>Class imbalance deserves explicit treatment.</strong> We handled imbalance through stratified splitting and threshold tuning, but techniques like SMOTE or class-weighted loss could be worth testing, especially if the minority class shrinks in a smaller institution's dataset.</div>
-            </div>
-          </div>
+          <span class="label">WHAT I LEARNED</span>
+          <p class="revisit-intro">The real insight from this project wasn't about the model. It was about framing. Starting with "maximize accuracy" would have produced a model that ignored most dropouts. Starting with "what does a missed intervention actually cost?" changed every decision downstream, from which metric to optimize to how low to set the threshold. That shift, from "how do I score well" to "what failure mode actually matters," is the most transferable thing I took from this work.</p>
         </section>
 
         <!-- Tech Stack — chips appear ONCE on page, here only -->
