@@ -279,11 +279,11 @@
 
     /* ── HERO ────────────────────────────────────────────────── */
     .hero {
-      min-height: calc(100svh - 3.75rem);
       display: flex;
       flex-direction: column;
       justify-content: center;
       padding-block: var(--section-pad);
+      padding-top: clamp(0.75rem, 2vw, 1.5rem);
       background: var(--bg-base);
     }
 
@@ -691,6 +691,13 @@
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .proj-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(26, 25, 24, 0.07);
+      border-color: rgba(26, 25, 24, 0.22);
     }
 
     .proj-card.hidden {
@@ -718,6 +725,15 @@
       line-height: 1.6;
       flex-grow: 1;
       margin-bottom: 1rem;
+    }
+
+    .proj-card-q {
+      font-size: 0.9375rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--accent);
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
     }
 
     .proj-card-metric {
@@ -753,6 +769,70 @@
     .proj-card-links a.muted:hover {
       color: var(--text-1);
     }
+
+    /* ── ALSO BUILT ─────────────────────────────────────────── */
+    .also-built-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .also-built-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .also-built-grid { grid-template-columns: 1fr; }
+    }
+
+    .also-built-item {
+      padding: 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid transparent;
+      border-radius: var(--radius-card);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .also-built-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(26, 25, 24, 0.07);
+      border-color: rgba(26, 25, 24, 0.22);
+    }
+
+    .also-built-tag {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    .also-built-title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+
+    .also-built-metric {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-2);
+      margin-top: auto;
+    }
+
+    .also-built-links {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8125rem;
+    }
+
+    .also-built-links a { color: var(--accent); font-weight: 500; }
+    .also-built-links a.muted { color: var(--text-3); font-weight: 400; }
+    .also-built-links a.muted:hover { color: var(--text-1); }
 
     /* ── TIMELINE (inside #work right column) ───────────────── */
     .timeline {
@@ -1035,6 +1115,31 @@
       color: var(--text-1);
     }
 
+    /* ── SCROLL PROGRESS BAR ────────────────────────────────── */
+    #scroll-progress {
+      position: fixed;
+      top: 3.75rem;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 49;
+      transition: width 0.08s linear;
+      pointer-events: none;
+    }
+
+    /* ── SCROLL REVEAL ───────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* ── FOOTER ─────────────────────────────────────────────── */
     footer {
       border-top: 1px solid var(--border);
@@ -1055,7 +1160,6 @@
       <div class="nav-inner">
         <a href="#hero" class="nav-logo">PR</a>
         <div class="nav-links">
-          <a href="#work">Work</a>
           <a href="#projects">Projects</a>
           <a href="#about">About</a>
         </div>
@@ -1095,12 +1199,12 @@
       </div>
     </div>
     <div id="mobile-nav" class="mobile-nav">
-      <a href="#work">Work</a>
       <a href="#projects">Projects</a>
       <a href="#about">About</a>
       <a href="assets/Peyton-Ramsey_Resume.pdf" target="_blank">Resume ↗</a>
     </div>
   </nav>
+  <div id="scroll-progress"></div>
 
   <!-- ─── HERO ─────────────────────────────────────────────── -->
   <section id="hero" class="hero">
@@ -1110,12 +1214,12 @@
         <!-- Left: name + pitch -->
         <div class="hero-left">
           <h1 class="hero-name">Peyton<br>Ramsey</h1>
-          <p class="hero-role">Data Science &amp; Machine Learning</p>
+          <p class="hero-role">New-Grad Data Scientist with Applied ML &amp; Production Analytics Experience</p>
           <p class="hero-bio">
-            I build systems that make life easier. From financial news AI tools that cut through market noise, to
-            a Kaggle classifier that became an investor study on gentrification in Paris, to full-stack fitness
-            tracking apps. I have a genuine passion for building things I actually use. Not scared
-            to go deep into a niche topic to truly understand it.
+            I build systems that make life easier from financial news AI tools that cut through market noise to modeling projects on booking conversion, credit risk, and macroeconomic anomalies.
+          </p>
+          <p class="hero-bio">
+            I’m an MSBA new grad from UNH targeting data scientist roles. My internships leaned data engineering and BI, but my projects are where I’ve focused most on modeling, experimentation, and deployment.
           </p>
           <div class="hero-actions">
             <a href="#work" class="btn-primary">View Work</a>
@@ -1134,8 +1238,8 @@
         <!-- Right: credential panel -->
         <div class="hero-cred">
           <div class="cred-block">
-            <p class="cred-label">Currently</p>
-            <p class="cred-value">Research Assistant, Data Science &amp; AI</p>
+            <p class="cred-label">Current</p>
+            <p class="cred-value">Graduate Assistant, Data Science &amp; AI</p>
             <p class="cred-sub">University of New Hampshire · GPA 3.83 · May 2026</p>
           </div>
           <div class="cred-divider"></div>
@@ -1144,18 +1248,18 @@
             <div class="cred-metrics">
               <div class="cred-metric">
                 <span class="cred-num" data-target="7">7</span>
-                <span class="cred-desc">AI/ML &amp; full-stack projects</span>
+                <span class="cred-desc">applied ML projects</span>
               </div>
               <div class="cred-metric">
                 <span class="cred-num" data-target="3">3</span>
-                <span class="cred-desc">live ML deployments (HuggingFace + Render + workplace)</span>
+                <span class="cred-desc">live ML deployments (Hugging Face, Render, workplace)</span>
               </div>
             </div>
           </div>
           <div class="cred-divider"></div>
           <div class="cred-block">
-            <p class="cred-label">Core Stack</p>
-            <p class="cred-stack">Python | SQL | R | LangChain | NLP | Causal Inference</p>
+            <p class="cred-label">Toolkit</p>
+            <p class="cred-stack">Python | SQL | R | PyTorch | scikit-learn | MLflow</p>
           </div>
           <div class="cred-divider"></div>
           <div class="cred-block">
@@ -1169,106 +1273,23 @@
     </div>
   </section>
 
-  <!-- ─── WORK (TPA left · Experience right, two-column) ───── -->
-  <section id="work">
-    <div class="container">
-      <!-- Deployments: full-width -->
-      <div>
-        <div class="work-col-head">
-          <p class="label">Deployments</p>
-          <h2>Shipped Work</h2>
-        </div>
-
-        <div class="workplace-card">
-          <p class="workplace-meta">Data Engineering · Nassau Financial Group · Summer 2025</p>
-          <h3 class="workplace-title">TPA Compliance Review System</h3>
-          <p class="workplace-desc">
-            End-to-end third-party administrator oversight platform built solo at Nassau Financial Group. ETL pipelines
-            integrate 7 insurance data streams from AWS into a parquet-backed layer; a weighted scoring engine assesses
-            compliance across 8 activity types; a self-serve R Shiny dashboard deployed to a 30-person compliance team
-            managing 120K+ policies.
-          </p>
-          <p class="workplace-metric">60% reduction in manual review time</p>
-          <div class="workplace-links">
-            <a href="projects/tpa-compliance.html">View Project →</a>
-            <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank"
-              rel="noopener noreferrer" class="muted">GitHub ↗</a>
-          </div>
-        </div>
-
-        <div style="margin-top:2rem;">
-          <p class="proj-domain-label" style="margin-bottom:1.25rem;">Self-Deployed · Live</p>
-          <div class="sd-grid">
-
-            <div class="sd-card">
-              <p class="sd-card-meta">RAG · Jan 2026</p>
-              <h3 class="sd-card-title">Financial News RAG Analyst</h3>
-              <p class="sd-card-desc">
-                Ask questions about 500+ financial news articles in plain English and get sourced answers in under 5
-                seconds. Built with ChromaDB, LangChain, and FinBERT sentiment scoring.
-              </p>
-              <p class="sd-card-metric">92% retrieval precision</p>
-              <div class="sd-card-links">
-                <a href="projects/financial-rag.html">View Project →</a>
-                <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank"
-                  rel="noopener noreferrer" class="muted">Live Demo ↗</a>
-              </div>
-            </div>
-
-            <div class="sd-card">
-              <p class="sd-card-meta">Anomaly Detection · Spring 2026</p>
-              <h3 class="sd-card-title">Macroeconomic Anomaly Detection</h3>
-              <p class="sd-card-desc">
-                LSTM Autoencoder ingesting 7 FRED macroeconomic indicators in real time, flagging structural breaks by
-                reconstruction error with plain-English explanations via Llama-3.1-8B. Calibrated on a pre-2007
-                baseline.
-              </p>
-              <p class="sd-card-metric">3/3 historical crises identified</p>
-              <div class="sd-card-links">
-                <a href="projects/macro-anomaly-detection.html">View Project →</a>
-                <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank"
-                  rel="noopener noreferrer" class="muted">Live Demo ↗</a>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-
-
-    </div>
-  </section>
-
-  <!-- ─── PROJECTS (self-deployed at top · filtered list) ──── -->
+  <!-- ─── SELECTED PROJECTS ───────────────────────────────── -->
   <section id="projects">
     <div class="container">
       <div class="section-head">
-        <p class="label">Projects</p>
-        <h2>More Work</h2>
-        <p>ML systems, data pipelines, and full-stack apps. Each one started with a concrete problem and ended with
-          something that runs.</p>
-      </div>
-
-      <!-- Filter tabs -->
-      <div class="proj-filter">
-        <button class="proj-filter-btn active" data-filter="all">All</button>
-        <button class="proj-filter-btn" data-filter="data-science">Data Science</button>
-        <button class="proj-filter-btn" data-filter="ml-engineering">ML Engineering</button>
-        <button class="proj-filter-btn" data-filter="full-stack">Full Stack</button>
+        <p class="label">Selected Projects</p>
+        <h2>Projects</h2>
       </div>
 
       <div class="proj-grid">
 
-        <!-- Airbnb Booking Prediction -->
-        <div class="proj-card" data-role="data-science ml-engineering">
-          <p class="proj-card-tag">Causality</p>
+        <div class="proj-card">
+          <p class="proj-card-tag">Predictive Modeling</p>
           <h3 class="proj-card-title">Airbnb: US Market Classifier &amp; Paris Investment Study</h3>
-          <p class="proj-card-summary">Built a national CatBoost classifier on 374K US listings (Kaggle AUC 0.8668),
-            then retrained it on Popincourt, Paris to answer an investor question: does gentrification create a
-            booking advantage? The answer is host type creates a booking advantage.  Casual hosts book at 44% vs. 11.5% for
-            commercial operators, a gap that price, amenities, and geography can't catch up with.</p>
-          <p class="proj-card-metric">0.966 holdout AUC</p>
+          <p class="proj-card-q">What drives conversion, and can host operating scale explain booking success beyond price alone?</p>
+          <p class="proj-card-summary">Built a CatBoost model on 374K U.S. Airbnb listings, then extended the analysis to a 93K-row Paris panel to study what separates high-conversion listings from the broader market.</p>
+          <p class="proj-card-summary">Engineered 25+ features, ran 5-fold stratified cross-validation, and tuned the model with 40 Bayesian optimization trials to improve predictive performance and isolate meaningful business signals.</p>
+          <p class="proj-card-summary">Achieved 0.966 holdout AUC versus a 0.8668 national baseline, and found host operating scale remained an important conversion signal even after controlling for multiple price-related features.</p>
           <div class="proj-card-links">
             <a href="projects/airbnb-booking-prediction.html">View →</a>
             <a href="https://github.com/peytonramsey/airbnb-booking-prediction" target="_blank"
@@ -1276,12 +1297,13 @@
           </div>
         </div>
 
-        <!-- MLOps Drift Detection -->
-        <div class="proj-card" data-role="data-science ml-engineering">
-          <p class="proj-card-tag">MLOps</p>
+        <div class="proj-card">
+          <p class="proj-card-tag">Credit Risk · MLOps</p>
           <h3 class="proj-card-title">Loan Default Prediction with Drift Monitoring</h3>
-          <p class="proj-card-summary">Built a production ML system on 148K loan applications with real-time data drift monitoring. FastAPI serving sub-100ms predictions, multi-method drift detection (PSI, KS, Chi-squared), MLflow experiment tracking, and Docker deployment.</p>
-          <p class="proj-card-metric">0.92 ROC-AUC · sub-100ms inference</p>
+          <p class="proj-card-q">Can a credit risk model stay useful after deployment, not just perform well at training time?</p>
+          <p class="proj-card-summary">Built a Random Forest pipeline on 148K loan applications to predict default risk using feature engineering across 51 borrower and loan variables.</p>
+          <p class="proj-card-summary">Added PSI drift monitoring, MLflow tracking, Dockerized deployment, and a live inference interface so the model could be evaluated as an operational system rather than a one-off experiment.</p>
+          <p class="proj-card-summary">Achieved 0.92 ROC-AUC and paired predictive performance with monitoring for emerging model risk.</p>
           <div class="proj-card-links">
             <a href="projects/mlops-drift-detection.html">View →</a>
             <a href="https://github.com/peytonramsey/mlops-drift-detection" target="_blank"
@@ -1289,36 +1311,70 @@
           </div>
         </div>
 
-        <!-- VECM -->
-        <div class="proj-card" data-role="data-science">
-          <p class="proj-card-tag">Finance &amp; Economics</p>
-          <h3 class="proj-card-title">U.S. Inflation Dynamics: VECM Analysis</h3>
-          <p class="proj-card-summary">Modeled how demand, supply, and labor shocks transmit to U.S. inflation using a
-            Vector Error Correction Model on 407 monthly FRED observations (1992–2024). Retail sales explains 35.5%
-            of long-run CPI variance.</p>
-          <p class="proj-card-metric">61.6% more external shock variance vs. VAR</p>
+        <div class="proj-card">
+          <p class="proj-card-tag">Time Series · Anomaly Detection</p>
+          <h3 class="proj-card-title">Macroeconomic Anomaly Detection</h3>
+          <p class="proj-card-q">Can multivariate macroeconomic behavior be used to detect economic shifts before they are obvious?</p>
+          <p class="proj-card-summary">Built an LSTM autoencoder on 7 FRED indicators using 12-month windows to detect abnormal co-movement through reconstruction error.</p>
+          <p class="proj-card-summary">Grounded the design in VECM cointegration analysis, calibrated the anomaly threshold on a pre-2007 baseline, and deployed the system with MLflow tracking and forward-looking explanations.</p>
+          <p class="proj-card-summary">Correctly identified all 3 major demand regime shifts in the study period: the 2008 financial crisis, COVID-19, and the 2022 Fed hiking cycle.</p>
           <div class="proj-card-links">
-            <a href="projects/inflation-vecm.html">View →</a>
-            <a href="https://peytonramsey.github.io/us-inflation-dynamics/" target="_blank"
-              rel="noopener noreferrer" class="muted">Report ↗</a>
+            <a href="projects/macro-anomaly-detection.html">View →</a>
+            <a href="https://huggingface.co/spaces/peytonramsey/MacroSentinel-Anomaly-Detection" target="_blank"
+              rel="noopener noreferrer" class="muted">Live Demo ↗</a>
           </div>
         </div>
 
-        <!-- GymLog -->
-        <div class="proj-card" data-role="full-stack">
-          <p class="proj-card-tag">Full-Stack</p>
-          <h3 class="proj-card-title">GymLog: Full-Stack Fitness App</h3>
-          <p class="proj-card-summary">Every fitness tracking app worth using costs money. Built my own instead, with workout logging backed by its own database, a Gradient Boosting model for progressive overload predictions, and a full REST API deployed on Render.</p>
-          <p class="proj-card-metric">40+ REST endpoints · PostgreSQL · 11,500+ lines</p>
+        <div class="proj-card">
+          <p class="proj-card-tag">Production Analytics</p>
+          <h3 class="proj-card-title">Compliance Risk Analytics Platform</h3>
+          <p class="proj-card-summary">Built and owned a self-serve R Shiny analytics platform for compliance and risk monitoring across 7 operational data streams used by a 30-person cross-functional team.</p>
+          <p class="proj-card-summary">Engineered AWS-to-warehouse pipelines across 7+ sources, enabling scalable daily processing across 100M rows and powering weighted scoring, KPI tracking, and historical review workflows.</p>
           <div class="proj-card-links">
-            <a href="projects/gymlog.html">View →</a>
-            <a href="https://gym-log-s702.onrender.com/?demo=true" target="_blank"
-              rel="noopener noreferrer" class="muted">Demo ↗</a>
+            <a href="projects/tpa-compliance.html">View →</a>
+            <a href="https://github.com/peytonramsey/TPA_Compliance_Review_System" target="_blank"
+              rel="noopener noreferrer" class="muted">GitHub ↗</a>
           </div>
         </div>
 
       </div>
 
+      <div style="margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border);">
+        <p class="label" style="margin-bottom:1.25rem;">Also Built</p>
+        <div class="also-built-grid">
+
+          <div class="also-built-item">
+            <p class="also-built-tag">NLP · RAG</p>
+            <p class="also-built-title">Financial News RAG Analyst</p>
+            <p class="also-built-metric">92% retrieval precision</p>
+            <div class="also-built-links">
+              <a href="projects/financial-rag.html">View →</a>
+              <a href="https://huggingface.co/spaces/peytonramsey/financial-news-analyst-rag" target="_blank" rel="noopener noreferrer" class="muted">Live Demo ↗</a>
+            </div>
+          </div>
+
+          <div class="also-built-item">
+            <p class="also-built-tag">Econometrics</p>
+            <p class="also-built-title">U.S. Inflation Dynamics: VECM Analysis</p>
+            <p class="also-built-metric">61.6% more external shock variance vs. VAR</p>
+            <div class="also-built-links">
+              <a href="projects/inflation-vecm.html">View →</a>
+              <a href="https://peytonramsey.github.io/us-inflation-dynamics/" target="_blank" rel="noopener noreferrer" class="muted">Report ↗</a>
+            </div>
+          </div>
+
+          <div class="also-built-item">
+            <p class="also-built-tag">Full-Stack</p>
+            <p class="also-built-title">GymLog: Full-Stack Fitness App</p>
+            <p class="also-built-metric">40+ REST endpoints · PostgreSQL · 11,500+ lines</p>
+            <div class="also-built-links">
+              <a href="projects/gymlog.html">View →</a>
+              <a href="https://gym-log-s702.onrender.com/?demo=true" target="_blank" rel="noopener noreferrer" class="muted">Demo ↗</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
     </div>
   </section>
@@ -1332,16 +1388,12 @@
 
       <div class="about-grid">
         <div class="about-bio">
-          <p>Across different industries like energy and insurance, what stayed constant is the needs of stakeholders.
-            Shipping to production and deeply understanding the problem, asking why before asking how, is what separates
-            a good job from a great one. I don't want to just hit a benchmark. I want every person who uses what I build
-            to feel like they actually want to use it.</p>
+          <p>I like building models and analytics systems that help people make better decisions. Across insurance, energy, and graduate projects, I’ve learned that the same pattern matters everywhere,understand the problem deeply, build something useful, and make sure it works in the real world.</p>
           <div class="on-ai">
             <p class="on-ai-label">On AI</p>
             <p>Working with generative models through my research role has sharpened one view: AI is most effective when
               treated as a skill, not a shortcut. It can genuinely expand your thinking and accelerate work, but it can
-              just as easily anchor you to mediocre results if you're not skeptical. The practitioners who get the most
-              from it understand its capabilities and its failure modes equally well.</p>
+              just as easily anchor you to mediocre results if you're not skeptical and understand its capabilities and its failure modes equally well.</p>
           </div>
           <p>Outside of school, I ran Division I Cross Country and Track at UNH for four years. I'm a huge fan of the Denver Broncos, enjoy road cycling and lifting, and am currently reading <em>Bad Blood</em> by John Carreyrou.</p>
           <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);">
@@ -1355,8 +1407,8 @@
         <div class="about-right">
           <div class="looking-grid">
             <div class="looking-item">
-              <p class="looking-label">Roles</p>
-              <p class="looking-val">Data Scientist · ML Engineer · Data Engineer · AI Engineer</p>
+              <p class="looking-label">Targeting</p>
+              <p class="looking-val">Data Scientist and Applied ML Roles</p>
             </div>
             <div class="looking-item">
               <p class="looking-label">Available</p>
@@ -1368,7 +1420,7 @@
             </div>
             <div class="looking-item">
               <p class="looking-label">Interested In</p>
-              <p class="looking-val">AI in physical systems, humanoid robotics especially. Understanding customer behavior through data. Staying sharp on modern techniques: conferences, research papers, and various talks on YouTube.</p>
+              <p class="looking-val">Predictive modeling, anomaly detection, financial risk, experimentation, and applied ML systems.</p>
             </div>
           </div>
 

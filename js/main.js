@@ -20,47 +20,32 @@ document.querySelectorAll('#mobile-nav a').forEach(link => {
   });
 });
 
-// ─── Scroll spy ───
-const sections = document.querySelectorAll('section[id]');
-const navLinks  = document.querySelectorAll('.nav-links a');
+// ─── Scroll spy + progress bar ───
+const sections    = document.querySelectorAll('section[id]');
+const navLinks    = document.querySelectorAll('.nav-links a');
+const progressBar = document.getElementById('scroll-progress');
 
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        navLinks.forEach(link => {
-          const active = link.getAttribute('href') === `#${entry.target.id}`;
-          link.classList.toggle('active', active);
-        });
-      }
-    });
-  },
-  { threshold: 0.2, rootMargin: '-10% 0% -60% 0%' }
-);
+function updateScroll() {
+  const scrollY = window.scrollY;
 
-sections.forEach(section => observer.observe(section));
-
-// ─── Project filter tabs ───
-const filterBtns = document.querySelectorAll('.proj-filter-btn');
-const projCards  = document.querySelectorAll('.proj-card[data-role]');
-
-filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const filter = btn.dataset.filter;
-
-    projCards.forEach(card => {
-      if (filter === 'all') {
-        card.classList.remove('hidden');
-      } else {
-        const roles = card.dataset.role.split(' ');
-        card.classList.toggle('hidden', !roles.includes(filter));
-      }
-    });
+  // Nav highlight — last section whose top is above current scroll position
+  let current = '';
+  sections.forEach(section => {
+    if (scrollY >= section.offsetTop - 120) current = section.id;
   });
-});
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+  });
+
+  // Progress bar
+  if (progressBar) {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = total > 0 ? (scrollY / total * 100) + '%' : '0%';
+  }
+}
+
+window.addEventListener('scroll', updateScroll, { passive: true });
+updateScroll();
 
 // ─── Metric counters (hero credential panel) ───
 function animateCount(el) {
@@ -71,7 +56,6 @@ function animateCount(el) {
   function step(now) {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
-    // ease-out cubic
     const eased = 1 - Math.pow(1 - progress, 3);
     el.textContent = Math.round(eased * target);
     if (progress < 1) requestAnimationFrame(step);
@@ -97,3 +81,18 @@ if (credPanel) {
 
   credObserver.observe(credPanel);
 }
+
+// ─── Scroll reveal ───
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+
+document.querySelectorAll('.proj-card, .also-built-item, #projects .section-head, #about .section-head').forEach(el => {
+  el.classList.add('reveal');
+  revealObserver.observe(el);
+});
